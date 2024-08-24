@@ -4,6 +4,8 @@ import Header from "./components/Header";
 import SearchBar from "./components/SearchBar";
 import Filter from "./components/Filter";
 import MovieList from "./components/MovieList";
+import Login from "./components/Login"; // Import komponen Login
+import Register from "./components/Register"; // Import komponen Register
 
 const App = () => {
   const [open, setOpen] = useState(true);
@@ -17,6 +19,31 @@ const App = () => {
     console.log("Year:", year);
     console.log("Status:", status);
   };
+
+  // Cek URL untuk menentukan halaman yang ditampilkan
+  const currentPath = window.location.pathname;
+
+  if (currentPath === "/login") {
+    return (
+      <div className="flex flex-col bg-background min-h-screen">
+        <Header />
+        <div className="flex items-center justify-center flex-grow">
+          <Login />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentPath === "/register") {
+    return (
+      <div className="flex flex-col bg-background min-h-screen">
+        <Header />
+        <div className="flex items-center justify-center flex-grow">
+          <Register />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex bg-background">
