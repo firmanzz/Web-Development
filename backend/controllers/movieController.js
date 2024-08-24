@@ -2,7 +2,7 @@ const Movie = require('../models/Movie');
 
 
 exports.createMovie= async (req, res) => {
-    const {title, description, genre, releaseYear, rating} = req.body;
+    const {title, description, genres, releaseYear, rating, duration, actors, directors, country} = req.body;
     const thumbnail = req.file ? req .file.path : undefined;
 
     if (!thumbnail) {
@@ -13,9 +13,13 @@ exports.createMovie= async (req, res) => {
         const newMovie = new Movie({
             title,
             description,
-            genre,
+            genres,
             releaseYear,
             rating,
+            duration,
+            actors,
+            directors,
+            country,
             thumbnail,
         });
 
@@ -67,6 +71,15 @@ exports.deleteMovie = async (req, res) => {
             return res.status(404).json({ message: 'Movie not found' });
         }
         res.status(200).json({ message: 'Movie deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.getAllYears = async (req, res) => {
+    try {
+        const years = await Movie.distinct('releaseYear');
+        res.status(200).json(years);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

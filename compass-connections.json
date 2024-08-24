@@ -1,0 +1,24 @@
+{
+  "type": "Compass Connections",
+  "version": {
+    "$numberInt": "1"
+  },
+  "connections": [
+    {
+      "id": "18804390-ff06-4640-9b3c-be2f6b3c0c76",
+      "connectionOptions": {
+        "connectionString": "mongodb://localhost/imdb-clone"
+      },
+      "favorite": {
+        "name": "imdb-clone",
+        "color": "color1"
+      },
+      "lastUsed": {
+        "$date": {
+          "$numberLong": "1724075999188"
+        }
+      },
+      "connectionSecrets": "AAEeHTfYkHRB5YNI5KPgESMAhuzsbPkLYxmAEQh1GKr54sDXVfSLZPuIjKX4Sh4anOlLPexkuzCtEQBNlWQJRQ=="
+    }
+  ]
+}

@@ -9,10 +9,10 @@ const movieSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    genre: {
-        type: [String],
-        required: true
-    },
+    genres: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Genre'
+    }],
     releaseYear: {
         type: Number,
         required: true
@@ -22,6 +22,25 @@ const movieSchema = mongoose.Schema({
         required: true,
         min: 0,
         max: 10
+    },
+    duration: {
+        type: Number,
+        required: true
+    },
+    actors: [{
+        actor_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Actor',
+        },
+        character_name: String
+    }],
+    directors: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Director',
+    }],
+    country: {
+        type: String,
+        required: true
     },
     thumbnail: {
         type: String

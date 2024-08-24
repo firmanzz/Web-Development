@@ -4,16 +4,17 @@ const MovieList = () => {
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/movies/getAllMovies')
-      .then(response => response.json())
-      .then(data => {
-        const updatedData = data.map(movie => ({
-          ...movie,
-          thumbnail: movie.thumbnail.replace('static\\uploads\\', '/uploads/')
-        }));
-        setMovies(updatedData);
-      })
-      .catch(error => console.error('Error fetching movies:', error));
+    const fetchMovies = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/movies/getAllMovies');
+        const data = await response.json();
+        setMovies(data);
+      } catch (error) {
+        console.error('Error fetching movies:', error);
+      }
+    };
+
+    fetchMovies();
   }, []);
 
   return (
@@ -26,7 +27,7 @@ const MovieList = () => {
             className="w-100 h-100 object-cover rounded-md mb-2"
           />
           <h3 className="text-xl font-bold mb-2">{movie.title}</h3>
-          <p className="text-gray-600">{movie.genre.join(", ")}</p>
+          <p className="text-gray-600">{movie.genres.join(", ")}</p>
           <p className="text-yellow-500 font-semibold">Rating: {movie.rating}</p>
         </div>
       ))}
