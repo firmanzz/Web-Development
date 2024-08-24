@@ -4,21 +4,22 @@ import { AiOutlineBank, AiFillFlag, AiFillFire } from "react-icons/ai";
 
 const Sidebar = ({ open, setOpen, submenuOpen, setSubmenuOpen }) => {
   const Menus = [
-    { title: "DASHBOARD", icon: <AiOutlineBank /> },
+    { title: "DASHBOARD", icon: <AiOutlineBank />, key: "dashboard" },
     {
       title: "COUNTRY",
       icon: <AiFillFlag />,
       submenu: true,
+      key: "country",
       submenuItem: [
-        { title: "USA" },
-        { title: "JAPAN" },
-        { title: "CHINESE" },
-        { title: "KOREAN" },
-        { title: "INDONESIA" },
-        { title: "INDIAN" },
+        { title: "USA", key: "usa" },
+        { title: "JAPAN", key: "japan" },
+        { title: "CHINESE", key: "chinese" },
+        { title: "KOREAN", key: "korean" },
+        { title: "INDONESIA", key: "indonesia" },
+        { title: "INDIAN", key: "indian" },
       ],
     },
-    { title: "TRENDING", icon: <AiFillFire /> },
+    { title: "TRENDING", icon: <AiFillFire />, key: "trending" },
   ];
 
   return (
@@ -36,28 +37,28 @@ const Sidebar = ({ open, setOpen, submenuOpen, setSubmenuOpen }) => {
         </h1>
       </div>
       <ul className="pt-2">
-        {Menus.map((menu, index) => (
-          <>
-            <li
-              key={index}
-              className={`text-black text-md flex items-center gap-x-4 cursor-pointer p-2 hover:bg-light-white rounded-md ${menu.spacing ? "mt-9" : "mt-2"} mt-2`}
-            >
-              <span className="text-4xl block float-left">{menu.icon}</span>
-              <span className={`text-base font-medium flex-1 ${!open && "hidden"}`}>{menu.title}</span>
-              {menu.submenu && (
-                <BsChevronDown className={`${submenuOpen && "rotate-180"}`} onClick={() => setSubmenuOpen(!submenuOpen)} />
-              )}
-            </li>
-            {menu.submenu && submenuOpen && open && (
-              <ul>
-                {menu.submenuItem.map((submenuItem, index) => (
-                  <li key={index} className="text-black text-md flex items-center gap-x-4 cursor-pointer p-2 px-5 hover:bg-light-white rounded-md">
-                    {submenuItem.title}
-                  </li>
-                ))}
-              </ul>
+        {Menus.map((menu) => (
+          <li
+            key={menu.key} // Menggunakan `key` yang unik
+            className={`text-black text-md flex items-center gap-x-4 cursor-pointer p-2 hover:bg-light-white rounded-md ${menu.spacing ? "mt-9" : "mt-2"} mt-2`}
+          >
+            <span className="text-4xl block float-left">{menu.icon}</span>
+            <span className={`text-base font-medium flex-1 ${!open && "hidden"}`}>{menu.title}</span>
+            {menu.submenu && (
+              <BsChevronDown className={`${submenuOpen && "rotate-180"}`} onClick={() => setSubmenuOpen(!submenuOpen)} />
             )}
-          </>
+          </li>
+        ))}
+        {Menus.map((menu) => (
+          menu.submenu && submenuOpen && open && (
+            <ul key={`${menu.key}-submenu`}>
+              {menu.submenuItem.map((submenuItem) => (
+                <li key={submenuItem.key} className="text-black text-md flex items-center gap-x-4 cursor-pointer p-2 px-5 hover:bg-light-white rounded-md">
+                  {submenuItem.title}
+                </li>
+              ))}
+            </ul>
+          )
         ))}
       </ul>
     </div>
