@@ -1,0 +1,82 @@
+.container {
+    margin-top: 50px;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem !important;
+}
+
+.card {
+    height: 100%;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sidebar {
+    background-color: #006849; 
+    color: white;
+    width: 250px;
+    height: 100vh; 
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .logo-container {
+    margin-bottom: 20px;
+  }
+  
+  .logo-text {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .menu {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .menu-item {
+    margin: 10px 0;
+  }
+  
+  .title {
+    font-size: 18px;
+  }
+  
+  .submenu {
+    list-style: none;
+    padding: 0;
+    margin-left: 20px;
+  }
+  
+  .submenu-item {
+    font-size: 16px;
+    margin: 5px 0;
+  }
+ 
+  .menu-item:hover,
+  .submenu-item:hover {
+    background-color: rgba(255, 255, 255, 0.2); 
+    border-radius: 5px;
+  }
+  
