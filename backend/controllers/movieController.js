@@ -24,7 +24,7 @@ exports.createMovie= async (req, res) => {
         });
 
         const film = await newMovie.save();
-        res.status(201).json(film);
+        res.redirect('/movies');
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
@@ -70,7 +70,7 @@ exports.deleteMovie = async (req, res) => {
         if (!deletedMovie) {
             return res.status(404).json({ message: 'Movie not found' });
         }
-        res.status(200).json({ message: 'Movie deleted successfully' });
+        res.redirect('/movies');
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
