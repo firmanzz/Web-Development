@@ -6,6 +6,8 @@ import Filter from "./components/Filter";
 import MovieList from "./components/MovieList";
 import Login from "./components/Login"; // Import komponen Login
 import Register from "./components/Register"; // Import komponen Register
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import MovieDetail from './components/MovieDetail';
 
 const App = () => {
   const [open, setOpen] = useState(true);
@@ -20,43 +22,25 @@ const App = () => {
     console.log("Status:", status);
   };
 
-  // Cek URL untuk menentukan halaman yang ditampilkan
-  const currentPath = window.location.pathname;
-
-  if (currentPath === "/login") {
-    return (
-      <div className="flex flex-col bg-background min-h-screen">
-        <Header />
-        <div className="flex items-center justify-center flex-grow">
-          <Login />
-        </div>
-      </div>
-    );
-  }
-
-  if (currentPath === "/register") {
-    return (
-      <div className="flex flex-col bg-background min-h-screen">
-        <Header />
-        <div className="flex items-center justify-center flex-grow">
-          <Register />
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex bg-background">
-      <Sidebar open={open} setOpen={setOpen} submenuOpen={submenuOpen} setSubmenuOpen={setSubmenuOpen} />
-      <div className="flex flex-col flex-grow h-screen">
-        <Header />
-        <div className="flex flex-col items-center justify-start pt-2">
-          <SearchBar />
-          <Filter genre={genre} setGenre={setGenre} year={year} setYear={setYear} status={status} setStatus={setStatus} handleSubmit={handleSubmit} />
-          <MovieList />
+    <Router>
+      <div className="flex bg-background">
+        <Sidebar open={open} setOpen={setOpen} submenuOpen={submenuOpen} setSubmenuOpen={setSubmenuOpen} />
+        <div className="flex flex-col flex-grow h-screen">
+          <Header />
+          <div className="flex flex-col items-center justify-start pt-2">
+            <SearchBar />
+            <Filter genre={genre} setGenre={setGenre} year={year} setYear={setYear} status={status} setStatus={setStatus} handleSubmit={handleSubmit} />
+            <Routes>
+              <Route path="/" element={<MovieList />} />
+              <Route path="/details/:id" element={<MovieDetail />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+            </Routes>
+          </div>
         </div>
       </div>
-    </div>
+    </Router>
   );
 };
 

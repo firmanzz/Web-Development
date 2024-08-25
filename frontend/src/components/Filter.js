@@ -37,7 +37,7 @@ const Filter = ({ genre, setGenre, year, setYear, status, setStatus, handleSubmi
           value={genre}
           onChange={(e) => setGenre(e.target.value)}
         >
-          <option value="" disabled selected hidden>Genre</option>
+          <option value="" disabled hidden>Genre</option>
           {genres.map((genre) => (
             <option key={genre._id} value={genre.name}>
               {genre.name}
@@ -50,7 +50,7 @@ const Filter = ({ genre, setGenre, year, setYear, status, setStatus, handleSubmi
           value={year}
           onChange={(e) => setYear(e.target.value)}
         >
-          <option value="" disabled selected hidden>Year</option>
+          <option value="" disabled hidden>Year</option>
           {years.map((year) => (
             <option key={year} value={year}>
               {year}
@@ -63,7 +63,7 @@ const Filter = ({ genre, setGenre, year, setYear, status, setStatus, handleSubmi
           value={status}
           onChange={(e) => setStatus(e.target.value)}
         >
-          <option value="" disabled selected hidden>Status</option>
+          <option value="" disabled hidden>Status</option>
           <option value="Ongoing">Ongoing</option>
           <option value="Completed">Completed</option>
         </select>

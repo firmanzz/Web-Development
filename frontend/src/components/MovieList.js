@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import MovieDetail from './MovieDetail';
+import { Link } from 'react-router-dom';
 
 const MovieList = () => {
   const [movies, setMovies] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState(null); // Tambahkan state untuk film yang dipilih
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -19,22 +18,13 @@ const MovieList = () => {
     fetchMovies();
   }, []);
 
-  const handleMovieClick = (movie) => {
-    setSelectedMovie(movie);
-  };
-
-  if (selectedMovie) {
-    // Tampilkan detail film jika film dipilih
-    return <MovieDetail movie={selectedMovie} />;
-  }
-
   return (
     <div className="grid grid-cols-4 gap-4 mt-6">
       {movies.map((movie) => (
-        <div 
+        <Link 
+          to={`/details/${movie._id}`} 
           key={movie._id} 
           className="bg-white p-4 rounded-lg shadow-md cursor-pointer"
-          onClick={() => handleMovieClick(movie)} // Setel film yang dipilih saat diklik
         >
           <img 
             src={`http://localhost:5000/${movie.thumbnail}`} 
@@ -44,7 +34,7 @@ const MovieList = () => {
           <h3 className="text-xl font-bold mb-2">{movie.title}</h3>
           <p className="text-gray-600">{movie.genres.join(", ")}</p>
           <p className="text-yellow-500 font-semibold">Rating: {movie.rating}</p>
-        </div>
+        </Link>
       ))}
     </div>
   );
