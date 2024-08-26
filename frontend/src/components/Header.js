@@ -14,7 +14,7 @@ const Header = ({ open, setOpen }) => {
           &#9776;
         </button>
       )}
-      <div className="flex items-center space-x-4">
+      <div className="flex-1 flex justify-center ml-12"> {/* Tambahkan kelas ml-12 untuk memberi margin kiri */}
         <Link to="/" className="text-4xl font-bold">
           MisterFilm
         </Link>
