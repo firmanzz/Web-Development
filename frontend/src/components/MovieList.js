@@ -24,7 +24,7 @@ const MovieList = () => {
         <Link 
           to={`/details/${movie._id}`} 
           key={movie._id} 
-          className="bg-white p-4 rounded-lg shadow-md cursor-pointer"
+          className="bg-gray-400 p-4 rounded-lg shadow-md cursor-pointer"
         >
           <img 
             src={`http://localhost:5000/${movie.thumbnail}`} 
