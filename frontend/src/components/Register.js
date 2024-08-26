@@ -7,16 +7,15 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Logika untuk pendaftaran atau pengiriman data ke backend
     console.log('Username:', username);
     console.log('Email:', email);
     console.log('Password:', password);
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
-      <div className="w-full max-w-sm p-8 bg-white rounded shadow-md">
-        <h2 className="mb-6 text-2xl font-bold text-center">Registration</h2>
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="w-full max-w-sm p-8 bg-white rounded shadow-md mt-8"> {/* Tambahkan kelas mt-8 untuk margin top */}
+        <h2 className="mb-6 text-2xl font-bold text-center">MisterFilm</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="username">

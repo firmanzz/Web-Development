@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import backgroundImage from './image_components/movie-background-4saldhgir0h87q13.jpg'; // Sesuaikan dengan path yang benar
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -7,22 +6,14 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Logika untuk autentikasi atau pengiriman data ke backend
     console.log('Username:', username);
     console.log('Password:', password);
   };
 
   return (
-    <div
-      className="flex items-center justify-center min-h-screen bg-background"
-      style={{
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
-      <div className="w-full max-w-sm p-8 bg-white rounded shadow-md" style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)' }}>
-        <h2 className="mb-6 text-2xl font-bold text-center">Dramaku</h2>
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="w-full max-w-sm p-8 bg-white rounded shadow-md mt-8">
+        <h2 className="mb-6 text-2xl font-bold text-center">MisterFilm</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="username">
