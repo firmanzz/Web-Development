@@ -13,10 +13,43 @@
         <%- include('components/sidebar') %>
         <div class="container-fluid p-4" id="main-content">
             <h1 class="mb-4">Movies</h1>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <label class="input-group-text" for="filterStatus">Filtered by : </label>
+                        <select class="form-select" id="filterStatus">
+                            <option selected>All</option>
+                            <option value="Unapproved">Unapproved</option>
+                            <option value="Approved">Approved</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <label class="input-group-text" for="showCount">Show</label>
+                        <select class="form-select" id="showCount">
+                            <option selected>10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="searchBar" placeholder="Search by title...">
+                        <button class="btn btn-outline-secondary" type="button" onclick="searchMovies()">Search</button>
+                    </div>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            <th>No</th>
                             <th>Drama</th>
                             <th>Actors</th>
                             <th>Genres</th>
@@ -26,8 +59,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% movies.forEach(movie => { %>
+                        <% movies.forEach((movie, index) => { %>
                             <tr id="movie-<%= movie._id %>">
+                                <td><%= index + 1 %></td> <!-- Nomor urut -->
                                 <td><%= movie.title %></td>
                                 <td>
                                     <% movie.actors.forEach(actor => { %>

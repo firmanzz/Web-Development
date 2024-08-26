@@ -65,7 +65,8 @@
             <div class="mb-3">
                 <label for="actors" class="form-label">Add Actors</label>
                 <input type="text" class="form-control mb-2" id="searchActor" placeholder="Search Actor Names">
-                <div class="actors-container">
+                <div class="autocomplete-suggestions" id="autocompleteSuggestions"></div>
+                <div class="actors-container" id="actorsContainer">
                     <div class="actor-box">
                         <span>Jason Statham</span>
                         <button type="button" class="btn-close"></button>
@@ -98,7 +99,6 @@
                     <label for="award" class="form-label">Award</label>
                     <select class="form-select" id="award" name="award">
                         <option value="">Select Award</option>
-                        <!-- Add award options here -->
                     </select>
                 </div>
             </div>

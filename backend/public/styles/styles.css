@@ -159,6 +159,24 @@ body {
   margin-bottom: 10px;
 }
 
+.autocomplete-suggestions {
+  border: 1px solid #ddd;
+  background: #fff;
+  max-height: 150px;
+  overflow-y: auto;
+  position: absolute;
+  z-index: 1000;
+}
+
+.autocomplete-suggestion {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.autocomplete-suggestion:hover {
+  background: #f0f0f0;
+}
+
 .actors-container {
   display: flex;
   flex-wrap: wrap;
@@ -168,16 +186,14 @@ body {
 .actor-box {
   display: flex;
   align-items: center;
-  padding: 5px;
-  border: 1px solid #ced4da;
+  background-color: #f1f1f1;
+  padding: 5px 10px;
   border-radius: 5px;
-  background-color: #e9ecef;
 }
 
 .actor-box span {
   margin-right: 10px;
 }
-
 .btn-close {
   font-size: 10px;
   margin-left: auto;
