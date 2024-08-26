@@ -24,7 +24,7 @@ exports.createMovie= async (req, res) => {
         });
 
         const film = await newMovie.save();
-        res.redirect('/movies');
+        res.redirect('/');
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');

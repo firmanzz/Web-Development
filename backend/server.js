@@ -39,10 +39,6 @@ app.get('/', async (req, res) => {
     }
 });
 
-app.get('/movies/addMovie', (req, res) => {
-    res.render('form movie');
-});
-
 app.get('/movies/edit/:id', async (req, res) => {
     try {
         const response = await axios.get(`http://localhost:5000/api/movies/getByIDMovie/${req.params.id}`);
