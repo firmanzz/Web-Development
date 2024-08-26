@@ -10,35 +10,52 @@
 </head>
 <body>
     <div class="d-flex">
-        <!-- Include Sidebar -->
         <%- include('components/sidebar') %>
-
-        <!-- Main Content -->
         <div class="container-fluid p-4" id="main-content">
             <h1 class="mb-4">Movies</h1>
-            <a href="movies/addMovie" class="btn btn-primary mb-4">Add New Movie</a>
-            <div class="row">
-                <% movies.forEach(movie => { %>
-                    <div class="col-md-4 mb-3" id="movie-<%= movie._id %>">
-                        <div class="card h-100">
-                            <img src="<%= movie.thumbnail %>" class="card-img-top" alt="<%= movie.title %> thumbnail">
-                            <div class="card-body">
-                                <h5 class="card-title"><%= movie.title %></h5>
-                                <p class="card-text">
-                                    <strong>Genres:</strong>
-                                    <% movie.genres.forEach(genre => { %>
-                                        <span class="badge bg-secondary"><%= genre.name %></span>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Drama</th>
+                            <th>Actors</th>
+                            <th>Genres</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% movies.forEach(movie => { %>
+                            <tr id="movie-<%= movie._id %>">
+                                <td><%= movie.title %></td>
+                                <td>
+                                    <% movie.actors.forEach(actor => { %>
+                                        <div><%= actor %></div>
                                     <% }) %>
-                                </p>
-                                <p class="card-text"><strong>Rating:</strong> <%= movie.rating %></p>
-                            </div>
-                            <div class="card-footer">
-                                <a href="/movies/<%= movie._id %>/edit" class="btn btn-warning">Edit</a>
-                                <button class="btn btn-danger" onclick="deleteMovie('<%= movie._id %>')">Delete</button>
-                            </div>
-                        </div>
-                    </div>
-                <% }) %>
+                                </td>
+                                <td>
+                                    <% movie.genres.forEach(genre => { %>
+                                        <span class="badge bg-secondary"><%= genre %></span>
+                                    <% }) %>
+                                </td>
+                                <td>
+                                    <div class="description-container">
+                                        <p id="description-<%= movie._id %>" class="description">
+                                            <%= movie.description %>
+                                        </p>
+                                        <button class="btn btn-link text-decoration-none read-more" onclick="toggleDescription('<%= movie._id %>')">Read more</button>
+                                    </div>
+                                </td>
+                                <td><%= movie.status %></td>
+                                <td>
+                                    <a href="/movies/<%= movie._id %>/edit" class="btn btn-warning btn-sm">Edit</a>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteMovie('<%= movie._id %>')">Delete</button>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
