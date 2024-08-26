@@ -11,8 +11,8 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="w-full max-w-sm p-8 bg-white rounded shadow-md mt-8">
+    <div className="flex items-center justify-center">
+      <div className="w-full max-w-sm p-8 bg-white rounded shadow-md mt-8 mb-8">
         <h2 className="mb-6 text-2xl font-bold text-center">MisterFilm</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">

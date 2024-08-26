@@ -8,6 +8,7 @@ import MovieList from "./components/MovieList";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import MovieDetail from './components/MovieDetail';
+import Footer from './components/Footer';
 
 const AppContent = ({ open, setOpen, genre, setGenre, year, setYear, status, setStatus, handleSubmit }) => {
   const location = useLocation();
@@ -17,7 +18,7 @@ const AppContent = ({ open, setOpen, genre, setGenre, year, setYear, status, set
       <Sidebar open={open} />
       <div className="flex flex-col flex-grow h-screen">
         <Header open={open} setOpen={setOpen}/>
-        <div className="flex flex-col items-center justify-start pt-2">
+        <div className="flex flex-col items-center">
           {location.pathname !== '/login' && location.pathname !== '/register' && (
             <>
               <SearchBar />
@@ -31,6 +32,7 @@ const AppContent = ({ open, setOpen, genre, setGenre, year, setYear, status, set
             <Route path="/register" element={<Register />} />
           </Routes>
         </div>
+        <Footer />
       </div>
     </div>
   );

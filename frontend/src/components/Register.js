@@ -13,8 +13,8 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="w-full max-w-sm p-8 bg-white rounded shadow-md mt-8"> {/* Tambahkan kelas mt-8 untuk margin top */}
+    <div className="flex items-center justify-center">
+      <div className="w-full max-w-sm p-8 bg-white rounded shadow-md mt-8 mb-8"> {/* Tambahkan kelas mb-8 untuk margin bottom */}
         <h2 className="mb-6 text-2xl font-bold text-center">MisterFilm</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
