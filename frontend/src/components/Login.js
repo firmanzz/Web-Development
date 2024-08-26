@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import backgroundImage from './image_components/movie-background-4saldhgir0h87q13.jpg'; // Sesuaikan dengan path yang benar
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -12,8 +13,15 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
-      <div className="w-full max-w-sm p-8 bg-white rounded shadow-md">
+    <div
+      className="flex items-center justify-center min-h-screen bg-background"
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <div className="w-full max-w-sm p-8 bg-white rounded shadow-md" style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)' }}>
         <h2 className="mb-6 text-2xl font-bold text-center">Dramaku</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
