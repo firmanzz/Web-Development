@@ -39,6 +39,10 @@ app.get('/', async (req, res) => {
     }
 });
 
+app.get('/addMovie', (req, res) => {
+    res.render('form movie');
+});
+
 app.get('/movies/edit/:id', async (req, res) => {
     try {
         const response = await axios.get(`http://localhost:5000/api/movies/getByIDMovie/${req.params.id}`);
@@ -51,6 +55,28 @@ app.get('/movies/edit/:id', async (req, res) => {
         res.render('edit-movie', { movie });
     } catch (error) {
         console.error('Error fetching movie:', error);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/countries', async (req, res) => {
+    try {
+        const response = await axios.get('http://localhost:5000/api/movies/getAllMovies');
+        const movies = response.data;
+        res.render('countries', { movies });
+    } catch (error) {
+        console.error('Error fetching movies:', error);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/actors', async (req, res) => {
+    try {
+        const response = await axios.get('http://localhost:5000/api/movies/getAllMovies');
+        const movies = response.data;
+        res.render('actors', { movies });
+    } catch (error) {
+        console.error('Error fetching movies:', error);
         res.status(500).send('Server Error');
     }
 });
