@@ -16,7 +16,7 @@ const AppContent = ({ open, setOpen, genre, setGenre, year, setYear, status, set
   return (
     <div className="flex bg-gray-800">
       <Sidebar open={open} />
-      <div className="flex flex-col flex-grow h-screen">
+      <div className="flex flex-col flex-grow h-screen  m-0 p-0">
         <Header open={open} setOpen={setOpen}/>
         <div className="flex flex-col items-center justify-start pt-2">
           {location.pathname !== '/login' && location.pathname !== '/register' && !location.pathname.includes('/details') && (

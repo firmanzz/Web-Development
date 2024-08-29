@@ -1,5 +1,4 @@
 import { Link, useLocation } from 'react-router-dom';
-import { FaGlobe } from 'react-icons/fa';
 
 const Header = ({ open, setOpen }) => {
   const location = useLocation();

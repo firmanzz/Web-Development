@@ -22,8 +22,11 @@ const Sidebar = ({ open }) => {
   return (
     <div className={`bg-gray-700 h-screen p-5 pt-8 ${open ? 'w-72' : 'hidden'} duration-300 relative`}>
       <ul className="pt-2">
-        {Menus.map((menu) => (
-          <MenuItem key={menu.key} menu={menu} open={open} />
+        {Menus.map((menu, index) => (
+          <React.Fragment key={menu.key}>
+            <MenuItem menu={menu} open={open} />
+            {index < Menus.length - 1 && <hr className="border-t border-gray-600 my-2" />}
+          </React.Fragment>
         ))}
       </ul>
     </div>
@@ -46,10 +49,13 @@ const MenuItem = ({ menu, open }) => {
 const SubMenu = ({ submenuItems }) => {
   return (
     <ul className="submenu pl-4">
-      {submenuItems.map((submenuItem) => (
-        <li key={submenuItem.key} className="text-white text-md flex items-center gap-x-4 cursor-pointer p-2 px-5 hover:bg-light-white rounded-md">
-          {submenuItem.title}
-        </li>
+      {submenuItems.map((submenuItem, index) => (
+        <React.Fragment key={submenuItem.key}>
+          <li className="text-white text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5 hover:bg-light-white rounded-md">
+            {submenuItem.title}
+          </li>
+          {index < submenuItems.length - 1 && <hr className="border-t border-gray-600 my-2" />}
+        </React.Fragment>
       ))}
     </ul>
   );
