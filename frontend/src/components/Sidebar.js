@@ -1,6 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
-const Sidebar = ({ open }) => {
+const Sidebar = ({ open, setOpen }) => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Check if the current route is either /login or /register
+    if (location.pathname === '/login' || location.pathname === '/register') {
+      setOpen(false); // Close the sidebar
+    }
+  }, [location.pathname, setOpen]); // Dependency array ensures this effect runs on path changes
+
   const Menus = [
     { title: "DASHBOARD", key: "dashboard" },
     {
@@ -20,12 +30,12 @@ const Sidebar = ({ open }) => {
   ];
 
   return (
-    <div className={`bg-gray-700 h-screen p-5 pt-8 ${open ? 'w-72' : 'hidden'} duration-300 relative`}>
+    <div className={`bg-gray-700 h-screen p-3 pt-6 ${open ? 'w-56' : 'hidden'} duration-300 relative`}>
       <ul className="pt-2">
         {Menus.map((menu, index) => (
           <React.Fragment key={menu.key}>
             <MenuItem menu={menu} open={open} />
-            {index < Menus.length - 1 && <hr className="border-t border-gray-600 my-2" />}
+            {index < Menus.length - 1 && <hr className="border-t border-gray-600 my-1" />}
           </React.Fragment>
         ))}
       </ul>
@@ -36,8 +46,8 @@ const Sidebar = ({ open }) => {
 const MenuItem = ({ menu, open }) => {
   return (
     <>
-      <li className="text-white text-md flex items-center gap-x-4 cursor-pointer p-2 hover:bg-light-white rounded-md mt-2">
-        <span className={`text-base font-medium flex-1 ${!open && 'hidden'}`}>{menu.title}</span>
+      <li className="text-white text-sm flex items-center gap-x-3 cursor-pointer p-1.5 hover:bg-light-white rounded-md mt-1">
+        <span className={`text-base font-medium flex-1 ${!open && 'hidden lg:block'}`}>{menu.title}</span>
       </li>
       {menu.submenu && open && (
         <SubMenu submenuItems={menu.submenuItem} />
@@ -48,13 +58,13 @@ const MenuItem = ({ menu, open }) => {
 
 const SubMenu = ({ submenuItems }) => {
   return (
-    <ul className="submenu pl-4">
+    <ul className="submenu pl-3">
       {submenuItems.map((submenuItem, index) => (
         <React.Fragment key={submenuItem.key}>
-          <li className="text-white text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5 hover:bg-light-white rounded-md">
+          <li className="text-white text-xs flex items-center gap-x-3 cursor-pointer p-1 px-4 hover:bg-light-white rounded-md">
             {submenuItem.title}
           </li>
-          {index < submenuItems.length - 1 && <hr className="border-t border-gray-600 my-2" />}
+          {index < submenuItems.length - 1 && <hr className="border-t border-gray-600 my-1" />}
         </React.Fragment>
       ))}
     </ul>

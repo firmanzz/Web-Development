@@ -13,12 +13,12 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="w-full max-w-sm p-8 bg-white rounded shadow-md mt-8 mb-8"> {/* Tambahkan kelas mb-8 untuk margin bottom */}
-        <h2 className="mb-6 text-2xl font-bold text-center">MisterFilm</h2>
+    <div className="flex items-center justify-center min-h-screen px-4">
+      <div className="w-full max-w-xs p-6 bg-white rounded shadow-md">
+        <h2 className="mb-4 text-xl font-bold text-center">MisterFilm</h2>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="username">
+          <div className="mb-3">
+            <label className="block mb-1 text-sm font-bold text-gray-700" htmlFor="username">
               Username
             </label>
             <input
@@ -26,11 +26,11 @@ const Register = () => {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-3 py-2 border rounded shadow appearance-none focus:outline-none focus:ring focus:border-blue-300"
+              className="w-full px-2 py-1.5 border rounded shadow appearance-none focus:outline-none focus:ring focus:border-blue-300 text-sm"
             />
           </div>
-          <div className="mb-4">
-            <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="email">
+          <div className="mb-3">
+            <label className="block mb-1 text-sm font-bold text-gray-700" htmlFor="email">
               Email
             </label>
             <input
@@ -38,11 +38,11 @@ const Register = () => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border rounded shadow appearance-none focus:outline-none focus:ring focus:border-blue-300"
+              className="w-full px-2 py-1.5 border rounded shadow appearance-none focus:outline-none focus:ring focus:border-blue-300 text-sm"
             />
           </div>
-          <div className="mb-6">
-            <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="password">
+          <div className="mb-4">
+            <label className="block mb-1 text-sm font-bold text-gray-700" htmlFor="password">
               Password
             </label>
             <input
@@ -50,21 +50,21 @@ const Register = () => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border rounded shadow appearance-none focus:outline-none focus:ring focus:border-blue-300"
+              className="w-full px-2 py-1.5 border rounded shadow appearance-none focus:outline-none focus:ring focus:border-blue-300 text-sm"
             />
           </div>
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="w-full px-4 py-2 mb-4 font-bold text-white bg-orange-500 rounded hover:bg-orange-600 focus:outline-none focus:ring focus:border-blue-300"
+              className="w-full px-3 py-1.5 font-bold text-white bg-orange-500 rounded hover:bg-orange-600 focus:outline-none focus:ring focus:border-blue-300 text-sm"
             >
               Sign Up
             </button>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mt-3">
             <button
               type="button"
-              className="w-full px-4 py-2 font-bold text-white bg-orange-400 rounded hover:bg-orange-500 focus:outline-none focus:ring focus:border-blue-300"
+              className="w-full px-3 py-1.5 font-bold text-white bg-orange-400 rounded hover:bg-orange-500 focus:outline-none focus:ring focus:border-blue-300 text-sm"
             >
               Sign up with Google
             </button>
