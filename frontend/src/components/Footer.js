@@ -3,13 +3,13 @@ import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-700 text-white py-8 mt-auto">
+    <footer className="bg-gray-700 text-white py-8">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Kolom 1: Tentang Kami */}
         <div>
-          <h2 className="text-xl font-bold mb-4">Tentang MisterFilm</h2>
+          <h2 className="text-xl font-bold mb-4">Tentang MasterFilm</h2>
           <p>
-            MisterFilm adalah platform rekomendasi film terbaik untuk Anda. 
+            MasterFilm adalah platform rekomendasi film terbaik untuk Anda. 
             Temukan film favorit Anda dan nikmati pengalaman menonton yang luar biasa.
           </p>
         </div>
@@ -30,7 +30,7 @@ const Footer = () => {
         <div>
           <h2 className="text-xl font-bold mb-4">Kontak Kami</h2>
           <p className="mb-4">Jl. Gegerkalong Hilir, Ciwaruga, Kec. Parongpong, Kabupaten Bandung Barat, Jawa Barat 40559</p>
-          <p className="mb-4">Email: support@misterfilm.com</p>
+          <p className="mb-4">Email: support@Masterfilm.com</p>
           <p className="mb-4">Telepon: +62 123 4567 890</p>
           <div className="flex space-x-4 mt-4">
             <a href="https://facebook.com" className="hover:text-blue-500"><FaFacebookF /></a>
@@ -40,7 +40,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="text-center mt-8">
-        <p>&copy; 2024 MisterFilm. All Rights Reserved.</p>
+        <p>&copy; 2024 MasterFilm. All Rights Reserved.</p>
       </div>
     </footer>
   );

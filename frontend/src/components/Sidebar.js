@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 
-const Sidebar = ({ open }) => {
+const Sidebar = forwardRef(({ open, setOpen }, ref) => {
   const Menus = [
     { title: "DASHBOARD", key: "dashboard" },
     {
@@ -20,18 +20,31 @@ const Sidebar = ({ open }) => {
   ];
 
   return (
-    <div className={`bg-gray-700 h-screen p-5 pt-8 ${open ? 'w-72' : 'hidden'} duration-300 relative`}>
-      <ul className="pt-2">
-        {Menus.map((menu, index) => (
-          <React.Fragment key={menu.key}>
-            <MenuItem menu={menu} open={open} />
-            {index < Menus.length - 1 && <hr className="border-t border-gray-600 my-2" />}
-          </React.Fragment>
-        ))}
-      </ul>
+    <div
+      ref={ref}
+      className={`fixed top-0 left-0 w-full h-full bg-gray-700 bg-opacity-75 transform ${
+        open ? 'translate-y-0' : '-translate-y-full'
+      } transition-transform duration-300 ease-in-out z-50`}
+    >
+      <div className="bg-gray-700 w-72 h-screen p-5 pt-8 relative">
+        <button
+          className="absolute top-4 right-4 text-white text-2xl focus:outline-none"
+          onClick={() => setOpen(false)}
+        >
+          &times;
+        </button>
+        <ul className="pt-2">
+          {Menus.map((menu, index) => (
+            <React.Fragment key={menu.key}>
+              <MenuItem menu={menu} open={open} />
+              {index < Menus.length - 1 && <hr className="border-t border-gray-600 my-2" />}
+            </React.Fragment>
+          ))}
+        </ul>
+      </div>
     </div>
   );
-};
+});
 
 const MenuItem = ({ menu, open }) => {
   return (

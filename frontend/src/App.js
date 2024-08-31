@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
@@ -9,13 +9,26 @@ import MovieDetail from './components/MovieDetail';
 import Footer from "./components/Footer";
 
 const AppContent = ({ open, setOpen }) => {
+  const sidebarRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [setOpen]);
+
   return (
-    <div className="flex flex-col min-h-screen bg-gray-800">
-      <div className="flex h-screen">
-        <Sidebar open={open} />
-        <div className="flex-col flex-grow overflow-y-auto">
-          <Header open={open} setOpen={setOpen} />
-          <div className="flex flex-col flex-grow items-center justify-start pt-2 bg-gray-800">
+    <div className="flex flex-col min-h-screen">
+      <Header open={open} setOpen={setOpen} />
+      <div className="flex flex-grow">
+        <Sidebar ref={sidebarRef} open={open} setOpen={setOpen} />
+        <div className="flex-col flex-grow overflow-y-auto bg-gray-800">
+          <div className="flex flex-col flex-grow items-center justify-start pt-2">
             <Routes>
               <Route path="/" element={<MovieList />} />
               <Route path="/details/:id" element={<MovieDetail />} />
