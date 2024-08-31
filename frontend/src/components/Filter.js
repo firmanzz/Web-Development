@@ -30,11 +30,11 @@ const Filter = ({ genre, setGenre, year, setYear, status, setStatus, availabilit
   }, []);
 
   return (
-    <div className="flex flex-col space-y-2 mb-2 w-full">
-      <div className="flex flex-wrap space-y-2 sm:space-y-0 sm:space-x-3">
-        <h1 className='text-white text-md'>Filtered by:</h1>
+    <div className="flex flex-col space-y-4 mt-2 mb-2">
+      <div className="flex space-x-4">
+        <h1 className='text-white text-xl'>Filtered by:</h1>
         <select
-          className="w-full sm:w-36 p-1 bg-gray-200 rounded text-sm"
+          className="w-48 p-2 bg-gray-200 rounded"
           value={genre}
           onChange={(e) => setGenre(e.target.value)}
         >
@@ -47,7 +47,7 @@ const Filter = ({ genre, setGenre, year, setYear, status, setStatus, availabilit
         </select>
 
         <select
-          className="w-full sm:w-36 p-1 bg-gray-200 rounded text-sm"
+          className="w-48 p-2 bg-gray-200 rounded"
           value={year}
           onChange={(e) => setYear(e.target.value)}
         >
@@ -60,7 +60,7 @@ const Filter = ({ genre, setGenre, year, setYear, status, setStatus, availabilit
         </select>
 
         <select
-          className="w-full sm:w-36 p-1 bg-gray-200 rounded text-sm"
+          className="w-48 p-2 bg-gray-200 rounded"
           value={status}
           onChange={(e) => setStatus(e.target.value)}
         >
@@ -70,7 +70,7 @@ const Filter = ({ genre, setGenre, year, setYear, status, setStatus, availabilit
         </select>
 
         <select
-          className="w-full sm:w-36 p-1 bg-gray-200 rounded text-sm"
+          className="w-48 p-2 bg-gray-200 rounded"
           value={availability}
           onChange={(e) => setAvailability(e.target.value)}
         >
@@ -80,7 +80,7 @@ const Filter = ({ genre, setGenre, year, setYear, status, setStatus, availabilit
         </select>
 
         <select
-          className="w-full sm:w-36 p-1 bg-gray-200 rounded text-sm"
+          className="w-48 p-2 bg-gray-200 rounded"
           value={award}
           onChange={(e) => setAward(e.target.value)}
         >
@@ -89,10 +89,10 @@ const Filter = ({ genre, setGenre, year, setYear, status, setStatus, availabilit
           <option value="Completed">Completed</option>
         </select>
 
-        <h1 className='text-white text-md'>Sorted by:</h1>
+        <h1 className='text-white text-xl'>Sorted by:</h1>
 
         <select
-          className="w-full sm:w-36 p-1 bg-gray-200 rounded text-sm"
+          className="w-48 p-2 bg-gray-200 rounded"
           value={award}
           onChange={(e) => setAward(e.target.value)}
         >
@@ -101,7 +101,7 @@ const Filter = ({ genre, setGenre, year, setYear, status, setStatus, availabilit
           <option value="Completed">Completed</option>
         </select>
       </div>
-      <button className="p-2 bg-blue-500 text-white rounded self-center text-sm" onClick={handleSubmit}>
+      <button className="p-2 bg-blue-500 text-white rounded self-center" onClick={handleSubmit}>
         Submit
       </button>
     </div>

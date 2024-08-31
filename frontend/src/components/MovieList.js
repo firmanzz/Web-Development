@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import SearchBar from "./SearchBar";
+import Filter from "./Filter";
 import { Link } from 'react-router-dom';
 
-const MovieList = () => {
+const MovieList = ({ open, setOpen, genre, setGenre, year, setYear, status, setStatus, handleSubmit }) => {
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
@@ -19,23 +21,29 @@ const MovieList = () => {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-      {movies.map((movie) => (
-        <Link 
-          to={`/details/${movie._id}`} 
-          key={movie._id} 
-          className="bg-gray-400 p-3 rounded-lg shadow-md cursor-pointer"
-        >
-          <img 
-            src={`http://localhost:5000/${movie.thumbnail}`} 
-            alt={movie.title} 
-            className="w-full h-48 object-cover rounded-md mb-1"
-          />
-          <h3 className="text-lg font-semibold mb-1">{movie.title}</h3>
-          <p className="text-gray-600 text-sm">{movie.genres.join(", ")}</p>
-          <p className="text-yellow-500 font-medium text-sm">Rating: {movie.rating}</p>
-        </Link>
-      ))}
+    <div className="container mx-auto px-0">
+      <div className="flex justify-center my-4">
+        <SearchBar />
+      </div>
+      <Filter genre={genre} setGenre={setGenre} year={year} setYear={setYear} status={status} setStatus={setStatus} handleSubmit={handleSubmit} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-10 mt-10 mb-10">
+        {movies.map((movie) => (
+          <Link 
+            to={`/details/${movie._id}`} 
+            key={movie._id} 
+            className="bg-gray-400 p-4 rounded-lg shadow-md cursor-pointer w-52 h-96"
+          >
+            <img 
+              src="/assets/Movie1.jpg"
+              alt={movie.title} 
+              className="w-full h-60 object-cover rounded-md mb-2"
+            />
+            <h3 className="text-xl font-bold mb-2">{movie.title}</h3>
+            <p className="text-gray-600">{movie.genres.join(", ")}</p>
+            <p className="text-yellow-500 font-semibold">Rating: {movie.rating}</p>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 };

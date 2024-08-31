@@ -1,40 +1,31 @@
 import { useState } from "react";
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
-import SearchBar from "./components/SearchBar";
-import Filter from "./components/Filter";
 import MovieList from "./components/MovieList";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import MovieDetail from './components/MovieDetail';
 import Footer from "./components/Footer";
 
-const AppContent = ({ open, setOpen, genre, setGenre, year, setYear, status, setStatus, handleSubmit }) => {
-  const location = useLocation();
-
+const AppContent = ({ open, setOpen }) => {
   return (
-    <div className="flex bg-gray-800">
-      {/* Pass setOpen to Sidebar */}
-      <Sidebar open={open} setOpen={setOpen} />
-      <div className="flex flex-col flex-grow h-screen  m-0 p-0">
-        <Header open={open} setOpen={setOpen}/>
-        <div className="flex flex-col items-center justify-start pt-2">
-          {location.pathname !== '/login' && location.pathname !== '/register' && !location.pathname.includes('/details') && (
-            <>
-              <SearchBar />
-              <Filter genre={genre} setGenre={setGenre} year={year} setYear={setYear} status={status} setStatus={setStatus} handleSubmit={handleSubmit} />
-            </>
-          )}
-          <Routes>
-            <Route path="/" element={<MovieList />} />
-            <Route path="/details/:id" element={<MovieDetail />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-          </Routes>
+    <div className="flex flex-col min-h-screen bg-gray-800">
+      <div className="flex h-screen">
+        <Sidebar open={open} />
+        <div className="flex-col flex-grow overflow-y-auto">
+          <Header open={open} setOpen={setOpen} />
+          <div className="flex flex-col flex-grow items-center justify-start pt-2 bg-gray-800">
+            <Routes>
+              <Route path="/" element={<MovieList />} />
+              <Route path="/details/:id" element={<MovieDetail />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+            </Routes>
+          </div>
         </div>
-        <Footer />
       </div>
+      <Footer />
     </div>
   );
 };
