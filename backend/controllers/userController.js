@@ -2,6 +2,7 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
+// Register a new user
 exports.registerUser = async (req, res) => {
     const { name, email, password, role } = req.body;
   
@@ -28,8 +29,9 @@ exports.registerUser = async (req, res) => {
       console.error(err.message);
       res.status(500).send('Server Error');
     }
-  };
+};
 
+// Log in a user
 exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
 
@@ -51,5 +53,38 @@ exports.loginUser = async (req, res) => {
         res.json({ user, token });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
+    }
+};
+
+// Get all users
+exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find();
+        res.render('users', { users });
+    } catch (err) {
+        res.status(500).send('Server Error');
+    }
+};
+
+// Edit a user
+exports.editUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email, role } = req.body;
+        await User.findByIdAndUpdate(id, { name, email, role });
+        res.redirect('/users');
+    } catch (err) {
+        res.status(500).send('Server Error');
+    }
+};
+
+// Delete a user
+exports.deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await User.findByIdAndDelete(id);
+        res.redirect('/users');
+    } catch (err) {
+        res.status(500).send('Server Error');
     }
 };

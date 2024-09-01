@@ -3,8 +3,8 @@ const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const movieRoutes = require('./routes/movieRoutes');
 const genreRoutes = require('./routes/genreRoutes');
-const awardRoutes = require('./routes/awardRoutes'); // Added awardRoutes
-const commentRoutes = require('./routes/commentRoutes'); // Added commentRoutes
+const awardRoutes = require('./routes/awardRoutes');
+const commentRoutes = require('./routes/commentRoutes');
 const bodyParser = require('body-parser');
 const path = require('path');
 const axios = require('axios');
@@ -28,6 +28,7 @@ app.use('/api/genres', genreRoutes);
 app.use(express.static('public'));
 app.use('/', awardRoutes); // Added awardRoutes
 app.use('/', commentRoutes); // Added commentRoutes
+app.use('/', userRoutes); // Added userRoutes
 
 app.get('/', async (req, res) => {
     try {
