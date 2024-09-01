@@ -4,6 +4,7 @@ const userRoutes = require('./routes/userRoutes');
 const movieRoutes = require('./routes/movieRoutes');
 const genreRoutes = require('./routes/genreRoutes');
 const awardRoutes = require('./routes/awardRoutes'); // Added awardRoutes
+const commentRoutes = require('./routes/commentRoutes'); // Added commentRoutes
 const bodyParser = require('body-parser');
 const path = require('path');
 const axios = require('axios');
@@ -26,6 +27,7 @@ app.use('/uploads', express.static('static/uploads'));
 app.use('/api/genres', genreRoutes);
 app.use(express.static('public'));
 app.use('/', awardRoutes); // Added awardRoutes
+app.use('/', commentRoutes); // Added commentRoutes
 
 app.get('/', async (req, res) => {
     try {
