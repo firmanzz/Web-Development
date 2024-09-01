@@ -3,6 +3,7 @@ const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const movieRoutes = require('./routes/movieRoutes');
 const genreRoutes = require('./routes/genreRoutes');
+const awardRoutes = require('./routes/awardRoutes'); // Added awardRoutes
 const bodyParser = require('body-parser');
 const path = require('path');
 const axios = require('axios');
@@ -10,7 +11,6 @@ const cors = require('cors');
 require('dotenv').config();
 
 connectDB();
-
 
 const app = express();
 
@@ -25,6 +25,7 @@ app.use('/api/movies', movieRoutes);
 app.use('/uploads', express.static('static/uploads'));
 app.use('/api/genres', genreRoutes);
 app.use(express.static('public'));
+app.use('/', awardRoutes); // Added awardRoutes
 
 app.get('/', async (req, res) => {
     try {
@@ -80,7 +81,6 @@ app.get('/actors', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
-
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
