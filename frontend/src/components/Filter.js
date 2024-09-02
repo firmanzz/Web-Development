@@ -83,43 +83,52 @@ const Filter = ({
 
         <select
           className="w-full md:w-48 p-2 bg-gray-200 rounded"
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
+          value={genre}
+          onChange={(e) => setGenre(e.target.value)}
         >
           <option value="" disabled hidden>
             Status
           </option>
-          <option value="Ongoing">Ongoing</option>
-          <option value="Completed">Completed</option>
+          {genres.map((genre) => (
+            <option key={genre._id} value={genre.name}>
+              {genre.name}
+            </option>
+          ))}
         </select>
 
         <select
           className="w-full md:w-48 p-2 bg-gray-200 rounded"
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
+          value={genre}
+          onChange={(e) => setGenre(e.target.value)}
         >
           <option value="" disabled hidden>
             Availability
           </option>
-          <option value="Ongoing">Netflix</option>
-          <option value="Completed">Hotstar</option>
+          {genres.map((genre) => (
+            <option key={genre._id} value={genre.name}>
+              {genre.name}
+            </option>
+          ))}
         </select>
 
         <select
           className="w-full md:w-48 p-2 bg-gray-200 rounded"
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
+          value={genre}
+          onChange={(e) => setGenre(e.target.value)}
         >
           <option value="" disabled hidden>
             Award
           </option>
-          <option value="Ongoing">Oscar</option>
-          <option value="Completed">Kids Choice Awards</option>
+          {genres.map((genre) => (
+            <option key={genre._id} value={genre.name}>
+              {genre.name}
+            </option>
+          ))}
         </select>
 
         <h1 className="text-white text-xl">Sorted by:</h1>
         <select
-          className="w-full md:w-48 p-2 bg-gray-200 rounded"
+          className="w-full md:w-60 p-2 bg-gray-200 rounded"
           value={sortOrder}
           onChange={(e) => setSortOrder(e.target.value)}
         >
