@@ -10,8 +10,8 @@ const movieSchema = mongoose.Schema({
         required: true
     },
     genres: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Genre'
+        type: String,
+        required: true
     }],
     releaseYear: {
         type: Number,

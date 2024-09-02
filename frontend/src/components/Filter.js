@@ -95,26 +95,26 @@ const Filter = ({
 
         <select
           className="w-full md:w-48 p-2 bg-gray-200 rounded"
-          value={availability}
-          onChange={(e) => setAvailability(e.target.value)}
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
         >
           <option value="" disabled hidden>
             Availability
           </option>
-          <option value="Ongoing">Ongoing</option>
-          <option value="Completed">Completed</option>
+          <option value="Ongoing">Netflix</option>
+          <option value="Completed">Hotstar</option>
         </select>
 
         <select
           className="w-full md:w-48 p-2 bg-gray-200 rounded"
-          value={award}
-          onChange={(e) => setAward(e.target.value)}
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
         >
           <option value="" disabled hidden>
             Award
           </option>
-          <option value="Ongoing">Ongoing</option>
-          <option value="Completed">Completed</option>
+          <option value="Ongoing">Oscar</option>
+          <option value="Completed">Kids Choice Awards</option>
         </select>
 
         <h1 className="text-white text-xl">Sorted by:</h1>

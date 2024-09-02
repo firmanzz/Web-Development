@@ -4,7 +4,7 @@ import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa';
 const Footer = () => {
   return (
     <footer className="bg-gray-700 text-white py-8">
-      <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
         {/* Kolom 1: Tentang Kami */}
         <div>
           <h2 className="text-xl font-bold mb-4">Tentang MasterFilm</h2>
@@ -32,7 +32,7 @@ const Footer = () => {
           <p className="mb-4">Jl. Gegerkalong Hilir, Ciwaruga, Kec. Parongpong, Kabupaten Bandung Barat, Jawa Barat 40559</p>
           <p className="mb-4">Email: support@Masterfilm.com</p>
           <p className="mb-4">Telepon: +62 123 4567 890</p>
-          <div className="flex space-x-4 mt-4">
+          <div className="flex justify-center space-x-4 mt-4">
             <a href="https://facebook.com" className="hover:text-blue-500"><FaFacebookF /></a>
             <a href="https://twitter.com" className="hover:text-blue-400"><FaTwitter /></a>
             <a href="https://instagram.com" className="hover:text-pink-500"><FaInstagram /></a>
