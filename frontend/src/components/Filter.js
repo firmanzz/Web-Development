@@ -22,7 +22,7 @@ const Filter = ({
     const fetchGenres = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/genres/getAllGenres"
+          "http://localhost:5001/api/genres/getAllGenres"
         );
         const data = await response.json();
         setGenres(data);
@@ -34,7 +34,7 @@ const Filter = ({
     const fetchYears = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/movies/getAllYears"
+          "http://localhost:5001/api/movies/getAllYears"
         );
         const data = await response.json();
         setYears(data);

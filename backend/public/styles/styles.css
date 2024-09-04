@@ -1,44 +1,32 @@
-.container {
-  margin-top: 50px;
-}
-
-.mb-4 {
-  margin-bottom: 1.5rem !important;
-}
-
-.card {
+html, body {
   height: 100%;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
 }
 
-.btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
-}
-
-.btn-warning {
-  background-color: #ffc107;
-  border-color: #ffc107;
-}
-
-.btn-danger {
-  background-color: #dc3545;
-  border-color: #dc3545;
-}
-
-.card-footer {
+.main-container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  min-height: 100vh; /* Ensure the container takes the full height */
 }
 
 .sidebar {
   background-color: #2d3748;
   color: white;
   width: 250px;
-  height: 100vh;
+  min-height: 100vh; /* Ensure sidebar takes the full height */
   padding: 20px;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto; /* Enable scrolling if content exceeds the viewport height */
+}
+
+#main-content {
+  flex-grow: 1;
+  padding: 20px;
+  background-color: #ffffff;
+  overflow-y: auto; /* Enable scrolling for main content as well */
 }
 
 .logo-container {
@@ -64,7 +52,6 @@
   color: inherit;
   text-decoration: none;
 }
-
 
 .submenu {
   list-style: none;
@@ -130,71 +117,4 @@
   color: #007bff;
   cursor: pointer;
   margin-top: 0.5em; 
-}
-
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f8f9fa;
-}
-
-.container {
-  max-width: 800px;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.form-label {
-  font-weight: bold;
-}
-
-.genres-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.form-check-inline {
-  margin-bottom: 10px;
-}
-
-.autocomplete-suggestions {
-  border: 1px solid #ddd;
-  background: #fff;
-  max-height: 150px;
-  overflow-y: auto;
-  position: absolute;
-  z-index: 1000;
-}
-
-.autocomplete-suggestion {
-  padding: 8px;
-  cursor: pointer;
-}
-
-.autocomplete-suggestion:hover {
-  background: #f0f0f0;
-}
-
-.actors-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.actor-box {
-  display: flex;
-  align-items: center;
-  background-color: #f1f1f1;
-  padding: 5px 10px;
-  border-radius: 5px;
-}
-
-.actor-box span {
-  margin-right: 10px;
-}
-.btn-close {
-  font-size: 10px;
-  margin-left: auto;
 }
