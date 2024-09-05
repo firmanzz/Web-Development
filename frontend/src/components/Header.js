@@ -4,10 +4,10 @@ const Header = ({ open, setOpen }) => {
   const location = useLocation();
 
   return (
-    <header className="bg-gray-700 text-white text-3xl p-4 flex items-center justify-between sticky top-0 z-50">
+    <header className="bg-gray-700 text-white text-3xl p-4 flex sticky top-0 z-50">
       {location.pathname !== "/login" && location.pathname !== "/register" && (
         <button
-          className="text-white text-2xl focus:outline-none"
+          className="text-white px-14 text-2xl focus:outline-none"
           onClick={() => setOpen(!open)}
         >
           &#9776;
