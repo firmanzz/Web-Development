@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import SearchBar from "./SearchBar";
-import Filter from "./Filter";
+import SearchBar from "../components/SearchBar";
+import Filter from "../components/Filter";
 import { Link } from "react-router-dom";
 
 const MovieList = () => {
