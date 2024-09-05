@@ -56,7 +56,7 @@ const MovieListCMS = ({ movies }) => {
 
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white">
-            <thead>
+          <thead className="bg-gray-800 text-white">
               <tr>
                 <th className="text-center p-3">No</th>
                 <th className="text-center p-3">Drama</th>

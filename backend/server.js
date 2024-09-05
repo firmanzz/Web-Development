@@ -16,89 +16,21 @@ connectDB();
 const app = express();
 
 app.use(cors());
-app.set('view engine', 'ejs');
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true })); // To parse URL-encoded data
+app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// Serve static files
+app.use('/uploads', express.static(path.join(__dirname, 'static/uploads')));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Route handlers
 app.use('/api/users', userRoutes);
 app.use('/api/movies', movieRoutes);
-app.use('/uploads', express.static('static/uploads'));
-app.use('/genres', genreRoutes);
-app.use(express.static('public'));
-app.use('/', awardRoutes); // Added awardRoutes
-app.use('/', commentRoutes); // Added commentRoutes
-app.use('/', userRoutes); // Added userRoutes
-
-app.get('/', async (req, res) => {
-    try {
-        const open = true; 
-        const submenuOpen = false;
-        const response = await axios.get('http://localhost:5000/api/movies/getAllMovies');
-        const movies = response.data;
-        res.render('movie', { open, submenuOpen, movies });
-    } catch (error) {
-        console.error('Error fetching movies:', error);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/addMovie', (req, res) => {
-    res.render('form movie');
-});
-
-app.get('/', (req, res) => {
-    res.render('genres');
-});
-
-app.get('/movies/edit/:id', async (req, res) => {
-    try {
-        const response = await axios.get(`http://localhost:5000/api/movies/getByIDMovie/${req.params.id}`);
-        const movie = response.data;
-
-        if (!movie) {
-            return res.status(404).send('Movie not found');
-        }
-
-        res.render('edit-movie', { movie });
-    } catch (error) {
-        console.error('Error fetching movie:', error);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/countries', async (req, res) => {
-    try {
-        const response = await axios.get('http://localhost:5000/api/movies/getAllMovies');
-        const movies = response.data;
-        res.render('countries', { movies });
-    } catch (error) {
-        console.error('Error fetching movies:', error);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/genres', async (req, res) => {
-    try {
-        const response = await axios.get('http://localhost:5000/api/movies/getAllMovies');
-        const movies = response.data;
-        res.render('genres', { movies });
-    } catch (error) {
-        console.error('Error fetching movies:', error);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/actors', async (req, res) => {
-    try {
-        const response = await axios.get('http://localhost:5000/api/movies/getAllMovies');
-        const movies = response.data;
-        res.render('actors', { movies });
-    } catch (error) {
-        console.error('Error fetching movies:', error);
-        res.status(500).send('Server Error');
-    }
-});
+app.use('/api/genres', genreRoutes);
+app.use('/api/awards', awardRoutes); // Adjust route if necessary
+app.use('/api/comments', commentRoutes); // Adjust route if necessary
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

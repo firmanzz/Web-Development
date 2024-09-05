@@ -26,32 +26,32 @@ const Sidebar = () => {
           </ul>
         </li>
         <li>
-          <Link to="/countries" className="block text-lg font-medium hover:bg-gray-700 p-2 rounded">
+          <Link to="/admin/countries" className="block text-lg font-medium hover:bg-gray-700 p-2 rounded">
             Countries
           </Link>
         </li>
         <li>
-          <Link to="/awards" className="block text-lg font-medium hover:bg-gray-700 p-2 rounded">
+          <Link to="/admin/awards" className="block text-lg font-medium hover:bg-gray-700 p-2 rounded">
             Awards
           </Link>
         </li>
         <li>
-          <Link to="/genres" className="block text-lg font-medium hover:bg-gray-700 p-2 rounded">
+          <Link to="/admin/genres" className="block text-lg font-medium hover:bg-gray-700 p-2 rounded">
             Genres
           </Link>
         </li>
         <li>
-          <Link to="/actors" className="block text-lg font-medium hover:bg-gray-700 p-2 rounded">
+          <Link to="/admin/actors" className="block text-lg font-medium hover:bg-gray-700 p-2 rounded">
             Actors
           </Link>
         </li>
         <li>
-          <Link to="/comments" className="block text-lg font-medium hover:bg-gray-700 p-2 rounded">
+          <Link to="/admin/comments" className="block text-lg font-medium hover:bg-gray-700 p-2 rounded">
             Comments
           </Link>
         </li>
         <li>
-          <Link to="/users" className="block text-lg font-medium hover:bg-gray-700 p-2 rounded">
+          <Link to="/admin/users" className="block text-lg font-medium hover:bg-gray-700 p-2 rounded">
             Users
           </Link>
         </li>
