@@ -22,7 +22,7 @@ const Sidebar = forwardRef(({ open, setOpen }, ref) => {
   return (
     <div
       ref={ref}
-      className={`fixed top-0 left-0 w-full h-full bg-gray-700 bg-opacity-75 transform ${
+      className={`fixed top-0 left-0 w-72 h-full bg-gray-700 bg-opacity-75 transform ${
         open ? 'translate-y-0' : '-translate-y-full'
       } transition-transform duration-300 ease-in-out z-50`}
     >
