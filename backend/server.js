@@ -34,7 +34,7 @@ app.get('/', async (req, res) => {
     try {
         const open = true; 
         const submenuOpen = false;
-        const response = await axios.get('http://localhost:5001/api/movies/getAllMovies');
+        const response = await axios.get('http://localhost:5000/api/movies/getAllMovies');
         const movies = response.data;
         res.render('movie', { open, submenuOpen, movies });
     } catch (error) {
@@ -53,7 +53,7 @@ app.get('/', (req, res) => {
 
 app.get('/movies/edit/:id', async (req, res) => {
     try {
-        const response = await axios.get(`http://localhost:5001/api/movies/getByIDMovie/${req.params.id}`);
+        const response = await axios.get(`http://localhost:5000/api/movies/getByIDMovie/${req.params.id}`);
         const movie = response.data;
 
         if (!movie) {
@@ -69,7 +69,7 @@ app.get('/movies/edit/:id', async (req, res) => {
 
 app.get('/countries', async (req, res) => {
     try {
-        const response = await axios.get('http://localhost:5001/api/movies/getAllMovies');
+        const response = await axios.get('http://localhost:5000/api/movies/getAllMovies');
         const movies = response.data;
         res.render('countries', { movies });
     } catch (error) {
@@ -80,7 +80,7 @@ app.get('/countries', async (req, res) => {
 
 app.get('/genres', async (req, res) => {
     try {
-        const response = await axios.get('http://localhost:5001/api/movies/getAllMovies');
+        const response = await axios.get('http://localhost:5000/api/movies/getAllMovies');
         const movies = response.data;
         res.render('genres', { movies });
     } catch (error) {
@@ -91,7 +91,7 @@ app.get('/genres', async (req, res) => {
 
 app.get('/actors', async (req, res) => {
     try {
-        const response = await axios.get('http://localhost:5001/api/movies/getAllMovies');
+        const response = await axios.get('http://localhost:5000/api/movies/getAllMovies');
         const movies = response.data;
         res.render('actors', { movies });
     } catch (error) {
@@ -100,5 +100,5 @@ app.get('/actors', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

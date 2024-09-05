@@ -16,7 +16,7 @@ const MovieList = () => {
     const fetchMovies = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5001/api/movies/getAllMovies"
+          "http://localhost:5000/api/movies/getAllMovies"
         );
         const data = await response.json();
         setMovies(data);

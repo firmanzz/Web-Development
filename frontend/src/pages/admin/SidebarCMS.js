@@ -19,7 +19,7 @@ const Sidebar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/addMovie" className="block text-base text-white hover:underline">
+              <Link to="/admin/addMovie" className="block text-base text-white hover:underline">
                 Input New Movie
               </Link>
             </li>

@@ -5,14 +5,14 @@ const MovieDetail = () => {
     <div
       className="relative bg-cover bg-center bg-no-repeat"
       style={{
-        backgroundImage: 'url(http://localhost:5001/uploads/shawshank_poster.jpg)',
+        backgroundImage: 'url(http://localhost:5000/uploads/shawshank_poster.jpg)',
       }}
     >
       {/* Full-Screen Background Image with Blur Overlay */}
       <div
         className="fixed top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat z-0"
         style={{
-          backgroundImage: 'url(http://localhost:5001/uploads/shawshank_poster.jpg)',
+          backgroundImage: 'url(http://localhost:5000/uploads/shawshank_poster.jpg)',
         }}
       >
         {/* Background Blur Overlay */}
@@ -26,7 +26,7 @@ const MovieDetail = () => {
           {/* Poster Film */}
           <div className="flex-none w-full lg:w-auto mb-4 lg:mb-0">
             <img
-              src="http://localhost:5001/uploads/shawshank_poster.jpg"
+              src="http://localhost:5000/uploads/shawshank_poster.jpg"
               alt="The Shawshank Redemption Poster"
               className="w-auto h-auto max-w-full max-h-full rounded-lg shadow-lg"
               style={{ maxHeight: '450px', objectFit: 'cover' }}
@@ -75,17 +75,17 @@ const MovieDetail = () => {
           <h3 className="text-lg font-bold mb-3 text-gray-800">Cast</h3>
           <div className="flex space-x-4">
             <img
-              src="http://localhost:5001/uploads/tim_robbins.jpg"
+              src="http://localhost:5000/uploads/tim_robbins.jpg"
               alt="Tim Robbins"
               className="w-20 h-20 rounded-full shadow-lg"
             />
             <img
-              src="http://localhost:5001/uploads/morgan_freeman.jpeg"
+              src="http://localhost:5000/uploads/morgan_freeman.jpeg"
               alt="Morgan Freeman"
               className="w-20 h-20 rounded-full shadow-lg"
             />
             <img
-              src="http://localhost:5001/uploads/bob_gunton.jpeg"
+              src="http://localhost:5000/uploads/bob_gunton.jpeg"
               alt="Bob Gunton"
               className="w-20 h-20 rounded-full shadow-lg"
             />
