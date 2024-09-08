@@ -1,8 +1,7 @@
 const express = require('express');
-const genreController = require('../controllers/genreController');
 const router = express.Router();
+const genreController = require('../controllers/genreController');
 
-router.post('/addGenre', genreController.createGenre);
-router.get('/getAllGenres', genreController.getAllGenres);
+router.get('/genres', genreController.getAllGenres);
 
 module.exports = router;

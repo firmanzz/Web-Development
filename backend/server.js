@@ -8,7 +8,6 @@ const cors = require('cors');
 app.use(cors());
 app.use(express.json()); 
 
-// Route untuk Movie API
 app.use('/api', movieRoutes);
 app.use('/api', genreRoutes);
 

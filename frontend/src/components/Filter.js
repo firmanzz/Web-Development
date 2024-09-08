@@ -23,7 +23,7 @@ const Filter = ({
     const fetchGenres = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5001/api/genres/getAllGenres"
+          "http://localhost:5000/api/genres"
         );
         const data = await response.json();
         setGenres(data);
@@ -72,8 +72,6 @@ const Filter = ({
           />
         </svg>
       </button>
-
-      {/* Accordion Content */}
       <div
         className={`transition-max-height duration-500 ease-in-out ${
           isOpen ? "max-h-screen" : "max-h-0 overflow-hidden"
@@ -92,7 +90,7 @@ const Filter = ({
                     Genre
                   </option>
                   {genres.map((genre) => (
-                    <option key={genre._id} value={genre.name}>
+                    <option key={genre.id} value={genre.name}>
                       {genre.name}
                     </option>
                   ))}
