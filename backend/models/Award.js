@@ -1,20 +1,24 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database'); 
+const Country = require('./Countries');
 
-const awardSchema = new mongoose.Schema({
-    country: {
-        type: String,
-        required: true
+const Award = sequelize.define('Award', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  award: { type: DataTypes.STRING(255), allowNull: false },
+  year : { type: DataTypes.INTEGER},
+  countryid: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Country,
+      key: 'id'
     },
-    year: {
-        type: Number,
-        required: true
-    },
-    awardName: {
-        type: String,
-        required: true
-    }
-});
+    allowNull: false
+  }
+}, { 
+    tableName: 'awards',
+    timestamps: false });
 
-const Award = mongoose.model('Award', awardSchema);
+    Award.belongsTo(Country, { foreignKey: 'countryid'});
+    Country.hasMany(Award, { foreignKey: 'countryid'});
 
 module.exports = Award;

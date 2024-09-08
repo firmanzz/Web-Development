@@ -12,7 +12,6 @@ exports.getAllMovies = async (req, res) => {
   }
 };
 
-// Get a movie by ID
 exports.getMovieById = async (req, res) => {
   try {
     const movie = await Movie.findByPk(req.params.id, {

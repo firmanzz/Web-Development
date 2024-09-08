@@ -17,7 +17,7 @@ const Filter = ({
 }) => {
   const [genres, setGenres] = useState([]);
   const [years, setYears] = useState([]);
-  const [isOpen, setIsOpen] = useState(true); // State to control the accordion
+  const [isOpen, setIsOpen] = useState(false); 
 
   useEffect(() => {
     const fetchGenres = async () => {
