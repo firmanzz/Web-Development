@@ -1,86 +1,62 @@
 const Movie = require('../models/Movie');
-
-
-exports.createMovie= async (req, res) => {
-    const {title, description, genres, releaseYear, rating, duration, actors, directors, country} = req.body;
-    const thumbnail = req.file ? req .file.path : undefined;
-
-    if (!thumbnail) {
-        return res.status(400).json({msg: 'Thumbnail is required'});
-    }
-
-    try {
-        const newMovie = new Movie({
-            title,
-            description,
-            genres,
-            releaseYear,
-            rating,
-            duration,
-            actors,
-            directors,
-            country,
-            thumbnail,
-        });
-
-        const film = await newMovie.save();
-        res.redirect('/');
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-};
+const MovieGenre = require('../models/MovieGenre');
+const Genre = require('../models/Genre');
+const Country = require('../models/Countries')
 
 exports.getAllMovies = async (req, res) => {
-    try {
-        const movies = await Movie.find();
-        res.status(200).json(movies);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
+  try {
+    const movies = await Movie.findAll();
+    res.json(movies);
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred' });
+  }
 };
 
+// Get a movie by ID
 exports.getMovieById = async (req, res) => {
-    try {
-        const movie = await Movie.findById(req.params.id);
-        if (!movie) {
-            return res.status(404).json({ message: 'Movie not found' });
-        }
-        res.status(200).json(movie);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
+  try {
+    const movie = await Movie.findByPk(req.params.id, {
+      include: [{ model: Genre, through: MovieGenre }]
+    });
+    if (!movie) return res.status(404).json({ error: 'Movie not found' });
+    res.json(movie);
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred' });
+  }
 };
 
+// Create a new movie
+exports.createMovie = async (req, res) => {
+  try {
+    const newMovie = await Movie.create(req.body);
+    res.status(201).json(newMovie);
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred' });
+  }
+};
+
+// Update a movie
 exports.updateMovie = async (req, res) => {
-    try {
-        const updatedMovie = await Movie.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!updatedMovie) {
-            return res.status(404).json({ message: 'Movie not found' });
-        }
-        res.status(200).json(updatedMovie);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
+  try {
+    const movie = await Movie.findByPk(req.params.id);
+    if (!movie) return res.status(404).json({ error: 'Movie not found' });
+    
+    await movie.update(req.body);
+    res.json(movie);
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred' });
+  }
 };
 
+// Delete a movie
 exports.deleteMovie = async (req, res) => {
-    try {
-        const deletedMovie = await Movie.findByIdAndDelete(req.params.id);
-        if (!deletedMovie) {
-            return res.status(404).json({ message: 'Movie not found' });
-        }
-        res.redirect('/movies');
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-};
-
-exports.getAllYears = async (req, res) => {
-    try {
-        const years = await Movie.distinct('releaseYear');
-        res.status(200).json(years);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
+  try {
+    const movie = await Movie.findByPk(req.params.id);
+    if (!movie) return res.status(404).json({ error: 'Movie not found' });
+    
+    await movie.destroy();
+    res.json({ message: 'Movie deleted' });
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred' });
+  }
 };

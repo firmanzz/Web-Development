@@ -1,13 +1,11 @@
 const express = require('express');
-const movieController = require('../controllers/movieController');
-const upload = require('../middleware/upload');
 const router = express.Router();
+const movieController = require('../controllers/movieController');
 
-router.post('/addMovie', upload.single('thumbnail'), movieController.createMovie);
-router.get('/getAllMovies', movieController.getAllMovies);
-router.get('/getByIDMovie/:id', movieController.getMovieById);
-router.put('/updateMovie/:id', upload.single('thumbnail'), movieController.updateMovie);
-router.delete('/deleteMovie/:id', movieController.deleteMovie);
-router.get('/getAllyears', movieController.getAllYears);
+router.get('/movies', movieController.getAllMovies);
+router.get('/movies/:id', movieController.getMovieById);
+router.post('/movies', movieController.createMovie);
+router.put('/movies/:id', movieController.updateMovie);
+router.delete('/movies/:id', movieController.deleteMovie);
 
 module.exports = router;
