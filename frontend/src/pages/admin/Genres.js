@@ -7,12 +7,11 @@ const Genres = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Fetch genres when the component mounts
   useEffect(() => {
     const fetchGenres = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/genres/getAllGenres"
+          "http://localhost:5000/api/genres"
         );
         const data = await response.json();
         setGenres(data);

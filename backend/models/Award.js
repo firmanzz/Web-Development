@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database'); 
 const Country = require('./Countries');
+const Movie = require("./Movie");
 
 const Award = sequelize.define('Award', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },

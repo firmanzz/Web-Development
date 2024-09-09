@@ -14,9 +14,7 @@ exports.getAllMovies = async (req, res) => {
 
 exports.getMovieById = async (req, res) => {
   try {
-    const movie = await Movie.findByPk(req.params.id, {
-      include: [{ model: Genre, through: MovieGenre }]
-    });
+    const movie = await Movie.findByPk(req.params.id);
     if (!movie) return res.status(404).json({ error: 'Movie not found' });
     res.json(movie);
   } catch (error) {

@@ -7,7 +7,7 @@ const Header = ({ open, setOpen }) => {
     <header className="bg-gray-700 text-white text-3xl p-4 flex sticky top-0 z-50">
       {location.pathname !== "/login" && location.pathname !== "/register" && (
         <button
-          className="text-white px-14 text-2xl focus:outline-none"
+          className="text-white px-1 md:px-14 text-2xl focus:outline-none"
           onClick={() => setOpen(!open)}
         >
           &#9776;
@@ -19,7 +19,7 @@ const Header = ({ open, setOpen }) => {
           className="text-3xl font-bold text-white"
           style={{ fontFamily: "Playfair Display, serif" }}
         >
-          MasterFilm
+          MasterMovie
         </Link>
       </div>
       <div className="flex items-center space-x-2">
