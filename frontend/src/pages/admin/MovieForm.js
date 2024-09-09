@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef} from "react";
 import Sidebar from "./SidebarCMS";
+import Header from "./HeaderCMS";
 
 const MovieForm = () => {
+  const [open, setOpen] = useState(false);
+  const sidebarRef = useRef(null);
   const [actors, setActors] = useState([
     "Jason Statham",
     "Johnny Depp",
@@ -21,10 +24,12 @@ const MovieForm = () => {
   };
 
   return (
-    <div className="flex h-screen">
-      <Sidebar className="w-1/4 bg-gray-800 text-white" />
-      <div className="container mx-5 mt-4">
-        <h1 className="text-2xl font-bold mb-6">Movie Form</h1>
+    <div className="flex flex-col min-h-screen">
+    <Header open={open} setOpen={setOpen} />
+    <div className="flex flex-grow">
+      <Sidebar ref={sidebarRef} open={open} setOpen={setOpen} />
+      <div className="container mb-10 mx-5 mt-4">
+      <h1 className="text-3xl md:text-4xl font-bold mb-4">Movie Form</h1>
         <form
           action="/movies/addMovie"
           method="POST"
@@ -244,6 +249,7 @@ const MovieForm = () => {
             </a>
           </div>
         </form>
+      </div>
       </div>
     </div>
   );

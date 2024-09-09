@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import Sidebar from './SidebarCMS'; // Ensure you have this component
+import React, { useState, useEffect, useRef} from "react";
+import Sidebar from "./SidebarCMS";
+import Header from "./HeaderCMS";
 
 const Genres = () => {
+  const [open, setOpen] = useState(false);
+  const sidebarRef = useRef(null);
   const [genres, setGenres] = useState([]);
   const [newGenre, setNewGenre] = useState('');
   const [loading, setLoading] = useState(true);
@@ -25,9 +28,11 @@ const Genres = () => {
 
 
   return (
-    <div className="flex h-screen">
-      <Sidebar className="w-1/4 bg-gray-800 text-white" />
-      <div className="flex-1 p-4">
+    <div className="flex flex-col min-h-screen">
+      <Header open={open} setOpen={setOpen} />
+      <div className="flex flex-grow">
+        <Sidebar ref={sidebarRef} open={open} setOpen={setOpen} />
+        <div className="flex-1 p-4">
         <h1 className="text-2xl font-bold mb-6">Genres</h1>
 
         {error && <p className="text-red-600 mb-4">{error}</p>}
@@ -75,6 +80,7 @@ const Genres = () => {
             </table>
           </div>
       </div>
+    </div>
     </div>
   );
 };
