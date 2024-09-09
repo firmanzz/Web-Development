@@ -70,9 +70,9 @@ const MovieList = ({ genre, setGenre, year, setYear, status, setStatus, handleSu
           {featuredMovie && (
             <div className="mb-8 hidden sm:block">
               <Link to={`/details/${featuredMovie.id}`} className="block">
-                <div className="relative bg-gray-800 rounded-md overflow-hidden mx-auto sm:h-80 sm:w-full">
+                <div className="relative bg-gray-800 rounded-md overflow-hidden mx-auto h-48 sm:h-64 md:h-80 lg:h-96 w-full">
                   <img
-                    src="/assets/shawshank.webp"
+                    src={featuredMovie.urlphoto} 
                     alt={featuredMovie.title}
                     className="absolute inset-0 w-full h-full object-cover opacity-60"
                   />
@@ -104,9 +104,18 @@ const MovieList = ({ genre, setGenre, year, setYear, status, setStatus, handleSu
             {currentMovies.map((movie) => (
               <Link to={`/details/${movie.id}`} key={movie.id}>
                 <div className="text-center">
+                  <img
+                    src={movie.urlphoto} 
+                    className="h-full w-full object-cover rounded-md mb-2"
+                  />
                   <h3 className="text-white text-sm font-bold mb-1">
                     {movie.title}
                   </h3>
+                  <p className="text-white text-sm font-semibold">
+                  {movie.Genres
+                        ? movie.Genres.map((genre) => genre.name).join(", ")
+                        : "No Genres"}
+                  </p>
                   <p className="text-yellow-500 text-xs font-semibold">
                     Rating: {movie.rating}
                   </p>

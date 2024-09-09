@@ -8,6 +8,7 @@ const MovieListCMS = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
   const [showCount, setShowCount] = useState(10);
+  const [expanded, setExpanded] = useState({});
   const sidebarRef = useRef(null);
 
   useEffect(() => {
@@ -23,6 +24,28 @@ const MovieListCMS = () => {
 
     fetchMovies();
   }, []);
+
+  const toggleReadMore = (id) => {
+    setExpanded((prevState) => ({
+      ...prevState,
+      [id]: !prevState[id],
+    }));
+  };
+
+  const truncateDescription = (description, limit = 100) => {
+    if (description.length <= limit) {
+      return description;
+    }
+    return description.slice(0, limit) + "...";
+  };
+
+  const formatText = (items, limit = 3) => {
+    if (!items || items.length === 0) return ""; 
+    if (items.length > limit) {
+      return items.slice(0, limit).join(", ") + "\n" + items.slice(limit).join(", ");
+    }
+    return items.join(", ");
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -84,25 +107,25 @@ const MovieListCMS = () => {
             <table className="min-w-full table-auto bg-white">
               <thead className="bg-gray-800 text-white">
                 <tr>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[50px]">
                     No
                   </th>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[200px]">
                     Title
                   </th>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[150px]">
                     Actors
                   </th>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[150px]">
                     Genres
                   </th>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[300px]">
                     Description
                   </th>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[100px]">
                     Status
                   </th>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[100px]">
                     Action
                   </th>
                 </tr>
@@ -113,19 +136,30 @@ const MovieListCMS = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base font-medium text-gray-900">
                       {index + 1}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base text-gray-500">
-                      {movie.title}
+                    <td className="px-6 py-4 whitespace-normal break-words text-xs sm:text-sm md:text-base text-gray-500">
+                      {formatText(movie.title.split(" "))}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base text-gray-500">
-                      {/* Handle actors here */}
+                    <td className="px-6 py-4 whitespace-normal break-words text-xs sm:text-sm md:text-base text-gray-500">
+                      {/* Assume actors are stored as an array */}
+                      {formatText(movie.actors)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base text-gray-500">
+                    <td className="px-6 py-4 whitespace-normal break-words text-xs sm:text-sm md:text-base text-gray-500">
                       {movie.Genres
-                        ? movie.Genres.map((genre) => genre.name).join(", ")
+                        ? formatText(movie.Genres.map((genre) => genre.name))
                         : "No Genres"}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base text-gray-500">
-                      {movie.synopsis}
+                    <td className="px-6 py-4 text-xs sm:text-sm md:text-base text-gray-500 whitespace-normal break-words">
+                      {expanded[movie.id]
+                        ? movie.synopsis
+                        : truncateDescription(movie.synopsis, 100)}
+                      {movie.synopsis.length > 100 && (
+                        <button
+                          onClick={() => toggleReadMore(movie.id)}
+                          className="text-blue-500 ml-2"
+                        >
+                          {expanded[movie.id] ? "Read Less" : "Read More"}
+                        </button>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base text-gray-500">
                       {movie.statusedit}
