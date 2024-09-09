@@ -6,15 +6,23 @@ const Countries = ({ movies }) => {
   const [open, setOpen] = useState(false);
   const sidebarRef = useRef(null);
   const [newCountry, setNewCountry] = useState("");
-  const [countryList, setCountryList] = useState(movies);
+  const [countries, setCountries] = useState([]);
 
-  const addCountry = () => {
-    if (newCountry.trim() === "") return;
-    // Add logic to submit new country
-    // For example, update the state with new country
-    setCountryList([...countryList, { country: newCountry, _id: Date.now() }]);
-    setNewCountry("");
-  };
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/countries"
+        );
+        const data = await response.json();
+        setCountries(data);
+      } catch (error) {
+        console.error("Error fetching genres:", error);
+      }
+    };
+
+    fetchCountries();
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -31,11 +39,9 @@ const Countries = ({ movies }) => {
                 className="form-control border rounded-md px-4 py-2"
                 placeholder="Genre"
                 value={newCountry}
-                onChange={(e) => setNewCountry(e.target.value)}
               />
               <button
                 className="bg-green-600 text-white px-4 py-2 rounded-md"
-                onClick={addCountry}
               >
                 Submit
               </button>
@@ -43,21 +49,29 @@ const Countries = ({ movies }) => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
+          <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-800 text-white">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    No
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Country
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Action
-                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">No</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Country</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Action</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200"></tbody>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {countries.map((country, index) => (
+                  <tr key={country._id}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{index + 1}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{country.name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <button
+                        className="bg-red-600 text-white px-3 py-1 rounded-md"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
           </div>
         </div>

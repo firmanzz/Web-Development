@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./SidebarCMS";
 import Header from "./HeaderCMS";
 
@@ -84,13 +84,27 @@ const MovieListCMS = () => {
             <table className="min-w-full table-auto bg-white">
               <thead className="bg-gray-800 text-white">
                 <tr>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">No</th>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">Title</th>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">Actors</th>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">Genres</th>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">Description</th>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">Status</th>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">Action</th>
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">
+                    No
+                  </th>
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">
+                    Title
+                  </th>
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">
+                    Actors
+                  </th>
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">
+                    Genres
+                  </th>
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">
+                    Description
+                  </th>
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">
+                    Status
+                  </th>
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -106,13 +120,15 @@ const MovieListCMS = () => {
                       {/* Handle actors here */}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base text-gray-500">
-                      {movie.genres ? movie.genres.map((genre) => genre.name).join(", ") : "No Genres"}
+                      {movie.Genres
+                        ? movie.Genres.map((genre) => genre.name).join(", ")
+                        : "No Genres"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base text-gray-500">
                       {movie.synopsis}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base text-gray-500">
-                      {movie.status}
+                      {movie.statusedit}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base text-gray-500">
                       <button className="bg-red-600 text-white px-3 py-1 rounded-md">

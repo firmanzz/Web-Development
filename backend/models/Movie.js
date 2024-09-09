@@ -2,6 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const Country = require("./Countries");
 const Genre = require("./Genre");
+const MovieGenre = require("./MovieGenre"); // Import the MovieGenre model
 
 const Movie = sequelize.define(
   "Movie",
@@ -17,6 +18,7 @@ const Movie = sequelize.define(
     rating: { type: DataTypes.FLOAT },
     duration: { type: DataTypes.FLOAT },
     status: { type: DataTypes.STRING(25) },
+    statusedit: { type: DataTypes.STRING(25) },
     countryid: {
       type: DataTypes.INTEGER,
       references: {
@@ -32,9 +34,12 @@ const Movie = sequelize.define(
   }
 );
 
+// Relationships
 Movie.belongsTo(Country, { foreignKey: "countryid" });
 Country.hasMany(Movie, { foreignKey: "countryid" });
-Movie.belongsToMany(Genre, { through: 'MovieGenre', foreignKey: 'movieid', as: 'genres' });
-Genre.belongsToMany(Movie, { through: 'MovieGenre', foreignKey: 'genreid', as: 'movies' });
+
+// Many-to-many relation between Movie and Genre via MovieGenre
+Movie.belongsToMany(Genre, { through: MovieGenre, foreignKey: 'movieid', otherKey: 'genreid' });
+Genre.belongsToMany(Movie, { through: MovieGenre, foreignKey: 'genreid', otherKey: 'movieid' });
 
 module.exports = Movie;

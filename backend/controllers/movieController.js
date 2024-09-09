@@ -5,10 +5,19 @@ const Country = require('../models/Countries')
 
 exports.getAllMovies = async (req, res) => {
   try {
-    const movies = await Movie.findAll();
+    const movies = await Movie.findAll({
+      include: [
+        {
+          model: Genre,
+          attributes: ['id', 'name'],
+          through: { attributes: [] }, 
+        },
+      ],
+      logging: false,
+    });
     res.json(movies);
   } catch (error) {
-    res.status(500).json({ error: 'An error occurred' });
+    res.status(500).json({ error: "Failed to fetch movies" });
   }
 };
 

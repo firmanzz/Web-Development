@@ -2,7 +2,7 @@ const Genre = require('../models/Genre');
 
 exports.getAllGenres = async (req, res) => {
   try {
-    const genres = await Genre.findAll();
+    const genres = await Genre.findAll({logging: false,});
     res.status(200).json(genres);
   } catch (error) {
     console.error(error);
