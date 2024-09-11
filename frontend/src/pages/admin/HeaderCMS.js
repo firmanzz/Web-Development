@@ -22,6 +22,20 @@ const Header = ({ open, setOpen }) => {
           MasterMovie Admin
         </Link>
       </div>
+      <div className="flex items-center space-x-2">
+        <Link
+          to="/login"
+          className="text-white bg-blue-500 hover:bg-blue-400 px-3 py-1 text-sm rounded"
+        >
+          Login
+        </Link>
+        <Link
+          to="/register"
+          className="text-white bg-green-500 hover:bg-green-400 px-3 py-1 text-sm rounded"
+        >
+          Sign Up
+        </Link>
+      </div>
     </header>
   );
 };

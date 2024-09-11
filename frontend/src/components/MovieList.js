@@ -3,13 +3,22 @@ import { Link } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
 import Filter from "../components/Filter";
 
-const MovieList = ({ genre, setGenre, year, setYear, status, setStatus, handleSubmit }) => {
+const MovieList = ({
+  genre,
+  setGenre,
+  year,
+  setYear,
+  status,
+  setStatus,
+  handleSubmit,
+}) => {
   const [movies, setMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [moviesPerPage] = useState(18);
   const [sortOrder, setSortOrder] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0); // State for carousel
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -22,7 +31,7 @@ const MovieList = ({ genre, setGenre, year, setYear, status, setStatus, handleSu
         if (!Array.isArray(data)) {
           throw new Error("Invalid movie data format");
         }
-        setMovies(data);
+        setMovies(data.slice(0, 10)); // Limit to the first 10 movies
         setLoading(false);
       } catch (error) {
         console.error("Error fetching movies:", error);
@@ -44,6 +53,18 @@ const MovieList = ({ genre, setGenre, year, setYear, status, setStatus, handleSu
     }
   };
 
+  const handlePrevClick = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? movies.length - 1 : prevIndex - 1
+    );
+  };
+
+  const handleNextClick = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === movies.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
   const indexOfLastMovie = currentPage * moviesPerPage;
   const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
   const currentMovies = handleSort(movies, sortOrder).slice(
@@ -54,10 +75,10 @@ const MovieList = ({ genre, setGenre, year, setYear, status, setStatus, handleSu
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const totalPages = Math.ceil(movies.length / moviesPerPage);
 
-  const featuredMovie = movies.length > 0 ? movies[0] : null;
+  const featuredMovie = movies[currentIndex];
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto">
       <div className="flex justify-center my-4">
         <SearchBar />
       </div>
@@ -68,24 +89,46 @@ const MovieList = ({ genre, setGenre, year, setYear, status, setStatus, handleSu
       ) : (
         <>
           {featuredMovie && (
-            <div className="mb-8 hidden sm:block">
-              <Link to={`/details/${featuredMovie.id}`} className="block">
-                <div className="relative bg-gray-800 rounded-md overflow-hidden mx-auto h-48 sm:h-64 md:h-80 lg:h-96 w-full">
+            <div className="mb-8 hidden md:block relative">
+              {/* Left Button */}
+              <button
+                onClick={handlePrevClick}
+                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-5xl px-3 py-2 rounded-full"
+              >
+                &lt;
+              </button>
+
+                <div className="relative bg-gray-800 rounded-md overflow-hidden mx-auto h-[48rem] sm:w-[33rem]">
+                <Link to={`/details/${featuredMovie.id}`} className="block">
                   <img
-                    src={featuredMovie.urlphoto} 
+                    src={featuredMovie.urlphoto}
                     alt={featuredMovie.title}
-                    className="absolute inset-0 w-full h-full object-cover opacity-60"
+                    className="absolute inset-0 w-full h-full object-cover rounded-md"
+                    style={{ objectFit: "cover" }} // Keeps the image proportions
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center">
-                    <h2 className="text-white text-4xl font-bold text-center">
+                    <h2 className="text-white text-2xl sm:text-3xl font-bold text-center">
                       {featuredMovie.title}
                     </h2>
-                    <p className="text-yellow-500 text-xl font-semibold text-center">
+                    <p className="text-white text-lg font-semibold text-center">
+                    {featuredMovie.Genres
+                      ? featuredMovie.Genres.map((genre) => genre.name).join(", ")
+                      : "No Genres"}
+                    </p>
+                    <p className="text-yellow-500 text-lg font-semibold text-center">
                       Rating: {featuredMovie.rating}
                     </p>
                   </div>
+                  </Link>
                 </div>
-              </Link>
+
+              {/* Right Button */}
+              <button
+                onClick={handleNextClick}
+                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-5xl px-3 py-2 rounded-full"
+              >
+                &gt;
+              </button>
             </div>
           )}
 
@@ -105,16 +148,17 @@ const MovieList = ({ genre, setGenre, year, setYear, status, setStatus, handleSu
               <Link to={`/details/${movie.id}`} key={movie.id}>
                 <div className="text-center">
                   <img
-                    src={movie.urlphoto} 
+                    src={movie.urlphoto}
+                    alt={movie.urlphoto}
                     className="h-full w-full object-cover rounded-md mb-2"
                   />
                   <h3 className="text-white text-sm font-bold mb-1">
                     {movie.title}
                   </h3>
                   <p className="text-white text-sm font-semibold">
-                  {movie.Genres
-                        ? movie.Genres.map((genre) => genre.name).join(", ")
-                        : "No Genres"}
+                    {movie.Genres
+                      ? movie.Genres.map((genre) => genre.name).join(", ")
+                      : "No Genres"}
                   </p>
                   <p className="text-yellow-500 text-xs font-semibold">
                     Rating: {movie.rating}
@@ -129,11 +173,13 @@ const MovieList = ({ genre, setGenre, year, setYear, status, setStatus, handleSu
                 {Array.from({ length: totalPages }, (_, i) => (
                   <li
                     key={i + 1}
-                    className={`mx-1 ${currentPage === i + 1 ? "text-blue-500" : ""}`}
+                    className={`mx-1 ${
+                      currentPage === i + 1 ? "text-blue-500" : ""
+                    }`}
                   >
                     <button
                       onClick={() => paginate(i + 1)}
-                      className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600"
+                      className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 mb-6"
                     >
                       {i + 1}
                     </button>

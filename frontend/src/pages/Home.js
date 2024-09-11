@@ -5,7 +5,7 @@ import MovieList from "../components/MovieList";
 import MovieDetail from './MovieDetail';
 import Footer from "../components/Footer";
 
-const App = () => {
+const Home = () => {
   const [open, setOpen] = useState(false);
   const [genre, setGenre] = useState("");
   const [year, setYear] = useState("");
@@ -39,8 +39,19 @@ const App = () => {
       <Header open={open} setOpen={setOpen} />
       <div className="flex flex-grow">
         <Sidebar ref={sidebarRef} open={open} setOpen={setOpen} />
-        <div className="flex-col flex-grow overflow-y-auto bg-gray-800">
-          <div className="flex flex-col flex-grow items-center justify-start pt-2">
+        <div className="flex-col flex-grow overflow-y-auto bg-gray-800 relative">
+          <div
+            className="fixed top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat z-0"
+            style={{
+              backgroundImage: 'url(http://localhost:5000/uploads/home_background.jpg)',
+            }}
+          >
+            {/* Background Blur Overlay */}
+            <div className="absolute inset-0 backdrop-blur-lg"></div>
+          </div>
+
+          {/* Main Content */}
+          <div className="relative z-20 flex flex-col flex-grow items-center justify-start pt-2">
             {!showMovieDetail ? (
               <MovieList 
                 genre={genre}
@@ -65,4 +76,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Home;
