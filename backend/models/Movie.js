@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const Country = require("./Countries");
 const Genre = require("./Genre");
-const MovieGenre = require("./MovieGenre"); // Import the MovieGenre model
+const MovieGenre = require("./MovieGenre"); 
 
 const Movie = sequelize.define(
   "Movie",
@@ -12,13 +12,13 @@ const Movie = sequelize.define(
     alternativetitle: { type: DataTypes.STRING(100) },
     synopsis: { type: DataTypes.STRING(1000) },
     urlphoto: { type: DataTypes.STRING(255) },
-    year: { type: DataTypes.INTEGER },
+    releasedate: { type: DataTypes.DATE },
     availability: { type: DataTypes.STRING(255) },
     linktrailer: { type: DataTypes.STRING(255) },
     rating: { type: DataTypes.FLOAT },
     duration: { type: DataTypes.FLOAT },
     status: { type: DataTypes.STRING(25) },
-    statusedit: { type: DataTypes.STRING(25) },
+    approvalstatus: { type: DataTypes.BOOLEAN },
     countryid: {
       type: DataTypes.INTEGER,
       references: {
@@ -34,7 +34,6 @@ const Movie = sequelize.define(
   }
 );
 
-// Relationships
 Movie.belongsTo(Country, { foreignKey: "countryid" });
 Country.hasMany(Movie, { foreignKey: "countryid" });
 

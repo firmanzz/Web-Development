@@ -73,7 +73,7 @@ const MovieForm = () => {
                 htmlFor="year"
                 className="block text-sm font-medium text-gray-700"
               >
-                Year
+                Release Date
               </label>
               <input
                 type="text"
@@ -84,15 +84,47 @@ const MovieForm = () => {
             </div>
             <div>
               <label
-                htmlFor="country"
+                htmlFor="award"
                 className="block text-sm font-medium text-gray-700"
               >
                 Country
               </label>
-              <input
-                type="text"
+              <select
                 id="country"
                 name="country"
+                className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
+              >
+                <option value=""></option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Duration
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="alternativeTitle"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Status
+              </label>
+              <input
+                type="text"
+                id="alternativeTitle"
+                name="alternativeTitle"
                 className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
               />
             </div>
@@ -221,6 +253,20 @@ const MovieForm = () => {
             </div>
             <div>
               <label
+                htmlFor="linkTrailer"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Link Poster
+              </label>
+              <input
+                type="text"
+                id="linkTrailer"
+                name="linkTrailer"
+                className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
+              />
+            </div>
+            <div>
+              <label
                 htmlFor="award"
                 className="block text-sm font-medium text-gray-700"
               >
@@ -231,8 +277,7 @@ const MovieForm = () => {
                 name="award"
                 className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
               >
-                <option value="">Select Award</option>
-                {/* Add award options here */}
+                <option value=""></option>
               </select>
             </div>
           </div>

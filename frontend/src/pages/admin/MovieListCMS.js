@@ -162,7 +162,7 @@ const MovieListCMS = () => {
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base text-gray-500">
-                      {movie.statusedit}
+                      {movie.approvalstatus}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base text-gray-500">
                       <button className="bg-red-600 text-white px-3 py-1 rounded-md">
