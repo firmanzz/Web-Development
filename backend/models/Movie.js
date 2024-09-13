@@ -1,8 +1,10 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
-const Country = require("./Countries");
-const Genre = require("./Genre");
-const MovieGenre = require("./MovieGenre"); 
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
+const Country = require('./Countries');
+const Genre = require('./Genre');
+const MovieGenre = require('./MovieGenre'); 
+const Award = require('./Award');
+const MovieAward = require('./MovieAward');
 
 const Movie = sequelize.define(
   "Movie",
@@ -37,8 +39,10 @@ const Movie = sequelize.define(
 Movie.belongsTo(Country, { foreignKey: "countryid" });
 Country.hasMany(Movie, { foreignKey: "countryid" });
 
-// Many-to-many relation between Movie and Genre via MovieGenre
 Movie.belongsToMany(Genre, { through: MovieGenre, foreignKey: 'movieid', otherKey: 'genreid' });
 Genre.belongsToMany(Movie, { through: MovieGenre, foreignKey: 'genreid', otherKey: 'movieid' });
+Movie.belongsToMany(Award, { through: MovieAward, foreignKey: 'movieid', otherKey: 'awardid' });
+Award.belongsToMany(Movie, { through: MovieAward, foreignKey: 'awardid', otherKey: 'movieid' });
+
 
 module.exports = Movie;

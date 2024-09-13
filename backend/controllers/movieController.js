@@ -1,7 +1,8 @@
 const Movie = require('../models/Movie');
 const MovieGenre = require('../models/MovieGenre');
+const MovieAward = require('../models/MovieAward');
 const Genre = require('../models/Genre');
-const Country = require('../models/Countries')
+const Award = require('../models/Award')
 
 exports.getAllMovies = async (req, res) => {
   try {
@@ -10,6 +11,11 @@ exports.getAllMovies = async (req, res) => {
         {
           model: Genre,
           attributes: ['id', 'name'],
+          through: { attributes: [] }, 
+        },
+        {
+          model: Award,
+          attributes: ['id', 'award'],
           through: { attributes: [] }, 
         },
       ],
@@ -31,13 +37,29 @@ exports.getMovieById = async (req, res) => {
   }
 };
 
-// Create a new movie
 exports.createMovie = async (req, res) => {
+  const { genres, award, countryid, ...movieData } = req.body;
+
   try {
-    const newMovie = await Movie.create(req.body);
+    // Buat movie baru
+    const newMovie = await Movie.create({ ...movieData, countryid });
+
+    // Tambahkan genres (many-to-many)
+    if (genres && Array.isArray(genres)) {
+      const genrePromises = genres.map((genreId) =>
+        MovieGenre.create({ movieid: newMovie.id, genreid: genreId })
+      );
+      await Promise.all(genrePromises);
+    }
+
+    // Tambahkan award (many-to-many)
+    if (award) {
+      await MovieAward.create({ movieid: newMovie.id, awardid: award });
+    }
+
     res.status(201).json(newMovie);
   } catch (error) {
-    res.status(500).json({ error: 'An error occurred' });
+    res.status(500).json({ error: 'Failed to create movie' });
   }
 };
 
