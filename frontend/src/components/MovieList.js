@@ -13,6 +13,7 @@ const MovieList = ({
   handleSubmit,
 }) => {
   const [movies, setMovies] = useState([]);
+  const [filteredMovies, setFilteredMovies] = useState([]); // State for filtered movies
   const [currentPage, setCurrentPage] = useState(1);
   const [moviesPerPage] = useState(18);
   const [sortOrder, setSortOrder] = useState("");
@@ -20,6 +21,7 @@ const MovieList = ({
   const [error, setError] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0); // State for carousel
 
+  // Fetch movies on mount
   useEffect(() => {
     const fetchMovies = async () => {
       try {
@@ -31,7 +33,8 @@ const MovieList = ({
         if (!Array.isArray(data)) {
           throw new Error("Invalid movie data format");
         }
-        setMovies(data.slice(0, 10)); // Limit to the first 10 movies
+        setMovies(data);
+        setFilteredMovies(data); // Initialize filteredMovies with all movies
         setLoading(false);
       } catch (error) {
         console.error("Error fetching movies:", error);
@@ -42,6 +45,19 @@ const MovieList = ({
 
     fetchMovies();
   }, []);
+
+  // Handle filtering when year changes
+  useEffect(() => {
+    if (year) {
+      const filtered = movies.filter((movie) => {
+        const movieYear = new Date(movie.releasedate).getFullYear();
+        return movieYear === parseInt(year, 10);
+      });
+      setFilteredMovies(filtered);
+    } else {
+      setFilteredMovies(movies); // Reset to all movies if no year is selected
+    }
+  }, [year, movies]);
 
   const handleSort = (movies, sortOrder) => {
     if (sortOrder === "title") {
@@ -67,13 +83,13 @@ const MovieList = ({
 
   const indexOfLastMovie = currentPage * moviesPerPage;
   const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
-  const currentMovies = handleSort(movies, sortOrder).slice(
+  const currentMovies = handleSort(filteredMovies, sortOrder).slice(
     indexOfFirstMovie,
     indexOfLastMovie
   );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  const totalPages = Math.ceil(movies.length / moviesPerPage);
+  const totalPages = Math.ceil(filteredMovies.length / moviesPerPage);
 
   const featuredMovie = movies[currentIndex];
 

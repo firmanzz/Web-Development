@@ -13,9 +13,9 @@ const Header = ({ open, setOpen }) => {
           &#9776;
         </button>
       )}
-      <div className="flex-1 flex justify-center items-center">
+      <div className="flex-1 flex justify-center items-center mx-4">
         <Link
-          to="/"
+          to="/admin/"
           className="text-3xl font-bold text-white"
           style={{ fontFamily: "Playfair Display, serif" }}
         >

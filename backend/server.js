@@ -5,6 +5,7 @@ const genreRoutes = require('./routes/genreRoutes');
 const countryRoutes = require('./routes/countryRoutes');
 const awardRoutes = require('./routes/awardRoutes');
 const movieGenreRoutes = require('./routes/moviegenreRoutes');
+const actorRotes = require('./routes/actorRoutes');
 const sequelize = require('./config/database'); 
 const cors = require('cors');
 
@@ -16,6 +17,7 @@ app.use('/api', genreRoutes);
 app.use('/api', countryRoutes);
 app.use('/api', awardRoutes);
 app.use('/api', movieGenreRoutes);
+app.use('/api', actorRotes);
 
 // Tes koneksi database
 sequelize.authenticate().then(() => {

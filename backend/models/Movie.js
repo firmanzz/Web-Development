@@ -5,6 +5,8 @@ const Genre = require('./Genre');
 const MovieGenre = require('./MovieGenre'); 
 const Award = require('./Award');
 const MovieAward = require('./MovieAward');
+const Actor = require('./Actor');
+const MovieActor = require('./MovieActor');
 
 const Movie = sequelize.define(
   "Movie",
@@ -43,6 +45,8 @@ Movie.belongsToMany(Genre, { through: MovieGenre, foreignKey: 'movieid', otherKe
 Genre.belongsToMany(Movie, { through: MovieGenre, foreignKey: 'genreid', otherKey: 'movieid' });
 Movie.belongsToMany(Award, { through: MovieAward, foreignKey: 'movieid', otherKey: 'awardid' });
 Award.belongsToMany(Movie, { through: MovieAward, foreignKey: 'awardid', otherKey: 'movieid' });
+Movie.belongsToMany(Actor, { through: MovieActor, foreignKey: 'movieid', otherKey: 'actorid' });
+Actor.belongsToMany(Movie, { through: MovieActor, foreignKey: 'actorid', otherKey: 'movieid' });
 
 
 module.exports = Movie;

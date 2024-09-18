@@ -37,31 +37,76 @@ exports.getMovieById = async (req, res) => {
   }
 };
 
-exports.createMovie = async (req, res) => {
-  const { genres, award, countryid, ...movieData } = req.body;
+const { Movie, Genre, MovieGenre, Award, MovieAward, Actor, MovieActor } = require('../models');
 
+exports.addMovie = async (req, res) => {
   try {
-    // Buat movie baru
-    const newMovie = await Movie.create({ ...movieData, countryid });
+    const { title, alternativetitle, synopsis, urlphoto, releasedate, availability, linktrailer, rating, duration, status, approvalstatus, countryid, genres, awards, actors } = req.body;
 
-    // Tambahkan genres (many-to-many)
-    if (genres && Array.isArray(genres)) {
-      const genrePromises = genres.map((genreId) =>
-        MovieGenre.create({ movieid: newMovie.id, genreid: genreId })
-      );
-      await Promise.all(genrePromises);
+    // Validasi jika title atau countryid kosong
+    if (!title || !countryid) {
+      return res.status(400).json({ error: 'Movie title and country are required' });
     }
 
-    // Tambahkan award (many-to-many)
-    if (award) {
-      await MovieAward.create({ movieid: newMovie.id, awardid: award });
+    // Buat movie baru
+    const newMovie = await Movie.create({
+      title,
+      alternativetitle,
+      synopsis,
+      urlphoto,
+      releasedate,
+      availability,
+      linktrailer,
+      rating,
+      duration,
+      status,
+      approvalstatus,
+      countryid,
+    });
+
+    // Tambahkan genres ke movie
+    if (genres && genres.length > 0) {
+      await Promise.all(
+        genres.map(async (genreId) => {
+          await MovieGenre.create({
+            movieid: newMovie.id,
+            genreid: genreId,
+          });
+        })
+      );
+    }
+
+    // Tambahkan awards ke movie
+    if (awards && awards.length > 0) {
+      await Promise.all(
+        awards.map(async (awardId) => {
+          await MovieAward.create({
+            movieid: newMovie.id,
+            awardid: awardId,
+          });
+        })
+      );
+    }
+
+    // Tambahkan actors ke movie
+    if (actors && actors.length > 0) {
+      await Promise.all(
+        actors.map(async (actorId) => {
+          await MovieActor.create({
+            movieid: newMovie.id,
+            actorid: actorId,
+          });
+        })
+      );
     }
 
     res.status(201).json(newMovie);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to create movie' });
+    console.error("Error adding movie:", error);
+    res.status(500).json({ error: 'An error occurred while adding the movie' });
   }
 };
+
 
 // Update a movie
 exports.updateMovie = async (req, res) => {

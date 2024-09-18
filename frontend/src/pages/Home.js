@@ -46,11 +46,8 @@ const Home = () => {
               backgroundImage: 'url(http://localhost:5000/uploads/home_background.jpg)',
             }}
           >
-            {/* Background Blur Overlay */}
             <div className="absolute inset-0 backdrop-blur-lg"></div>
           </div>
-
-          {/* Main Content */}
           <div className="relative z-20 flex flex-col flex-grow items-center justify-start pt-2">
             {!showMovieDetail ? (
               <MovieList 

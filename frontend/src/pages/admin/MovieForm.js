@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "./SidebarCMS";
 import Header from "./HeaderCMS";
@@ -9,20 +10,18 @@ const MovieForm = () => {
 
   const [filteredGenres, setFilteredGenres] = useState([]);
   const [filteredAwards, setFilteredAwards] = useState([]);
+  const [filteredActors, setFilteredActors] = useState([]);
+
   const [genres, setGenres] = useState([]);
   const [awards, setAwards] = useState([]);
   const [countries, setCountries] = useState([]);
+  const [actors, setActors] = useState([]);
 
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [selectedAwards, setSelectedAwards] = useState([]);
+  const [selectedActors, setSelectedActors] = useState([]);
 
-  const [actors, setActors] = useState([
-    "Jason Statham",
-    "Johnny Depp",
-    "Gal Gadot",
-    "Lukman Sardi",
-    "Yayan Ruhiyan",
-  ]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,11 +34,13 @@ const MovieForm = () => {
         const awardData = await awardResponse.json();
         setAwards(awardData);
 
-        const countryResponse = await fetch(
-          "http://localhost:5000/api/countries"
-        );
+        const countryResponse = await fetch("http://localhost:5000/api/countries");
         const countryData = await countryResponse.json();
         setCountries(countryData);
+
+        const actorResponse = await fetch("http://localhost:5000/api/actors");
+        const actorData = await actorResponse.json();
+        setActors(actorData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -50,6 +51,21 @@ const MovieForm = () => {
 
   const handleRemoveActor = (actor) => {
     setActors(actors.filter((a) => a !== actor));
+  };
+
+  const handleActorChange = (e) => {
+    const query = e.target.value.toLowerCase();
+    const filtered = actors.filter((actor) =>
+      actor.name.toLowerCase().includes(query)
+    );
+    setFilteredActors(filtered);
+  };
+
+  const handleActorSelect = (actor) => {
+    if (!selectedActors.includes(actor)) {
+      setSelectedActors([...selectedActors, actor]);
+    }
+    setFilteredActors([]);
   };
 
   const handleGenreChange = (e) => {
@@ -98,22 +114,25 @@ const MovieForm = () => {
     e.preventDefault();
     const formData = new FormData(e.target);
 
-    // Tambahkan genre dan award yang dipilih ke formData
     selectedGenres.forEach((genre) => {
       formData.append("genres", genre.id);
     });
     selectedAwards.forEach((award) => {
       formData.append("awards", award.id);
     });
+    selectedActors.forEach((actor) => {
+      formData.append("actors", actor.id);
+    });
 
     try {
-      // Mengirim data ke backend
       await axios.post("/movies/addMovie", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
       console.log("Form submitted successfully");
+
+      navigate("/admin/"); 
     } catch (error) {
       console.error("Error submitting form", error);
     }
@@ -230,6 +249,68 @@ const MovieForm = () => {
               </div>
             </div>
 
+            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div>
+                <label
+                  htmlFor="rating"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Rating
+                </label>
+                <input
+                  type="text"
+                  id="rating"
+                  name="rating"
+                  className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
+                />
+              </div>
+              <div>
+              <label
+                htmlFor="availability"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Availability
+              </label>
+              <input
+                type="text"
+                id="availability"
+                name="availability"
+                className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
+              />
+            </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label
+                  htmlFor="urlphoto"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  URL Poster
+                </label>
+                <input
+                  type="text"
+                  id="urlphoto"
+                  name="urlphoto"
+                  className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="linktrailer"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Link Trailer
+                </label>
+                <input
+                  type="text"
+                  id="linktrailer"
+                  name="linktrailer"
+                  className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
+                />
+              </div>
+            </div>
+
             <div className="mb-4">
               <label
                 htmlFor="synopsis"
@@ -243,21 +324,6 @@ const MovieForm = () => {
                 rows="3"
                 className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
               ></textarea>
-            </div>
-
-            <div className="mb-4">
-              <label
-                htmlFor="availability"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Availability
-              </label>
-              <input
-                type="text"
-                id="availability"
-                name="availability"
-                className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
-              />
             </div>
 
             {/* Genre Section */}
@@ -300,7 +366,6 @@ const MovieForm = () => {
               </div>
             </div>
 
-            {/* Actor Section */}
             <div className="mb-4">
               <label
                 htmlFor="actors"
@@ -310,25 +375,31 @@ const MovieForm = () => {
               </label>
               <input
                 type="text"
-                id="searchActor"
+                id="actors"
                 placeholder="Search Actor Names"
                 className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm mb-2"
+                onChange={handleActorChange}
               />
-              <div className="space-y-2">
-                {actors.map((actor) => (
+              <div className="bg-white shadow-md rounded-md mt-2">
+                {filteredActors.map((actor) => (
                   <div
-                    key={actor}
-                    className="flex items-center justify-between bg-gray-200 p-2 rounded-md"
+                    key={actor.id}
+                    className="p-2 hover:bg-gray-200 cursor-pointer"
+                    onClick={() => handleActorSelect(actor)}
                   >
-                    <span>{actor}</span>
-                    <button
-                      type="button"
-                      className="text-red-600"
-                      onClick={() => handleRemoveActor(actor)}
-                    >
-                      Remove
-                    </button>
+                    {actor.name}
                   </div>
+                ))}
+              </div>
+              <div className="mt-2">
+                {selectedActors.map((actor) => (
+                  <span
+                    key={actor.id}
+                    className="inline-block bg-green-500 text-white p-1 m-1 rounded-md"
+                  >
+                    {actor.name}{" "}
+                    <button onClick={() => handleRemoveActor(actor)}>x</button>
+                  </span>
                 ))}
               </div>
             </div>
@@ -385,7 +456,7 @@ const MovieForm = () => {
                 Submit
               </button>
               <a
-                href="/"
+                href="/admin/"
                 className="px-4 py-2 bg-red-600 text-white rounded-md"
               >
                 Cancel

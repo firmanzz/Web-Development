@@ -17,35 +17,39 @@ const Filter = ({
 }) => {
   const [genres, setGenres] = useState([]);
   const [years, setYears] = useState([]);
-  const [isOpen, setIsOpen] = useState(false); 
+  const [awards, setAwards] = useState([]); // State for awards
+  const [statusOptions, setStatusOptions] = useState(["Released", "Upcoming", "Canceled"]); // Example status options
+  const [availabilityOptions, setAvailabilityOptions] = useState(["Netflix", "Hulu", "Amazon"]); // Example availability options
+  const [isOpen, setIsOpen] = useState(false);
 
+  // Fetch genres, movies, and awards data on mount
   useEffect(() => {
-    const fetchGenres = async () => {
+    const fetchGenresAndMovies = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5000/api/genres"
-        );
-        const data = await response.json();
-        setGenres(data);
+        // Fetch genres data
+        const genreResponse = await fetch("http://localhost:5000/api/genres");
+        const genreData = await genreResponse.json();
+        setGenres(genreData);
+
+        // Fetch movies data
+        const movieResponse = await fetch("http://localhost:5000/api/movies");
+        const movieData = await movieResponse.json();
+
+        // Extract unique release years from movie release dates
+        const releaseYears = [...new Set(movieData.map(movie => new Date(movie.releasedate).getFullYear()))];
+        setYears(releaseYears.sort((a, b) => b - a));
+
+        // Fetch awards data
+        const awardResponse = await fetch("http://localhost:5000/api/awards");
+        const awardData = await awardResponse.json();
+        setAwards(awardData);
+
       } catch (error) {
-        console.error("Error fetching genres:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
-    const fetchYears = async () => {
-      try {
-        const response = await fetch(
-          "http://localhost:5001/api/movies/getAllYears"
-        );
-        const data = await response.json();
-        setYears(data);
-      } catch (error) {
-        console.error("Error fetching years:", error);
-      }
-    };
-
-    fetchGenres();
-    fetchYears();
+    fetchGenresAndMovies();
   }, []);
 
   return (
@@ -123,7 +127,11 @@ const Filter = ({
                   <option value="" disabled hidden>
                     Status
                   </option>
-                  {/* Populate options for status */}
+                  {statusOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -136,7 +144,11 @@ const Filter = ({
                   <option value="" disabled hidden>
                     Availability
                   </option>
-                  {/* Populate options for availability */}
+                  {availabilityOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -149,7 +161,11 @@ const Filter = ({
                   <option value="" disabled hidden>
                     Award
                   </option>
-                  {/* Populate options for award */}
+                  {awards.map((award) => (
+                    <option key={award.id} value={award.award}>
+                      {award.award}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
