@@ -37,8 +37,6 @@ exports.getMovieById = async (req, res) => {
   }
 };
 
-const { Movie, Genre, MovieGenre, Award, MovieAward, Actor, MovieActor } = require('../models');
-
 exports.addMovie = async (req, res) => {
   try {
     const { title, alternativetitle, synopsis, urlphoto, releasedate, availability, linktrailer, rating, duration, status, approvalstatus, countryid, genres, awards, actors } = req.body;

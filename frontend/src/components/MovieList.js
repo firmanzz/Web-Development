@@ -3,25 +3,22 @@ import { Link } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
 import Filter from "../components/Filter";
 
-const MovieList = ({
-  genre,
-  setGenre,
-  year,
-  setYear,
-  status,
-  setStatus,
-  handleSubmit,
-}) => {
+const MovieList = () => {
+  const [genre, setGenre] = useState("");
+  const [year, setYear] = useState("");
+  const [status, setStatus] = useState("");
+  const [availability, setAvailability] = useState("");
+  const [award, setAward] = useState(""); 
+  const [sortOrder, setSortOrder] = useState("");
+
   const [movies, setMovies] = useState([]);
-  const [filteredMovies, setFilteredMovies] = useState([]); // State for filtered movies
+  const [filteredMovies, setFilteredMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [moviesPerPage] = useState(18);
-  const [sortOrder, setSortOrder] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [currentIndex, setCurrentIndex] = useState(0); // State for carousel
+  const [currentIndex, setCurrentIndex] = useState(0); 
 
-  // Fetch movies on mount
   useEffect(() => {
     const fetchMovies = async () => {
       try {
@@ -30,11 +27,8 @@ const MovieList = ({
           throw new Error(`Failed to fetch movies: ${response.statusText}`);
         }
         const data = await response.json();
-        if (!Array.isArray(data)) {
-          throw new Error("Invalid movie data format");
-        }
         setMovies(data);
-        setFilteredMovies(data); // Initialize filteredMovies with all movies
+        setFilteredMovies(data); 
         setLoading(false);
       } catch (error) {
         console.error("Error fetching movies:", error);
@@ -46,18 +40,38 @@ const MovieList = ({
     fetchMovies();
   }, []);
 
-  // Handle filtering when year changes
-  useEffect(() => {
+  const handleSubmit = () => {
+    let filtered = movies;
+
     if (year) {
-      const filtered = movies.filter((movie) => {
+      filtered = filtered.filter((movie) => {
         const movieYear = new Date(movie.releasedate).getFullYear();
         return movieYear === parseInt(year, 10);
       });
-      setFilteredMovies(filtered);
-    } else {
-      setFilteredMovies(movies); // Reset to all movies if no year is selected
     }
-  }, [year, movies]);
+
+    if (genre) {
+      filtered = filtered.filter((movie) =>
+        movie.Genres.some((g) => g.name === genre)
+      );
+    }
+
+    if (status) {
+      filtered = filtered.filter((movie) => movie.status === status);
+    }
+
+    if (availability) {
+      filtered = filtered.filter((movie) => movie.availability === availability);
+    }
+
+    if (award) {
+      filtered = filtered.filter((movie) =>
+        movie.Awards && movie.Awards.some((a) => a.award === award)
+      );
+    }
+
+    setFilteredMovies(filtered);
+  };
 
   const handleSort = (movies, sortOrder) => {
     if (sortOrder === "title") {
@@ -106,7 +120,6 @@ const MovieList = ({
         <>
           {featuredMovie && (
             <div className="mb-8 hidden md:block relative">
-              {/* Left Button */}
               <button
                 onClick={handlePrevClick}
                 className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-5xl px-3 py-2 rounded-full"
@@ -120,16 +133,16 @@ const MovieList = ({
                     src={featuredMovie.urlphoto}
                     alt={featuredMovie.title}
                     className="absolute inset-0 w-full h-full object-cover rounded-md"
-                    style={{ objectFit: "cover" }} // Keeps the image proportions
+                    style={{ objectFit: "cover" }}
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center">
                     <h2 className="text-white text-2xl sm:text-3xl font-bold text-center">
                       {featuredMovie.title}
                     </h2>
                     <p className="text-white text-lg font-semibold text-center">
-                    {featuredMovie.Genres
-                      ? featuredMovie.Genres.map((genre) => genre.name).join(", ")
-                      : "No Genres"}
+                      {featuredMovie.Genres
+                        ? featuredMovie.Genres.map((genre) => genre.name).join(", ")
+                        : "No Genres"}
                     </p>
                     <p className="text-yellow-500 text-lg font-semibold text-center">
                       Rating: {featuredMovie.rating}
@@ -138,7 +151,6 @@ const MovieList = ({
                   </Link>
                 </div>
 
-              {/* Right Button */}
               <button
                 onClick={handleNextClick}
                 className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-5xl px-3 py-2 rounded-full"
@@ -155,6 +167,10 @@ const MovieList = ({
             setYear={setYear}
             status={status}
             setStatus={setStatus}
+            availability={availability}
+            setAvailability={setAvailability}
+            award={award}
+            setAward={setAward}
             handleSubmit={handleSubmit}
             sortOrder={sortOrder}
             setSortOrder={setSortOrder}
