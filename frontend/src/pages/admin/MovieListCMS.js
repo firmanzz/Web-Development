@@ -8,6 +8,7 @@ const MovieListCMS = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
   const [showCount, setShowCount] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1); // For pagination
   const [expanded, setExpanded] = useState({});
   const sidebarRef = useRef(null);
 
@@ -25,6 +26,31 @@ const MovieListCMS = () => {
     fetchMovies();
   }, []);
 
+  // Function to handle movie deletion
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this movie?");
+    if (!confirmDelete) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/movies/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setMovies((prevMovies) => prevMovies.filter((movie) => movie.id !== id));
+        alert("Movie deleted successfully.");
+      } else {
+        alert("Failed to delete movie.");
+      }
+    } catch (error) {
+      console.error("Error deleting movie:", error);
+      alert("Error deleting movie.");
+    }
+  };
+
+  // Toggle the expanded synopsis
   const toggleReadMore = (id) => {
     setExpanded((prevState) => ({
       ...prevState,
@@ -32,6 +58,7 @@ const MovieListCMS = () => {
     }));
   };
 
+  // Truncate long descriptions
   const truncateDescription = (description, limit = 100) => {
     if (description.length <= limit) {
       return description;
@@ -39,13 +66,32 @@ const MovieListCMS = () => {
     return description.slice(0, limit) + "...";
   };
 
+  // Format text for items such as actors or genres
   const formatText = (items, limit = 3) => {
-    if (!items || items.length === 0) return ""; 
+    if (!items || items.length === 0) return "";
     if (items.length > limit) {
       return items.slice(0, limit).join(", ") + "\n" + items.slice(limit).join(", ");
     }
     return items.join(", ");
   };
+
+  // Filtering movies based on the search term and status
+  const filteredMovies = movies
+    .filter((movie) =>
+      movie.title.toLowerCase().includes(searchTerm.toLowerCase()) // Search by title
+    )
+    .filter((movie) =>
+      filterStatus === "All" || movie.approvalstatus === filterStatus // Filter by status
+    );
+
+  // Pagination logic
+  const indexOfLastMovie = currentPage * showCount;
+  const indexOfFirstMovie = indexOfLastMovie - showCount;
+  const currentMovies = filteredMovies.slice(indexOfFirstMovie, indexOfLastMovie);
+
+  const totalPages = Math.ceil(filteredMovies.length / showCount);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -79,7 +125,7 @@ const MovieListCMS = () => {
                 id="showCount"
                 className="w-full p-2 border border-gray-300 rounded"
                 value={showCount}
-                onChange={(e) => setShowCount(e.target.value)}
+                onChange={(e) => setShowCount(Number(e.target.value))} // Convert to number
               >
                 <option value={10}>10</option>
                 <option value={20}>20</option>
@@ -102,61 +148,39 @@ const MovieListCMS = () => {
             </div>
           </div>
 
-          {/* Movie List: Responsif dengan overflow */}
+          {/* Movie List */}
           <div className="overflow-x-auto">
             <table className="min-w-full table-auto bg-white">
               <thead className="bg-gray-800 text-white">
                 <tr>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[50px]">
-                    No
-                  </th>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[200px]">
-                    Title
-                  </th>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[150px]">
-                    Actors
-                  </th>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[150px]">
-                    Genres
-                  </th>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[300px]">
-                    Description
-                  </th>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[100px]">
-                    Status
-                  </th>
-                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[100px]">
-                    Action
-                  </th>
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[50px]">No</th>
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[200px]">Title</th>
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[150px]">Actors</th>
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[150px]">Genres</th>
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[300px]">Description</th>
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[100px]">Status</th>
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[100px]">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {movies.map((movie, index) => (
+                {currentMovies.map((movie, index) => (
                   <tr key={movie.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base font-medium text-gray-900">
-                      {index + 1}
+                      {indexOfFirstMovie + index + 1}
                     </td>
                     <td className="px-6 py-4 whitespace-normal break-words text-xs sm:text-sm md:text-base text-gray-500">
                       {formatText(movie.title.split(" "))}
                     </td>
                     <td className="px-6 py-4 whitespace-normal break-words text-xs sm:text-sm md:text-base text-gray-500">
-                      {/* Assume actors are stored as an array */}
                       {formatText(movie.actors)}
                     </td>
                     <td className="px-6 py-4 whitespace-normal break-words text-xs sm:text-sm md:text-base text-gray-500">
-                      {movie.Genres
-                        ? formatText(movie.Genres.map((genre) => genre.name))
-                        : "No Genres"}
+                      {movie.Genres ? formatText(movie.Genres.map((genre) => genre.name)) : "No Genres"}
                     </td>
                     <td className="px-6 py-4 text-xs sm:text-sm md:text-base text-gray-500 whitespace-normal break-words">
-                      {expanded[movie.id]
-                        ? movie.synopsis
-                        : truncateDescription(movie.synopsis, 100)}
+                      {expanded[movie.id] ? movie.synopsis : truncateDescription(movie.synopsis, 100)}
                       {movie.synopsis.length > 100 && (
-                        <button
-                          onClick={() => toggleReadMore(movie.id)}
-                          className="text-blue-500 ml-2"
-                        >
+                        <button onClick={() => toggleReadMore(movie.id)} className="text-blue-500 ml-2">
                           {expanded[movie.id] ? "Read Less" : "Read More"}
                         </button>
                       )}
@@ -165,7 +189,10 @@ const MovieListCMS = () => {
                       {movie.approvalstatus}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base text-gray-500">
-                      <button className="bg-red-600 text-white px-3 py-1 rounded-md">
+                      <button
+                        onClick={() => handleDelete(movie.id)}
+                        className="bg-red-600 text-white px-3 py-1 rounded-md"
+                      >
                         Delete
                       </button>
                     </td>
@@ -173,6 +200,27 @@ const MovieListCMS = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="flex justify-center my-4">
+            <nav>
+              <ul className="flex list-none">
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <li
+                    key={i + 1}
+                    className={`mx-1 ${currentPage === i + 1 ? "text-blue-500" : ""}`}
+                  >
+                    <button
+                      onClick={() => paginate(i + 1)}
+                      className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 mb-6"
+                    >
+                      {i + 1}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
         </main>
       </div>

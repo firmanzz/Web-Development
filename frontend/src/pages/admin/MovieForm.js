@@ -8,18 +8,34 @@ const MovieForm = () => {
   const [open, setOpen] = useState(false);
   const sidebarRef = useRef(null);
 
+  // State to hold data from API for dropdowns
   const [filteredGenres, setFilteredGenres] = useState([]);
   const [filteredAwards, setFilteredAwards] = useState([]);
   const [filteredActors, setFilteredActors] = useState([]);
-
   const [genres, setGenres] = useState([]);
   const [awards, setAwards] = useState([]);
   const [countries, setCountries] = useState([]);
   const [actors, setActors] = useState([]);
 
+  // State to hold selected values from form inputs
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [selectedAwards, setSelectedAwards] = useState([]);
   const [selectedActors, setSelectedActors] = useState([]);
+
+  // State to hold movie details (text input fields)
+  const [movieDetails, setMovieDetails] = useState({
+    title: "",
+    alternativetitle: "",
+    synopsis: "",
+    urlphoto: "",
+    releasedate: "",
+    availability: "",
+    linktrailer: "",
+    rating: "",
+    duration: "",
+    status: "",
+    countryid: "",
+  });
 
   const navigate = useNavigate();
 
@@ -49,10 +65,54 @@ const MovieForm = () => {
     fetchData();
   }, []);
 
-  const handleRemoveActor = (actor) => {
-    setActors(actors.filter((a) => a !== actor));
+  // Handle form submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Data to be sent to the backend
+    const data = {
+      ...movieDetails, // include movie details
+      selectedGenres, // selected genres
+      selectedActors, // selected actors
+      selectedAwards, // selected awards
+    };
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/addMovie", data);
+      console.log("Movie created:", response.data);
+
+      // Redirect to the movies list or display success message
+      navigate("/admin/");
+    } catch (error) {
+      console.error("Error creating movie:", error);
+    }
   };
 
+  // Handle form input changes for movie details
+  const handleChange = (e) => {
+    setMovieDetails({
+      ...movieDetails,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // Handle genre change and select
+  const handleGenreChange = (e) => {
+    const query = e.target.value.toLowerCase();
+    const filtered = genres.filter((genre) =>
+      genre.name.toLowerCase().includes(query)
+    );
+    setFilteredGenres(filtered);
+  };
+
+  const handleGenreSelect = (genre) => {
+    if (!selectedGenres.includes(genre)) {
+      setSelectedGenres([...selectedGenres, genre]);
+    }
+    setFilteredGenres([]);
+  };
+
+  // Handle actor change and select
   const handleActorChange = (e) => {
     const query = e.target.value.toLowerCase();
     const filtered = actors.filter((actor) =>
@@ -68,14 +128,7 @@ const MovieForm = () => {
     setFilteredActors([]);
   };
 
-  const handleGenreChange = (e) => {
-    const query = e.target.value.toLowerCase();
-    const filtered = genres.filter((genre) =>
-      genre.name.toLowerCase().includes(query)
-    );
-    setFilteredGenres(filtered);
-  };
-
+  // Handle award change and select
   const handleAwardChange = (e) => {
     const query = e.target.value.toLowerCase();
     const filtered = awards.filter((award) =>
@@ -84,58 +137,11 @@ const MovieForm = () => {
     setFilteredAwards(filtered);
   };
 
-  // Fungsi untuk menambahkan genre yang dipilih
-  const handleGenreSelect = (genre) => {
-    if (!selectedGenres.includes(genre)) {
-      setSelectedGenres([...selectedGenres, genre]);
-    }
-    setFilteredGenres([]);
-  };
-
-  // Fungsi untuk menambahkan award yang dipilih
   const handleAwardSelect = (award) => {
     if (!selectedAwards.includes(award)) {
       setSelectedAwards([...selectedAwards, award]);
     }
     setFilteredAwards([]);
-  };
-
-  // Fungsi untuk menghapus genre yang dipilih
-  const handleRemoveGenre = (genre) => {
-    setSelectedGenres(selectedGenres.filter((g) => g.id !== genre.id));
-  };
-
-  // Fungsi untuk menghapus award yang dipilih
-  const handleRemoveAward = (award) => {
-    setSelectedAwards(selectedAwards.filter((a) => a.id !== award.id));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-
-    selectedGenres.forEach((genre) => {
-      formData.append("genres", genre.id);
-    });
-    selectedAwards.forEach((award) => {
-      formData.append("awards", award.id);
-    });
-    selectedActors.forEach((actor) => {
-      formData.append("actors", actor.id);
-    });
-
-    try {
-      await axios.post("/movies/addMovie", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      console.log("Form submitted successfully");
-
-      navigate("/admin/"); 
-    } catch (error) {
-      console.error("Error submitting form", error);
-    }
   };
 
   return (
@@ -145,23 +151,18 @@ const MovieForm = () => {
         <Sidebar ref={sidebarRef} open={open} setOpen={setOpen} />
         <div className="container mb-10 mx-5 mt-4">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Movie Form</h1>
-          <form
-            method="POST"
-            encType="multipart/form-data"
-            onSubmit={handleSubmit}
-          >
+          <form method="POST" encType="multipart/form-data" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label
-                  htmlFor="title"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="title" className="block text-sm font-medium text-gray-700">
                   Title
                 </label>
                 <input
                   type="text"
                   id="title"
                   name="title"
+                  value={movieDetails.title}
+                  onChange={handleChange}
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
                 />
               </div>
@@ -175,7 +176,9 @@ const MovieForm = () => {
                 <input
                   type="text"
                   id="alternativeTitle"
-                  name="alternativeTitle"
+                  name="alternativetitle"
+                  value={movieDetails.alternativetitle}
+                  onChange={handleChange}
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
                 />
               </div>
@@ -184,28 +187,29 @@ const MovieForm = () => {
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
                 <label
-                  htmlFor="year"
+                  htmlFor="releasedate"
                   className="block text-sm font-medium text-gray-700"
                 >
                   Release Date
                 </label>
                 <input
                   type="date"
-                  id="year"
+                  id="releasedate"
                   name="releasedate"
+                  value={movieDetails.releasedate}
+                  onChange={handleChange}
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
                 />
               </div>
               <div>
-                <label
-                  htmlFor="country"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="country" className="block text-sm font-medium text-gray-700">
                   Country
                 </label>
                 <select
                   id="country"
                   name="countryid"
+                  value={movieDetails.countryid}
+                  onChange={handleChange}
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
                 >
                   <option value="">Select Country</option>
@@ -220,107 +224,100 @@ const MovieForm = () => {
 
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label
-                  htmlFor="duration"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="duration" className="block text-sm font-medium text-gray-700">
                   Duration
                 </label>
                 <input
                   type="text"
                   id="duration"
                   name="duration"
+                  value={movieDetails.duration}
+                  onChange={handleChange}
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
                 />
               </div>
               <div>
-                <label
-                  htmlFor="status"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="status" className="block text-sm font-medium text-gray-700">
                   Status
                 </label>
                 <input
                   type="text"
                   id="status"
                   name="status"
+                  value={movieDetails.status}
+                  onChange={handleChange}
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-                <label
-                  htmlFor="rating"
-                  className="block text-sm font-medium text-gray-700"
-                >
+              <div>
+                <label htmlFor="rating" className="block text-sm font-medium text-gray-700">
                   Rating
                 </label>
                 <input
                   type="text"
                   id="rating"
                   name="rating"
+                  value={movieDetails.rating}
+                  onChange={handleChange}
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
                 />
               </div>
               <div>
-              <label
-                htmlFor="availability"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Availability
-              </label>
-              <input
-                type="text"
-                id="availability"
-                name="availability"
-                className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
-              />
-            </div>
+                <label htmlFor="availability" className="block text-sm font-medium text-gray-700">
+                  Availability
+                </label>
+                <input
+                  type="text"
+                  id="availability"
+                  name="availability"
+                  value={movieDetails.availability}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label
-                  htmlFor="urlphoto"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="urlphoto" className="block text-sm font-medium text-gray-700">
                   URL Poster
                 </label>
                 <input
                   type="text"
                   id="urlphoto"
                   name="urlphoto"
+                  value={movieDetails.urlphoto}
+                  onChange={handleChange}
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
                 />
               </div>
               <div>
-                <label
-                  htmlFor="linktrailer"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="linktrailer" className="block text-sm font-medium text-gray-700">
                   Link Trailer
                 </label>
                 <input
                   type="text"
                   id="linktrailer"
                   name="linktrailer"
+                  value={movieDetails.linktrailer}
+                  onChange={handleChange}
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
                 />
               </div>
             </div>
 
             <div className="mb-4">
-              <label
-                htmlFor="synopsis"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="synopsis" className="block text-sm font-medium text-gray-700">
                 Synopsis
               </label>
               <textarea
                 id="synopsis"
                 name="synopsis"
+                value={movieDetails.synopsis}
+                onChange={handleChange}
                 rows="3"
                 className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
               ></textarea>
@@ -328,10 +325,7 @@ const MovieForm = () => {
 
             {/* Genre Section */}
             <div className="mb-4">
-              <label
-                htmlFor="genres"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="genres" className="block text-sm font-medium text-gray-700">
                 Add Genres
               </label>
               <input
@@ -360,17 +354,17 @@ const MovieForm = () => {
                     className="inline-block bg-blue-500 text-white p-1 m-1 rounded-md"
                   >
                     {genre.name}{" "}
-                    <button onClick={() => handleRemoveGenre(genre)}>x</button>
+                    <button onClick={() => setSelectedGenres(selectedGenres.filter(g => g.id !== genre.id))}>
+                      x
+                    </button>
                   </span>
                 ))}
               </div>
             </div>
 
+            {/* Actor Section */}
             <div className="mb-4">
-              <label
-                htmlFor="actors"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="actors" className="block text-sm font-medium text-gray-700">
                 Add Actors
               </label>
               <input
@@ -398,67 +392,57 @@ const MovieForm = () => {
                     className="inline-block bg-green-500 text-white p-1 m-1 rounded-md"
                   >
                     {actor.name}{" "}
-                    <button onClick={() => handleRemoveActor(actor)}>x</button>
+                    <button onClick={() => setSelectedActors(selectedActors.filter(a => a.id !== actor.id))}>
+                      x
+                    </button>
                   </span>
                 ))}
               </div>
             </div>
 
             {/* Award Section */}
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div>
-                <label
-                  htmlFor="award"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Add Award
-                </label>
-                <input
-                  type="text"
-                  id="award"
-                  name="award"
-                  className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
-                  placeholder="Start typing award..."
-                  onChange={handleAwardChange}
-                />
-                <div className="bg-white shadow-md rounded-md mt-2">
-                  {filteredAwards.map((award) => (
-                    <div
-                      key={award.id}
-                      className="p-2 hover:bg-gray-200 cursor-pointer"
-                      onClick={() => handleAwardSelect(award)}
-                    >
-                      {award.award} ({award.year})
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-2">
-                  {selectedAwards.map((award) => (
-                    <span
-                      key={award.id}
-                      className="inline-block bg-green-500 text-white p-1 m-1 rounded-md"
-                    >
-                      {award.award} ({award.year}){" "}
-                      <button onClick={() => handleRemoveAward(award)}>
-                        x
-                      </button>
-                    </span>
-                  ))}
-                </div>
+            <div className="mb-4">
+              <label htmlFor="awards" className="block text-sm font-medium text-gray-700">
+                Add Awards
+              </label>
+              <input
+                type="text"
+                id="awards"
+                placeholder="Search Award Names"
+                className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm mb-2"
+                onChange={handleAwardChange}
+              />
+              <div className="bg-white shadow-md rounded-md mt-2">
+                {filteredAwards.map((award) => (
+                  <div
+                    key={award.id}
+                    className="p-2 hover:bg-gray-200 cursor-pointer"
+                    onClick={() => handleAwardSelect(award)}
+                  >
+                    {award.award} ({award.year})
+                  </div>
+                ))}
+              </div>
+              <div className="mt-2">
+                {selectedAwards.map((award) => (
+                  <span
+                    key={award.id}
+                    className="inline-block bg-green-500 text-white p-1 m-1 rounded-md"
+                  >
+                    {award.award} ({award.year}){" "}
+                    <button onClick={() => setSelectedAwards(selectedAwards.filter(a => a.id !== award.id))}>
+                      x
+                    </button>
+                  </span>
+                ))}
               </div>
             </div>
 
             <div className="flex justify-end mt-4">
-              <button
-                type="submit"
-                className="px-4 py-2 bg-green-600 text-white rounded-md mr-2"
-              >
+              <button type="submit" className="px-4 py-2 bg-green-600 text-white rounded-md mr-2">
                 Submit
               </button>
-              <a
-                href="/admin/"
-                className="px-4 py-2 bg-red-600 text-white rounded-md"
-              >
+              <a href="/admin/" className="px-4 py-2 bg-red-600 text-white rounded-md">
                 Cancel
               </a>
             </div>

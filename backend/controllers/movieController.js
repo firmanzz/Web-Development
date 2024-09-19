@@ -2,7 +2,8 @@ const Movie = require('../models/Movie');
 const MovieGenre = require('../models/MovieGenre');
 const MovieAward = require('../models/MovieAward');
 const Genre = require('../models/Genre');
-const Award = require('../models/Award')
+const Award = require('../models/Award');
+const Actor = require('../models/Actor');
 
 exports.getAllMovies = async (req, res) => {
   try {
@@ -38,15 +39,24 @@ exports.getMovieById = async (req, res) => {
 };
 
 exports.addMovie = async (req, res) => {
+  const {
+    title,
+    alternativetitle,
+    synopsis,
+    urlphoto,
+    releasedate,
+    availability,
+    linktrailer,
+    rating,
+    duration,
+    status,
+    countryid,
+    selectedGenres,
+    selectedActors,
+    selectedAwards,
+  } = req.body;
+
   try {
-    const { title, alternativetitle, synopsis, urlphoto, releasedate, availability, linktrailer, rating, duration, status, approvalstatus, countryid, genres, awards, actors } = req.body;
-
-    // Validasi jika title atau countryid kosong
-    if (!title || !countryid) {
-      return res.status(400).json({ error: 'Movie title and country are required' });
-    }
-
-    // Buat movie baru
     const newMovie = await Movie.create({
       title,
       alternativetitle,
@@ -58,50 +68,37 @@ exports.addMovie = async (req, res) => {
       rating,
       duration,
       status,
-      approvalstatus,
       countryid,
     });
 
-    // Tambahkan genres ke movie
-    if (genres && genres.length > 0) {
-      await Promise.all(
-        genres.map(async (genreId) => {
-          await MovieGenre.create({
-            movieid: newMovie.id,
-            genreid: genreId,
-          });
-        })
-      );
+    // Add genres to the movie (many-to-many)
+    if (selectedGenres && selectedGenres.length > 0) {
+      const genres = await Genre.findAll({
+        where: { id: selectedGenres.map((genre) => genre.id) },
+      });
+      await newMovie.addGenres(genres);
     }
 
-    // Tambahkan awards ke movie
-    if (awards && awards.length > 0) {
-      await Promise.all(
-        awards.map(async (awardId) => {
-          await MovieAward.create({
-            movieid: newMovie.id,
-            awardid: awardId,
-          });
-        })
-      );
+    // Add actors to the movie (many-to-many)
+    if (selectedActors && selectedActors.length > 0) {
+      const actors = await Actor.findAll({
+        where: { id: selectedActors.map((actor) => actor.id) },
+      });
+      await newMovie.addActors(actors);
     }
 
-    // Tambahkan actors ke movie
-    if (actors && actors.length > 0) {
-      await Promise.all(
-        actors.map(async (actorId) => {
-          await MovieActor.create({
-            movieid: newMovie.id,
-            actorid: actorId,
-          });
-        })
-      );
+    // Add awards to the movie (many-to-many)
+    if (selectedAwards && selectedAwards.length > 0) {
+      const awards = await Award.findAll({
+        where: { id: selectedAwards.map((award) => award.id) },
+      });
+      await newMovie.addAwards(awards);
     }
 
-    res.status(201).json(newMovie);
+    res.status(201).json({ message: 'Movie created successfully!', movie: newMovie });
   } catch (error) {
-    console.error("Error adding movie:", error);
-    res.status(500).json({ error: 'An error occurred while adding the movie' });
+    console.error(error);
+    res.status(500).json({ message: 'Error creating movie', error });
   }
 };
 
@@ -119,15 +116,17 @@ exports.updateMovie = async (req, res) => {
   }
 };
 
-// Delete a movie
 exports.deleteMovie = async (req, res) => {
+  const { id } = req.params;
   try {
-    const movie = await Movie.findByPk(req.params.id);
-    if (!movie) return res.status(404).json({ error: 'Movie not found' });
-    
+    const movie = await Movie.findByPk(id);
+    if (!movie) {
+      return res.status(404).json({ message: "Movie not found" });
+    }
     await movie.destroy();
-    res.json({ message: 'Movie deleted' });
+    res.status(200).json({ message: "Movie deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: 'An error occurred' });
+    res.status(500).json({ message: "Error deleting movie", error });
   }
 };
+
