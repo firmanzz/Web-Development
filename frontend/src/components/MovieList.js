@@ -8,8 +8,9 @@ const MovieList = () => {
   const [year, setYear] = useState("");
   const [status, setStatus] = useState("");
   const [availability, setAvailability] = useState("");
-  const [award, setAward] = useState(""); 
+  const [award, setAward] = useState("");
   const [sortOrder, setSortOrder] = useState("");
+  const [searchQuery, setSearchQuery] = useState(""); // Add search query state
 
   const [movies, setMovies] = useState([]);
   const [filteredMovies, setFilteredMovies] = useState([]);
@@ -17,7 +18,7 @@ const MovieList = () => {
   const [moviesPerPage] = useState(18);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [currentIndex, setCurrentIndex] = useState(0); 
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -28,7 +29,7 @@ const MovieList = () => {
         }
         const data = await response.json();
         setMovies(data);
-        setFilteredMovies(data); 
+        setFilteredMovies(data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching movies:", error);
@@ -43,34 +44,21 @@ const MovieList = () => {
   const handleSubmit = () => {
     let filtered = movies;
 
-    if (year) {
+    // Search Logic (title, genre, availability, etc.)
+    if (searchQuery) {
+      const lowerCaseQuery = searchQuery.toLowerCase();
       filtered = filtered.filter((movie) => {
-        const movieYear = new Date(movie.releasedate).getFullYear();
-        return movieYear === parseInt(year, 10);
+        return (
+          movie.title.toLowerCase().includes(lowerCaseQuery) || // Search in title
+          movie.Genres.some((g) => g.name.toLowerCase().includes(lowerCaseQuery)) || // Search in genres
+          movie.availability.toLowerCase().includes(lowerCaseQuery) || // Search in availability
+          movie.Awards.some((a) => a.award.toLowerCase().includes(lowerCaseQuery)) // Search in awards
+        );
       });
     }
 
-    if (genre) {
-      filtered = filtered.filter((movie) =>
-        movie.Genres.some((g) => g.name === genre)
-      );
-    }
-
-    if (status) {
-      filtered = filtered.filter((movie) => movie.status === status);
-    }
-
-    if (availability) {
-      filtered = filtered.filter((movie) => movie.availability === availability);
-    }
-
-    if (award) {
-      filtered = filtered.filter((movie) =>
-        movie.Awards && movie.Awards.some((a) => a.award === award)
-      );
-    }
-
-    setFilteredMovies(filtered);
+    // Apply any additional filters like year, genre, etc. (if needed)
+    setFilteredMovies(filtered); // Update filtered movies
   };
 
   const handleSort = (movies, sortOrder) => {
@@ -110,7 +98,8 @@ const MovieList = () => {
   return (
     <div className="container mx-auto">
       <div className="flex justify-center my-4">
-        <SearchBar />
+        {/* Pass handleSubmit as handleSearchSubmit to SearchBar */}
+        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchSubmit={handleSubmit} />
       </div>
       {loading ? (
         <p className="text-white text-center">Loading movies...</p>
@@ -127,7 +116,7 @@ const MovieList = () => {
                 &lt;
               </button>
 
-                <div className="relative bg-gray-800 rounded-md overflow-hidden mx-auto h-[48rem] sm:w-[33rem]">
+              <div className="relative bg-gray-800 rounded-md overflow-hidden mx-auto h-[48rem] sm:w-[33rem]">
                 <Link to={`/details/${featuredMovie.id}`} className="block">
                   <img
                     src={featuredMovie.urlphoto}
@@ -148,8 +137,8 @@ const MovieList = () => {
                       Rating: {featuredMovie.rating}
                     </p>
                   </div>
-                  </Link>
-                </div>
+                </Link>
+              </div>
 
               <button
                 onClick={handleNextClick}
