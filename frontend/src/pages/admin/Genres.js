@@ -9,13 +9,12 @@ const Genres = () => {
   const [newGenre, setNewGenre] = useState("");
   const [error, setError] = useState("");
 
-  // Fetch genres ketika halaman pertama kali di-render
   useEffect(() => {
     const fetchGenres = async () => {
       try {
         const response = await fetch("http://localhost:5000/api/genres");
         if (!response.ok) {
-          throw new Error('Failed to fetch genres');
+          throw new Error("Failed to fetch genres");
         }
         const data = await response.json();
         setGenres(data);
@@ -30,31 +29,55 @@ const Genres = () => {
 
   const handleSubmit = async () => {
     try {
-      console.log("Submitting genre:", newGenre); // Tambahkan ini untuk log genre yang akan dikirim
-  
-      const response = await fetch("http://localhost:5000/api/addgenres", {
+      const response = await fetch("http://localhost:5000/api/addGenres", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ name: newGenre }),
       });
-  
+
       const data = await response.json();
-  
+
       if (!response.ok) {
         console.log("Error response:", data); // Log error dari response jika ada
         throw new Error(data.message || "Failed to add genre");
       }
-  
-      setGenres([...genres, data]); // Update daftar genres
-      setNewGenre(""); // Bersihkan input
+
+      setGenres([...genres, data]);
+      setNewGenre(""); 
     } catch (error) {
       console.error("Error adding genre:", error);
       setError("Failed to add genre");
     }
   };
-  
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this genre?"
+    );
+    if (!confirmDelete) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/genres/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setGenres((prevGenres) =>
+          prevGenres.filter((genre) => genre.id !== id)
+        );
+        alert("Genre deleted successfully.");
+      } else {
+        alert("Failed to delete genre.");
+      }
+    } catch (error) {
+      console.error("Error deleting genre:", error);
+      alert("Error deleting genre.");
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -77,7 +100,7 @@ const Genres = () => {
               />
               <button
                 className="bg-green-600 text-white px-4 py-2 rounded-md"
-                onClick={handleSubmit} // Fungsi handleSubmit dipanggil saat Submit ditekan
+                onClick={handleSubmit}
               >
                 Submit
               </button>
@@ -108,7 +131,10 @@ const Genres = () => {
                       {genre.name}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <button className="bg-red-600 text-white px-3 py-1 rounded-md">
+                      <button
+                        onClick={() => handleDelete(genre.id)}
+                        className="bg-red-600 text-white px-3 py-1 rounded-md"
+                      >
                         Delete
                       </button>
                     </td>

@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "./SidebarCMS";
 import Header from "./HeaderCMS";
 
 const MovieForm = () => {
+  const { id } = useParams(); // Get the ID from the URL if we are in edit mode
   const [open, setOpen] = useState(false);
   const sidebarRef = useRef(null);
+
+  const [isEditMode, setIsEditMode] = useState(false); // State to track if we are in edit mode
 
   // State to hold data from API for dropdowns
   const [filteredGenres, setFilteredGenres] = useState([]);
@@ -17,12 +20,10 @@ const MovieForm = () => {
   const [countries, setCountries] = useState([]);
   const [actors, setActors] = useState([]);
 
-  // State to hold selected values from form inputs
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [selectedAwards, setSelectedAwards] = useState([]);
   const [selectedActors, setSelectedActors] = useState([]);
 
-  // State to hold movie details (text input fields)
   const [movieDetails, setMovieDetails] = useState({
     title: "",
     alternativetitle: "",
@@ -42,30 +43,39 @@ const MovieForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const genreResponse = await fetch("http://localhost:5000/api/genres");
-        const genreData = await genreResponse.json();
-        setGenres(genreData);
+        const [genreResponse, awardResponse, countryResponse, actorResponse] = await Promise.all([
+          fetch("http://localhost:5000/api/genres"),
+          fetch("http://localhost:5000/api/awards"),
+          fetch("http://localhost:5000/api/countries"),
+          fetch("http://localhost:5000/api/actors"),
+        ]);
 
-        const awardResponse = await fetch("http://localhost:5000/api/awards");
-        const awardData = await awardResponse.json();
-        setAwards(awardData);
+        setGenres(await genreResponse.json());
+        setAwards(await awardResponse.json());
+        setCountries(await countryResponse.json());
+        setActors(await actorResponse.json());
 
-        const countryResponse = await fetch("http://localhost:5000/api/countries");
-        const countryData = await countryResponse.json();
-        setCountries(countryData);
+        // If we are in edit mode, fetch the movie details
+        if (id) {
+          const movieResponse = await fetch(`http://localhost:5000/api/movies/${id}`);
+          const movieData = await movieResponse.json();
 
-        const actorResponse = await fetch("http://localhost:5000/api/actors");
-        const actorData = await actorResponse.json();
-        setActors(actorData);
+          // Set the form fields with the movie data for editing
+          setMovieDetails(movieData);
+          setSelectedGenres(movieData.Genres || []);
+          setSelectedAwards(movieData.Awards || []);
+          setSelectedActors(movieData.Actors || []);
+          setIsEditMode(true); // Set edit mode to true
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [id]);
 
-  // Handle form submit
+  // Handle form submit for both add and edit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -78,13 +88,20 @@ const MovieForm = () => {
     };
 
     try {
-      const response = await axios.post("http://localhost:5000/api/addMovie", data);
-      console.log("Movie created:", response.data);
+      if (isEditMode) {
+        // Send a PUT request if we are editing
+        await axios.put(`http://localhost:5000/api/movies/${id}`, data);
+        console.log("Movie updated successfully.");
+      } else {
+        // Send a POST request if we are adding a new movie
+        await axios.post("http://localhost:5000/api/addMovie", data);
+        console.log("Movie created successfully.");
+      }
 
       // Redirect to the movies list or display success message
       navigate("/admin/");
     } catch (error) {
-      console.error("Error creating movie:", error);
+      console.error("Error submitting movie:", error);
     }
   };
 
@@ -106,7 +123,7 @@ const MovieForm = () => {
   };
 
   const handleGenreSelect = (genre) => {
-    if (!selectedGenres.includes(genre)) {
+    if (!selectedGenres.some((g) => g.id === genre.id)) {
       setSelectedGenres([...selectedGenres, genre]);
     }
     setFilteredGenres([]);
@@ -122,7 +139,7 @@ const MovieForm = () => {
   };
 
   const handleActorSelect = (actor) => {
-    if (!selectedActors.includes(actor)) {
+    if (!selectedActors.some((a) => a.id === actor.id)) {
       setSelectedActors([...selectedActors, actor]);
     }
     setFilteredActors([]);
@@ -138,7 +155,7 @@ const MovieForm = () => {
   };
 
   const handleAwardSelect = (award) => {
-    if (!selectedAwards.includes(award)) {
+    if (!selectedAwards.some((a) => a.id === award.id)) {
       setSelectedAwards([...selectedAwards, award]);
     }
     setFilteredAwards([]);
@@ -150,7 +167,9 @@ const MovieForm = () => {
       <div className="flex flex-grow">
         <Sidebar ref={sidebarRef} open={open} setOpen={setOpen} />
         <div className="container mb-10 mx-5 mt-4">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Movie Form</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            {isEditMode ? "Edit Movie" : "Add Movie"}
+          </h1>
           <form method="POST" encType="multipart/form-data" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
@@ -323,7 +342,6 @@ const MovieForm = () => {
               ></textarea>
             </div>
 
-            {/* Genre Section */}
             <div className="mb-4">
               <label htmlFor="genres" className="block text-sm font-medium text-gray-700">
                 Add Genres
@@ -362,7 +380,6 @@ const MovieForm = () => {
               </div>
             </div>
 
-            {/* Actor Section */}
             <div className="mb-4">
               <label htmlFor="actors" className="block text-sm font-medium text-gray-700">
                 Add Actors
@@ -400,7 +417,6 @@ const MovieForm = () => {
               </div>
             </div>
 
-            {/* Award Section */}
             <div className="mb-4">
               <label htmlFor="awards" className="block text-sm font-medium text-gray-700">
                 Add Awards
@@ -440,7 +456,7 @@ const MovieForm = () => {
 
             <div className="flex justify-end mt-4">
               <button type="submit" className="px-4 py-2 bg-green-600 text-white rounded-md mr-2">
-                Submit
+                {isEditMode ? "Update Movie" : "Submit"}
               </button>
               <a href="/admin/" className="px-4 py-2 bg-red-600 text-white rounded-md">
                 Cancel

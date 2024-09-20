@@ -103,18 +103,31 @@ exports.addMovie = async (req, res) => {
 };
 
 
-// Update a movie
 exports.updateMovie = async (req, res) => {
   try {
-    const movie = await Movie.findByPk(req.params.id);
-    if (!movie) return res.status(404).json({ error: 'Movie not found' });
-    
-    await movie.update(req.body);
-    res.json(movie);
+    const { id } = req.params;
+    const { title, synopsis, actors, genres, approvalstatus } = req.body;
+
+    const movie = await Movie.findByPk(id);
+    if (!movie) {
+      return res.status(404).json({ error: "Movie not found" });
+    }
+
+    movie.title = title;
+    movie.synopsis = synopsis;
+    movie.actors = actors;
+    movie.genres = genres;
+    movie.approvalstatus = approvalstatus;
+
+    await movie.save();
+
+    res.status(200).json(movie);
   } catch (error) {
-    res.status(500).json({ error: 'An error occurred' });
+    console.error("Error updating movie:", error);
+    res.status(500).json({ error: "An error occurred while updating the movie" });
   }
 };
+
 
 exports.deleteMovie = async (req, res) => {
   const { id } = req.params;

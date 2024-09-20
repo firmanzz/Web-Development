@@ -27,3 +27,17 @@ exports.addGenre = async (req, res) => {
     res.status(500).json({ error: 'An error occurred while adding the genre' });
   }
 };
+
+exports.deleteGenre = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const genre = await Genre.findByPk(id);
+    if (!genre) {
+      return res.status(404).json({ message: "Genre not found" });
+    }
+    await genre.destroy();
+    res.status(200).json({ message: "Genre deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting genre", error });
+  }
+};

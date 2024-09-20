@@ -13,6 +13,7 @@ export default function AdminRoutes() {
     <Routes>
       <Route path="/" element={<MovieListCMS />} />
       <Route path="addMovie" element={<MovieForm />} />
+      <Route path="editMovie/:id" element={<MovieForm />}/>
       <Route path="countries" element={<Countries />} />
       <Route path="Awards" element={<Awards />} />
       <Route path="Genres" element={<Genres />} />
