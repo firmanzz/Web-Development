@@ -15,6 +15,11 @@ exports.getAllMovies = async (req, res) => {
           through: { attributes: [] }, 
         },
         {
+          model: Actor,
+          attributes: ['id', 'name'],
+          through: { attributes: [] }, 
+        },
+        {
           model: Award,
           attributes: ['id', 'award'],
           through: { attributes: [] }, 
@@ -106,28 +111,36 @@ exports.addMovie = async (req, res) => {
 exports.updateMovie = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, synopsis, actors, genres, approvalstatus } = req.body;
+    const { title, synopsis, genres, actors, awards, approvalstatus } = req.body;
 
     const movie = await Movie.findByPk(id);
     if (!movie) {
       return res.status(404).json({ error: "Movie not found" });
     }
 
+    // Update basic movie fields
     movie.title = title;
     movie.synopsis = synopsis;
-    movie.actors = actors;
-    movie.genres = genres;
-    movie.approvalstatus = approvalstatus;
+    movie.approvalstatus = approvalstatus === true || approvalstatus === "true";  // Ensure boolean
+
+    // Update relationships (genres, actors, awards) as needed
+    if (genres) {
+      await movie.setGenres(genres);  // Assuming setGenres is a method for many-to-many relationship
+    }
+    if (actors) {
+      await movie.setActors(actors);  // Assuming setActors is a method for many-to-many relationship
+    }
+    if (awards) {
+      await movie.setAwards(awards);  // Assuming setAwards is a method for many-to-many relationship
+    }
 
     await movie.save();
-
     res.status(200).json(movie);
   } catch (error) {
     console.error("Error updating movie:", error);
     res.status(500).json({ error: "An error occurred while updating the movie" });
   }
 };
-
 
 exports.deleteMovie = async (req, res) => {
   const { id } = req.params;

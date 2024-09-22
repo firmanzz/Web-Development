@@ -127,7 +127,7 @@ const MovieListCMS = () => {
                 onChange={(e) => setFilterStatus(e.target.value)}
               >
                 <option value="All">All</option>
-                <option value="Unapproved">Unapproved</option>
+                <option value="Unapproved">Pending</option>
                 <option value="Approved">Approved</option>
               </select>
             </div>
@@ -197,10 +197,12 @@ const MovieListCMS = () => {
                       {indexOfFirstMovie + index + 1}
                     </td>
                     <td className="px-6 py-4 whitespace-normal break-words text-xs sm:text-sm md:text-base text-gray-500">
-                      {formatText(movie.title.split(" "))}
+                      {movie.title}
                     </td>
                     <td className="px-6 py-4 whitespace-normal break-words text-xs sm:text-sm md:text-base text-gray-500">
-                      {formatText(movie.actors)}
+                      {movie.Actors
+                        ? formatText(movie.Actors.map((actor) => actor.name))
+                        : "No Actors"}
                     </td>
                     <td className="px-6 py-4 whitespace-normal break-words text-xs sm:text-sm md:text-base text-gray-500">
                       {movie.Genres
@@ -220,8 +222,8 @@ const MovieListCMS = () => {
                         </button>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base text-gray-500">
-                      {movie.approvalstatus}
+                    <td className="px-6 py-4 whitespace-normal break-words text-xs sm:text-sm md:text-base text-gray-500">
+                      {movie.approvalstatus ? "Approved" : "Pending"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base text-gray-500">
                       <button
