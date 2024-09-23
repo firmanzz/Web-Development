@@ -10,7 +10,7 @@ const MovieList = () => {
   const [availability, setAvailability] = useState("");
   const [award, setAward] = useState("");
   const [sortOrder, setSortOrder] = useState("");
-  const [searchQuery, setSearchQuery] = useState(""); // Add search query state
+  const [searchQuery, setSearchQuery] = useState(""); 
 
   const [movies, setMovies] = useState([]);
   const [filteredMovies, setFilteredMovies] = useState([]);
@@ -51,7 +51,7 @@ const MovieList = () => {
         return (
           movie.title.toLowerCase().includes(lowerCaseQuery) || // Search in title
           movie.Genres.some((g) => g.name.toLowerCase().includes(lowerCaseQuery)) || // Search in genres
-          movie.availability.toLowerCase().includes(lowerCaseQuery) || // Search in availability
+          movie.Availability.some ((b) => b.name.toLowerCase().includes(lowerCaseQuery)) || // Search in availability
           movie.Awards.some((a) => a.award.toLowerCase().includes(lowerCaseQuery)) // Search in awards
         );
       });

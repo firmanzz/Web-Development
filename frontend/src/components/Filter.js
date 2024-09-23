@@ -19,7 +19,7 @@ const Filter = ({
   const [years, setYears] = useState([]);
   const [awards, setAwards] = useState([]); 
   const [statusOptions, setStatusOptions] = useState([]); 
-  const [availabilityOptions, setAvailabilityOptions] = useState([]); 
+  const [availabilities, setAvailabilities] = useState([]); 
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -35,6 +35,10 @@ const Filter = ({
 
         const movieResponse = await fetch("http://localhost:5000/api/movies");
         const movieData = await movieResponse.json();
+        
+        const availResponse = await fetch("http://localhost:5000/api/avail");
+        const availData = await availResponse.json();
+        setAvailabilities(availData);
 
         const releaseYears = [
           ...new Set(
@@ -45,11 +49,6 @@ const Filter = ({
 
         const movieStats = [...new Set(movieData.map((movie) => movie.status))];
         setStatusOptions(movieStats.sort((a, b) => a.localeCompare(b)));
-
-        const movieAvail = [
-          ...new Set(movieData.map((movie) => movie.availability)),
-        ];
-        setAvailabilityOptions(movieAvail.sort((a, b) => a.localeCompare(b)));
 
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -154,9 +153,9 @@ const Filter = ({
                   <option value="">
                     All Availability
                   </option>
-                  {availabilityOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
+                  {availabilities.map((avail) => (
+                    <option key={avail.id} value={avail.name}>
+                      {avail.name}
                     </option>
                   ))}
                 </select>

@@ -1,6 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const Country = require('./Countries');
+const Avail = require('./Availability');
+const MovieAvail = require('./MovieAvail');
 const Genre = require('./Genre');
 const MovieGenre = require('./MovieGenre'); 
 const Award = require('./Award');
@@ -19,7 +21,6 @@ const Movie = sequelize.define(
     synopsis: { type: DataTypes.STRING(1000) },
     urlphoto: { type: DataTypes.STRING(255) },
     releasedate: { type: DataTypes.DATE },
-    availability: { type: DataTypes.STRING(255) },
     linktrailer: { type: DataTypes.STRING(255) },
     rating: { type: DataTypes.FLOAT },
     duration: { type: DataTypes.FLOAT },
@@ -51,7 +52,8 @@ Movie.belongsToMany(Actor, { through: MovieActor, foreignKey: 'movieid', otherKe
 Actor.belongsToMany(Movie, { through: MovieActor, foreignKey: 'actorid', otherKey: 'movieid' });
 Movie.belongsToMany(Director, { through: MovieDirector, foreignKey: 'movieid', otherKey: 'directorid' });
 Director.belongsToMany(Movie, { through: MovieDirector, foreignKey: 'directorid', otherKey: 'movieid' });
-
+Movie.belongsToMany(Avail, { through: MovieAvail, foreignKey: 'movieid', otherKey: 'availid' });
+Avail.belongsToMany(Movie, { through: MovieAvail, foreignKey: 'availid', otherKey: 'movieid' });
 
 
 module.exports = Movie;
