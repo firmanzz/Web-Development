@@ -27,5 +27,4 @@ const Actor = sequelize.define(
 Actor.belongsTo(Country, { foreignKey: "countryid" });
 Country.hasMany(Actor, { foreignKey: "countryid" });
 
-
 module.exports = Actor;
