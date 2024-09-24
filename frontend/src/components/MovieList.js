@@ -10,7 +10,7 @@ const MovieList = () => {
   const [availability, setAvailability] = useState("");
   const [award, setAward] = useState("");
   const [sortOrder, setSortOrder] = useState("");
-  const [searchQuery, setSearchQuery] = useState(""); 
+  const [searchQuery, setSearchQuery] = useState(""); // Add search query state
 
   const [movies, setMovies] = useState([]);
   const [filteredMovies, setFilteredMovies] = useState([]);
@@ -42,24 +42,57 @@ const MovieList = () => {
   }, []);
 
   const handleSubmit = () => {
-    let filtered = movies;
+  let filtered = movies;
 
-    // Search Logic (title, genre, availability, etc.)
-    if (searchQuery) {
-      const lowerCaseQuery = searchQuery.toLowerCase();
-      filtered = filtered.filter((movie) => {
-        return (
-          movie.title.toLowerCase().includes(lowerCaseQuery) || // Search in title
-          movie.Genres.some((g) => g.name.toLowerCase().includes(lowerCaseQuery)) || // Search in genres
-          movie.Availability.some ((b) => b.name.toLowerCase().includes(lowerCaseQuery)) || // Search in availability
-          movie.Awards.some((a) => a.award.toLowerCase().includes(lowerCaseQuery)) // Search in awards
-        );
-      });
-    }
+  // Search Logic (title, genre, availability, etc.)
+  if (searchQuery) {
+    const lowerCaseQuery = searchQuery.toLowerCase();
+    filtered = filtered.filter((movie) => {
+      return (
+        movie.title.toLowerCase().includes(lowerCaseQuery) || 
+        (movie.Genres && movie.Genres.some((g) => g.name.toLowerCase().includes(lowerCaseQuery))) || 
+        (movie.Availabilities && movie.Availabilities.some((avail) => avail.name.toLowerCase().includes(lowerCaseQuery))) || 
+        (movie.Awards && movie.Awards.some((a) => a.award.toLowerCase().includes(lowerCaseQuery)))
+      );
+    });
+  }
 
-    // Apply any additional filters like year, genre, etc. (if needed)
-    setFilteredMovies(filtered); // Update filtered movies
-  };
+  // Apply Genre Filter
+  if (genre) {
+    filtered = filtered.filter((movie) => 
+      movie.Genres && movie.Genres.some((g) => g.name === genre)
+    );
+  }
+
+  // Apply Award Filter
+  if (award) {
+    filtered = filtered.filter((movie) =>
+      movie.Awards && movie.Awards.some((a) => a.award === award)
+    );
+  }
+
+  // Apply Availability Filter
+  if (availability) {
+    filtered = filtered.filter((movie) =>
+      movie.Availabilities.some((avail) => avail.name === availability)
+    );
+  }
+
+  // Apply Year Filter
+  if (year) {
+    filtered = filtered.filter((movie) =>
+      new Date(movie.releasedate).getFullYear().toString() === year
+    );
+  }
+
+  // Apply Status Filter
+  if (status) {
+    filtered = filtered.filter((movie) => movie.status === status);
+  }
+
+  setFilteredMovies(filtered); // Update filtered movies
+};
+
 
   const handleSort = (movies, sortOrder) => {
     if (sortOrder === "title") {
@@ -70,7 +103,6 @@ const MovieList = () => {
       return movies;
     }
   };
-
   const handlePrevClick = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? movies.length - 1 : prevIndex - 1
@@ -98,7 +130,6 @@ const MovieList = () => {
   return (
     <div className="container mx-auto">
       <div className="flex justify-center my-4">
-        {/* Pass handleSubmit as handleSearchSubmit to SearchBar */}
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchSubmit={handleSubmit} />
       </div>
       {loading ? (
@@ -109,43 +140,18 @@ const MovieList = () => {
         <>
           {featuredMovie && (
             <div className="mb-8 hidden md:block relative">
-              <button
-                onClick={handlePrevClick}
-                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-5xl px-3 py-2 rounded-full"
-              >
-                &lt;
-              </button>
-
+              <button onClick={handlePrevClick} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-5xl px-3 py-2 rounded-full">&lt;</button>
               <div className="relative bg-gray-800 rounded-md overflow-hidden mx-auto h-[48rem] sm:w-[33rem]">
                 <Link to={`/details/${featuredMovie.id}`} className="block">
-                  <img
-                    src={featuredMovie.urlphoto}
-                    alt={featuredMovie.title}
-                    className="absolute inset-0 w-full h-full object-cover rounded-md"
-                    style={{ objectFit: "cover" }}
-                  />
+                  <img src={featuredMovie.urlphoto} alt={featuredMovie.title} className="absolute inset-0 w-full h-full object-cover rounded-md" />
                   <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center">
-                    <h2 className="text-white text-2xl sm:text-3xl font-bold text-center">
-                      {featuredMovie.title}
-                    </h2>
-                    <p className="text-white text-lg font-semibold text-center">
-                      {featuredMovie.Genres
-                        ? featuredMovie.Genres.map((genre) => genre.name).join(", ")
-                        : "No Genres"}
-                    </p>
-                    <p className="text-yellow-500 text-lg font-semibold text-center">
-                      Rating: {featuredMovie.rating}
-                    </p>
+                    <h2 className="text-white text-2xl sm:text-3xl font-bold text-center">{featuredMovie.title}</h2>
+                    <p className="text-white text-lg font-semibold text-center">{featuredMovie.Genres.map((genre) => genre.name).join(", ")}</p>
+                    <p className="text-yellow-500 text-lg font-semibold text-center">Rating: {featuredMovie.rating}</p>
                   </div>
                 </Link>
               </div>
-
-              <button
-                onClick={handleNextClick}
-                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-5xl px-3 py-2 rounded-full"
-              >
-                &gt;
-              </button>
+              <button onClick={handleNextClick} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-5xl px-3 py-2 rounded-full">&gt;</button>
             </div>
           )}
 
@@ -168,22 +174,10 @@ const MovieList = () => {
             {currentMovies.map((movie) => (
               <Link to={`/details/${movie.id}`} key={movie.id}>
                 <div className="text-center">
-                  <img
-                    src={movie.urlphoto}
-                    alt={movie.urlphoto}
-                    className="h-full w-full object-cover rounded-md mb-2"
-                  />
-                  <h3 className="text-white text-sm font-bold mb-1">
-                    {movie.title}
-                  </h3>
-                  <p className="text-white text-sm font-semibold">
-                    {movie.Genres
-                      ? movie.Genres.map((genre) => genre.name).join(", ")
-                      : "No Genres"}
-                  </p>
-                  <p className="text-yellow-500 text-xs font-semibold">
-                    Rating: {movie.rating}
-                  </p>
+                  <img src={movie.urlphoto} alt={movie.urlphoto} className="h-full w-full object-cover rounded-md mb-2" />
+                  <h3 className="text-white text-sm font-bold mb-1">{movie.title}</h3>
+                  <p className="text-white text-sm font-semibold">{movie.Genres.map((genre) => genre.name).join(", ")}</p>
+                  <p className="text-yellow-500 text-xs font-semibold">Rating: {movie.rating}</p>
                 </div>
               </Link>
             ))}
@@ -192,18 +186,8 @@ const MovieList = () => {
             <nav>
               <ul className="flex list-none">
                 {Array.from({ length: totalPages }, (_, i) => (
-                  <li
-                    key={i + 1}
-                    className={`mx-1 ${
-                      currentPage === i + 1 ? "text-blue-500" : ""
-                    }`}
-                  >
-                    <button
-                      onClick={() => paginate(i + 1)}
-                      className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 mb-6"
-                    >
-                      {i + 1}
-                    </button>
+                  <li key={i + 1} className={`mx-1 ${currentPage === i + 1 ? "text-blue-500" : ""}`}>
+                    <button onClick={() => paginate(i + 1)} className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 mb-6">{i + 1}</button>
                   </li>
                 ))}
               </ul>

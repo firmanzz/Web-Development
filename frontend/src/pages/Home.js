@@ -22,7 +22,7 @@ const Home = () => {
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [setOpen]);
+  }, [sidebarRef]);
 
   const handleSubmit = () => {
     console.log("Genre:", genre);

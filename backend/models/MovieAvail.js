@@ -1,12 +1,13 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const MovieAvail = sequelize.define('MovieAvailability', {
+const MovieAvailability = sequelize.define('MovieAvailability', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   movieid: { type: DataTypes.INTEGER, references: { model: 'Movies', key: 'id' } },
-  availid: { type: DataTypes.INTEGER, references: { model: 'Availability', key: 'id' } }
+  availid: { type: DataTypes.INTEGER, references: { model: 'Availabilities' , key: 'id' } }
 }, {
-    tableName: 'movie_avail',
-    timestamps: false });
+    tableName: 'movie_availabilities',
+    timestamps: false
+});
 
-module.exports = MovieAvail;
+module.exports = MovieAvailability;

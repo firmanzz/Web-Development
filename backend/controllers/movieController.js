@@ -1,5 +1,4 @@
 const Movie = require('../models/Movie');
-const availability = require('../models/Availability');
 const Genre = require('../models/Genre');
 const Award = require('../models/Award');
 const Actor = require('../models/Actor');
@@ -25,9 +24,9 @@ exports.getAllMovies = async (req, res) => {
           through: { attributes: [] }, 
         },
         {
-          model: Availability,
+          model: Availability,  
           attributes: ['id', 'name'],
-          through: { attributes: [] }, 
+          through: { attributes: [] },
         },
       ],
       logging: false,
