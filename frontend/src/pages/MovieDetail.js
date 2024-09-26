@@ -13,19 +13,18 @@ const MovieDetail = () => {
   useEffect(() => {
     const fetchMovie = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/movies/${id}`);
+        const response = await fetch(`http://localhost:5000/api/movies/${id}/detail`);
         if (!response.ok) {
           throw new Error(`Error fetching movie: ${response.statusText}`);
         }
         const data = await response.json();
-        console.log(data); // Log movie data to check for actors
-        setMovie(data); // Simpan data film ke state
+        setMovie(data); // Save movie data
         setLoading(false);
       } catch (error) {
         setError('Failed to load movie data. Please try again later.');
         setLoading(false);
       }
-    };
+    };    
   
     fetchMovie();
   }, [id]);  
@@ -114,17 +113,20 @@ const MovieDetail = () => {
               <div className="p-6 rounded-lg shadow-lg mb-6 bg-white">
                 <h3 className="text-lg font-bold mb-3 text-gray-800">Cast</h3>
                 <div className="flex space-x-4">
-                  {movie.actors && movie.actors.length > 0 ? movie.actors.map(actor => (
-                    <div key={actor.id} className="text-center">
-                      <img
-                        src={actor.urlphoto}
-                        alt={actor.name}
-                        className="w-20 h-20 rounded-full shadow-lg"
-                      />
-                      <p className="text-sm text-gray-800 mt-2">{actor.name}</p>
-                      <p className="text-sm text-gray-600">{actor.role}</p>
-                    </div>
-                  )) : <p className="text-sm text-gray-600">No Actors</p>}
+                  {movie.Actors && movie.Actors.length > 0 ? (
+                    movie.Actors.map((actor) => (
+                      <div key={actor.id} className="text-center">
+                        <img
+                          src={actor.urlphoto}
+                          alt={actor.name}
+                          className="w-20 h-20 rounded-full shadow-lg"
+                        />
+                        <p className="text-sm text-gray-800 mt-2">{actor.name}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-gray-600">No Actors</p>
+                  )}
                 </div>
               </div>
 

@@ -8,10 +8,11 @@ const movieGenreRoutes = require('./routes/moviegenreRoutes');
 const actorRoutes = require('./routes/actorRoutes');
 const availRoutes = require('./routes/availRoutes');
 const sequelize = require('./config/database'); 
+const movieDetailRoutes = require('./routes/movieDetailRoutes');
 const cors = require('cors');
 
 app.use(cors());
-app.use(express.json()); 
+app.use(express.json());
 
 app.use('/api', movieRoutes);
 app.use('/api', genreRoutes);
@@ -20,6 +21,7 @@ app.use('/api', awardRoutes);
 app.use('/api', movieGenreRoutes);
 app.use('/api', actorRoutes);
 app.use('/api', availRoutes);
+app.use('/api', movieDetailRoutes);
 
 // Tes koneksi database
 sequelize.authenticate().then(() => {
