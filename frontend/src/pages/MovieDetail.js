@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const MovieDetail = () => {
-  const { id } = useParams(); // Get the movie ID from the URL
+  const { id } = useParams(); // Get movie ID from URL
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -18,7 +18,7 @@ const MovieDetail = () => {
           throw new Error(`Error fetching movie: ${response.statusText}`);
         }
         const data = await response.json();
-        setMovie(data); // Save movie data
+        setMovie(data);
         setLoading(false);
       } catch (error) {
         setError('Failed to load movie data. Please try again later.');
@@ -41,7 +41,6 @@ const MovieDetail = () => {
     return <p className="text-white text-center">No movie data available</p>;
   }
 
-  // Convert YouTube link to embed link
   const embedLink = movie.linktrailer.replace("watch?v=", "embed/");
 
   return (
@@ -58,10 +57,7 @@ const MovieDetail = () => {
           >
             <div
               className="fixed top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat z-0"
-              style={{
-                backgroundImage: `url(${movie.urlphoto})`,
-              }}
-            >
+              style={{ backgroundImage: `url(${movie.urlphoto})` }}>
               <div className="absolute inset-0 backdrop-blur-lg"></div>
             </div>
 
@@ -111,26 +107,57 @@ const MovieDetail = () => {
                 <p className="mb-2 text-sm text-gray-800">
                   <strong>Available on:</strong> {movie.Availabilities ? movie.Availabilities.map(avail => avail.name).join(', ') : 'No Availability'}
                 </p>
+
+                {/* Display awards */}
+                <p className="mb-2 text-sm text-gray-800">
+                  <strong>Awards:</strong> {movie.Awards ? movie.Awards.map(award => `${award.award} (${award.year})`).join(', ') : 'No Awards'}
+                </p>
               </div>
 
-              {/* Cast section */}
+              {/* Cast & Directors section */}
               <div className="p-6 rounded-lg shadow-lg mb-6 bg-white">
-                <h3 className="text-lg font-bold mb-3 text-gray-800">Cast</h3>
-                <div className="flex space-x-4">
-                  {movie.Actors && movie.Actors.length > 0 ? (
-                    movie.Actors.map((actor) => (
-                      <div key={actor.id} className="text-center">
-                        <img
-                          src={actor.urlphoto}
-                          alt={actor.name}
-                          className="w-20 h-20 rounded-full shadow-lg"
-                        />
-                        <p className="text-sm text-gray-800 mt-2">{actor.name}</p>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-sm text-gray-600">No Actors</p>
-                  )}
+                <div className="flex justify-between">
+                  {/* Cast section */}
+                  <div className="flex flex-col w-3/4">
+                    <h3 className="text-lg font-bold mb-3 text-gray-800">Cast</h3>
+                    <div className="flex space-x-4 overflow-x-auto no-scrollbar">
+                      {movie.Actors && movie.Actors.length > 0 ? (
+                        movie.Actors.map((actor) => (
+                          <div key={actor.id} className="text-center">
+                            <img
+                              src={actor.urlphoto}
+                              alt={actor.name}
+                              className="w-20 h-20 rounded-full shadow-lg"
+                            />
+                            <p className="text-sm text-gray-800 mt-2">{actor.name}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-sm text-gray-600">No Actors</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Director section */}
+                  <div className="flex flex-col w-1/4">
+                    <h3 className="text-lg font-bold mb-3 text-gray-800">Directors</h3>
+                    <div className="flex flex-col items-center">
+                      {movie.Directors && movie.Directors.length > 0 ? (
+                        movie.Directors.map((director) => (
+                          <div key={director.id} className="text-center">
+                            <img
+                              src={director.urlphoto}
+                              alt={director.name}
+                              className="w-20 h-20 rounded-full shadow-lg"
+                            />
+                            <p className="text-sm text-gray-800 mt-2">{director.name}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-sm text-gray-600">No Directors</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
 
