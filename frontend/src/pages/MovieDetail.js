@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const MovieDetail = () => {
-  const { id } = useParams(); // Mendapatkan ID film dari URL
+  const { id } = useParams(); // Get the movie ID from the URL
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -24,10 +24,10 @@ const MovieDetail = () => {
         setError('Failed to load movie data. Please try again later.');
         setLoading(false);
       }
-    };    
-  
+    };
+
     fetchMovie();
-  }, [id]);  
+  }, [id]);
 
   if (loading) {
     return <p className="text-white text-center">Loading movie details...</p>;
@@ -41,7 +41,7 @@ const MovieDetail = () => {
     return <p className="text-white text-center">No movie data available</p>;
   }
 
-  // Konversi link YouTube menjadi embed link
+  // Convert YouTube link to embed link
   const embedLink = movie.linktrailer.replace("watch?v=", "embed/");
 
   return (
@@ -80,7 +80,7 @@ const MovieDetail = () => {
                   <iframe
                     width="100%"
                     height="450"
-                    src={embedLink} // Menggunakan embed link
+                    src={embedLink}
                     title={`${movie.title} Trailer`}
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -106,10 +106,14 @@ const MovieDetail = () => {
                 </p>
                 <p className="mb-2 text-sm text-gray-800"><strong>Genre:</strong> {movie.Genres ? movie.Genres.map(genre => genre.name).join(', ') : 'No Genres'}</p>
                 <p className="mb-2 text-sm text-gray-800"><strong>Rating:</strong> {movie.rating}/10</p>
-                <p className="mb-2 text-sm text-gray-800"><strong>Availability:</strong> {movie.availability}</p>
+
+                {/* Display availabilities */}
+                <p className="mb-2 text-sm text-gray-800">
+                  <strong>Available on:</strong> {movie.Availabilities ? movie.Availabilities.map(avail => avail.name).join(', ') : 'No Availability'}
+                </p>
               </div>
 
-              {/* Bagian aktor */}
+              {/* Cast section */}
               <div className="p-6 rounded-lg shadow-lg mb-6 bg-white">
                 <h3 className="text-lg font-bold mb-3 text-gray-800">Cast</h3>
                 <div className="flex space-x-4">

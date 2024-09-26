@@ -1,20 +1,33 @@
 const Movie = require('../models/Movie');
 const Actor = require('../models/Actor');
-const MovieActor = require('../models/MovieActor'); // Ensure MovieActor is imported
+const Genre = require('../models/Genre');
+const Availability = require('../models/Availability');  // Ensure Availability is imported
+const MovieActor = require('../models/MovieActor');
+const MovieGenre = require('../models/MovieGenre');
+const MovieAvail = require('../models/MovieAvail');
 
 exports.getMovieDetail = async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Find movie by ID and include related actors
+    // Find movie by ID and include related actors, genres, and availabilities
     const movie = await Movie.findByPk(id, {
       include: [
         {
-          model: Actor,  // Include actors
-          through: MovieActor,  // Many-to-many relation through MovieActor table
-          attributes: ['id', 'name', 'urlphoto'],  // Fetch only these actor fields
+          model: Actor,
+          through: MovieActor,
+          attributes: ['id', 'name', 'urlphoto'],
         },
-        // Add other relations like genres, awards if necessary
+        {
+          model: Genre,
+          through: MovieGenre,
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Availability,  // Include availabilities
+          through: MovieAvail,  // Many-to-many relation through MovieAvail
+          attributes: ['id', 'name'],  // Fetch only these availability fields
+        }
       ]
     });
 
@@ -22,7 +35,7 @@ exports.getMovieDetail = async (req, res) => {
       return res.status(404).json({ message: 'Movie not found' });
     }
 
-    res.status(200).json(movie);  // Send the movie along with actors
+    res.status(200).json(movie);  // Send the movie along with actors, genres, and availabilities
   } catch (error) {
     console.error('Error fetching movie details:', error);
     res.status(500).json({ error: 'An error occurred fetching the movie details' });
