@@ -2,10 +2,8 @@ import React, { forwardRef } from 'react';
 
 const Sidebar = forwardRef(({ open, setOpen }, ref) => {
   const Menus = [
-    { title: "DASHBOARD", key: "dashboard" },
-    {
-      title: "COUNTRY",
-      key: "country"},
+    { title: "HOME", key: "home" },
+    { title: "TOP RATED",key: "top rated"},
     { title: "TRENDING", key: "trending" },
   ];
 
