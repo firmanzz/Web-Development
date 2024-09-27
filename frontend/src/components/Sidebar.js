@@ -5,17 +5,7 @@ const Sidebar = forwardRef(({ open, setOpen }, ref) => {
     { title: "DASHBOARD", key: "dashboard" },
     {
       title: "COUNTRY",
-      submenu: true,
-      key: "country",
-      submenuItem: [
-        { title: "USA", key: "usa" },
-        { title: "JAPAN", key: "japan" },
-        { title: "CHINESE", key: "chinese" },
-        { title: "KOREAN", key: "korean" },
-        { title: "INDONESIA", key: "indonesia" },
-        { title: "INDIAN", key: "indian" },
-      ],
-    },
+      key: "country"},
     { title: "TRENDING", key: "trending" },
   ];
 

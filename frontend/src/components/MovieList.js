@@ -19,6 +19,7 @@ const MovieList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
+  const maxMovies = 10;
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -103,17 +104,18 @@ const MovieList = () => {
       return movies;
     }
   };
-  const handlePrevClick = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? movies.length - 1 : prevIndex - 1
-    );
-  };
 
-  const handleNextClick = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === movies.length - 1 ? 0 : prevIndex + 1
-    );
-  };
+const handlePrevClick = () => {
+  setCurrentIndex((prevIndex) =>
+    prevIndex === 0 ? Math.min(movies.length, maxMovies) - 1 : prevIndex - 1
+  );
+};
+
+const handleNextClick = () => {
+  setCurrentIndex((prevIndex) =>
+    prevIndex === Math.min(movies.length, maxMovies) - 1 ? 0 : prevIndex + 1
+  );
+};
 
   const indexOfLastMovie = currentPage * moviesPerPage;
   const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
