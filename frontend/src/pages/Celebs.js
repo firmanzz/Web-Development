@@ -1,41 +1,34 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
-import MovieDetail from './MovieDetail';
 import Footer from "../components/Footer";
 
-const Home = () => {
+const Celebs = () => {
   const [open, setOpen] = useState(false);
-  const [movies, setMovies] = useState([]);
+  const [actors, setActors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [showMovieDetail, setShowMovieDetail] = useState(false);
   const sidebarRef = useRef(null);
 
   useEffect(() => {
-    const fetchMovies = async () => {
+    const fetchActors = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/movies/top");
+        const response = await fetch("http://localhost:5000/api/actors");
         if (!response.ok) {
-          throw new Error(`Failed to fetch movies: ${response.statusText}`);
+          throw new Error(`Failed to fetch actors: ${response.statusText}`);
         }
         const data = await response.json();
-        setMovies(data);
+        setActors(data);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching movies:", error);
-        setError("Failed to load movies. Please try again later.");
+        console.error("Error fetching actors:", error);
+        setError("Failed to load actors. Please try again later.");
         setLoading(false);
       }
     };
 
-    fetchMovies();
+    fetchActors();
   }, []);
-
-  const toggleMovieDetail = () => {
-    setShowMovieDetail((prev) => !prev);
-  };
   
 
   return (
@@ -53,36 +46,30 @@ const Home = () => {
             <div className="absolute inset-0 backdrop-blur-lg"></div>
           </div>
           <div className="relative z-20 flex flex-col flex-grow items-center justify-start pt-2">
-            {!showMovieDetail ? (
               <div className="container mx-auto">
               <div className="flex justify-center my-4">
               </div>
               {loading ? (
-                <p className="text-white text-center">Loading movies...</p>
+                <p className="text-white text-center">Loading actors...</p>
               ) : error ? (
                 <p className="text-red-500 text-center">{error}</p>
               ) : (
                 <>
-                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-16 mt-10 mb-10">
-                    {movies.map((movie) => (
-                      <Link to={`/details/${movie.id}`} key={movie.id}>
+                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-20 mt-10 mb-40">
+                    {actors.map((actor) => (
+
                         <div className="text-center">
-                          <img src={movie.urlphoto} alt={movie.urlphoto} className="h-full w-full object-cover rounded-md mb-2" />
-                          <h3 className="text-white text-sm font-bold mb-1">{movie.title}</h3>
-                          <p className="text-white text-sm font-semibold">{movie.Genres.map((genre) => genre.name).join(", ")}</p>
-                          <p className="text-yellow-500 text-xs font-semibold">Rating: {movie.rating}</p>
+                          <img src={actor.urlphoto} alt={actor.urlphoto} className="h-full w-full object-cover rounded-md mb-2" />
+                          <h3 className="text-white text-sm font-bold mb-1">{actor.name}</h3>
+                          <p className="text-white text-sm font-semibold">{new Date(actor.birthdate).toLocaleDateString()}</p>
+                          <p className="text-yellow-500 text-xs font-semibold">{actor.Country.name}</p>
                         </div>
-                      </Link>
+
                     ))}
                   </div>
                 </>
               )}
             </div>
-            ) : (
-              <MovieDetail 
-                onBackClick={toggleMovieDetail} 
-              />
-            )}
           </div>
         </div>
       </div>
@@ -91,4 +78,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Celebs;

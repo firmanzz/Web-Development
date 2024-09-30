@@ -1,9 +1,9 @@
-const Actor = require("../models/Actor");
+const Director = require("../models/Director");
 const Country = require("../models/Countries");
 
-exports.getAllActor = async (req, res) => {
+exports.getAllDirector = async (req, res) => {
   try {
-    const actors = await Actor.findAll({
+    const directors = await Director.findAll({
       include: [
         {
           model: Country,

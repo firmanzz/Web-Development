@@ -6,8 +6,8 @@ const Sidebar = forwardRef(({ open, setOpen }, ref) =>{
   const Menus = [
     { title: "HOME", key: "home", path: "/"},
     { title: "TOP RATED",key: "top rated", path: "/TopRated " },
-    // { title: "CELEBS", key: "trending", path: "/celebs" },
-    { title: "AWARDS", key: "awards", path: "./pages/TopRated " },
+    { title: "CELEBS", key: "celebs", path: "/Celebs" },
+    { title: "DIRECTORS", key: "directors", path: "/Directors" },
   ];
 
 

@@ -6,6 +6,7 @@ const countryRoutes = require('./routes/countryRoutes');
 const awardRoutes = require('./routes/awardRoutes');
 const movieGenreRoutes = require('./routes/moviegenreRoutes');
 const actorRoutes = require('./routes/actorRoutes');
+const directorRoutes = require('./routes/directorRoutes');
 const availRoutes = require('./routes/availRoutes');
 const sequelize = require('./config/database'); 
 const movieDetailRoutes = require('./routes/movieDetailRoutes');
@@ -20,6 +21,7 @@ app.use('/api', countryRoutes);
 app.use('/api', awardRoutes);
 app.use('/api', movieGenreRoutes);
 app.use('/api', actorRoutes);
+app.use('/api', directorRoutes);
 app.use('/api', availRoutes);
 app.use('/api', movieDetailRoutes);
 
