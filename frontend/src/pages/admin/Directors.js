@@ -5,9 +5,9 @@ import Header from "./HeaderCMS";
 const Actors = () => {
   const [open, setOpen] = useState(false);
   const sidebarRef = useRef(null);
-  const [actors, setActors] = useState([]);
+  const [directors, setDirectors] = useState([]);
   const [formState, setFormState] = useState({
-    actorName: '',
+    directorName: '',
     country: '',
     birthDate: '',
     photo: null
@@ -16,23 +16,23 @@ const Actors = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchActors = async () => {
+    const fetchDirectors = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/actors");
+        const response = await fetch("http://localhost:5000/api/directors");
         if (!response.ok) {
-          throw new Error(`Failed to fetch actors: ${response.statusText}`);
+          throw new Error(`Failed to fetch directors: ${response.statusText}`);
         }
         const data = await response.json();
-        setActors(data);
+        setDirectors(data);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching actors:", error);
-        setError("Failed to load actors. Please try again later.");
+        console.error("Error fetching directors:", error);
+        setError("Failed to load directors. Please try again later.");
         setLoading(false);
       }
     };
 
-    fetchActors();
+    fetchDirectors();
   }, []);
 
   const handleChange = (e) => {
@@ -67,7 +67,7 @@ const Actors = () => {
         throw new Error("Failed to add actor");
       }
       const newActor = await response.json();
-      setActors([...actors, newActor]); // Add new actor to the list
+      setDirectors([...directors, newActor]); // Add new actor to the list
       setFormState({ actorName: '', country: '', birthDate: '', photo: null }); // Reset form
     } catch (error) {
       console.error("Error adding actor:", error);
@@ -83,7 +83,7 @@ const Actors = () => {
       if (!response.ok) {
         throw new Error("Failed to delete actor");
       }
-      setActors(actors.filter((actor) => actor.id !== id)); // Remove deleted actor from list
+      setDirectors(directors.filter((actor) => actor.id !== id)); // Remove deleted actor from list
     } catch (error) {
       console.error("Error deleting actor:", error);
       setError("Failed to delete actor. Please try again.");
@@ -96,9 +96,8 @@ const Actors = () => {
       <div className="flex flex-grow">
         <Sidebar ref={sidebarRef} open={open} setOpen={setOpen} />
         <div className="flex-1 p-4">
-          <h1 className="text-2xl font-bold mb-6">Actors</h1>
+          <h1 className="text-2xl font-bold mb-6">Directors</h1>
 
-          {/* Form for Adding Actors */}
           <div className="mb-6">
             <form
               onSubmit={handleSubmit}
@@ -109,7 +108,7 @@ const Actors = () => {
                   htmlFor="actorName"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Actor Name
+                  Director Name
                 </label>
                 <input
                   type="text"
@@ -195,7 +194,7 @@ const Actors = () => {
                       Country
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                      Actor Name
+                      Director Name
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                       Birth Date
@@ -209,24 +208,24 @@ const Actors = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {actors.map((actor, index) => (
-                    <tr key={actor.id}>
+                  {directors.map((director, index) => (
+                    <tr key={director.id}>
                       <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{actor.Country.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{actor.name}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{director.Country.name}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{director.name}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {new Date(actor.birthdate).toLocaleDateString()}
+                        {new Date(director.birthdate).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <img
-                          src={`http://localhost:5000/uploads/${actor.urlphoto}`}
-                          alt={actor.name}
+                          src={`http://localhost:5000/uploads/${director.urlphoto}`}
+                          alt={director.name}
                           className="h-16 w-16 object-cover rounded-md"
                         />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button
-                          onClick={() => handleDeleteActor(actor.id)}
+                          onClick={() => handleDeleteActor(director.id)}
                           className="text-red-600 hover:text-red-800"
                         >
                           Delete

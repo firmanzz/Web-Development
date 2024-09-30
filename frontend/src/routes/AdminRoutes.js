@@ -5,6 +5,7 @@ import Countries from "../pages/admin/Countries";
 import Awards from "../pages/admin/Awards";
 import Genres from "../pages/admin/Genres";
 import Actors from "../pages/admin/Actors";
+import Directors from "../pages/admin/Directors";
 import Comments from "../pages/admin/Comments";
 import Users from "../pages/admin/Users";
 
@@ -18,6 +19,7 @@ export default function AdminRoutes() {
       <Route path="Awards" element={<Awards />} />
       <Route path="Genres" element={<Genres />} />
       <Route path="Actors" element={<Actors />} />
+      <Route path="Directors" element={<Directors />} />
       <Route path="Comments" element={<Comments />} />
       <Route path="Users" element={<Users />} />
     </Routes>

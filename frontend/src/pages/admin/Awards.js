@@ -1,15 +1,39 @@
-import React, { useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./SidebarCMS";
 import Header from "./HeaderCMS";
 
-const Awards = ({ awards }) => {
+const Awards = () => {
   const [open, setOpen] = useState(false);
   const sidebarRef = useRef(null);
+  const [awards, setAwards] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
   const [formState, setFormState] = useState({
     country: '',
     year: '',
     awardName: '',
   });
+
+  useEffect(() => {
+    const fetchAwards = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/awards");
+        if (!response.ok) {
+          throw new Error(`Failed to fetch awards: ${response.statusText}`);
+        }
+        const data = await response.json();
+        setAwards(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching awards:", error);
+        setError("Failed to load awards. Please try again later.");
+        setLoading(false);
+      }
+    };
+
+    fetchAwards();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +46,6 @@ const Awards = ({ awards }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Add logic to handle form submission
-    // For example, you could make an API call here
   };
 
   const editAward = (id) => {
@@ -32,7 +55,6 @@ const Awards = ({ awards }) => {
 
   const deleteAward = (id) => {
     // Handle delete logic
-    // For example, you could make an API call here
     console.log(`Deleting award with id: ${id}`);
   };
 
@@ -42,71 +64,99 @@ const Awards = ({ awards }) => {
       <div className="flex flex-grow">
         <Sidebar ref={sidebarRef} open={open} setOpen={setOpen} />
         <div className="flex-1 p-4">
-        <h1 className="text-2xl font-bold mb-6">Awards</h1>
+          <h1 className="text-2xl font-bold mb-6">Awards</h1>
 
-        <div className="mb-6">
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="col-span-1">
-              <label htmlFor="country" className="block text-lg font-medium text-gray-700">Country</label>
-              <input
-                type="text"
-                id="country"
-                name="country"
-                value={formState.country}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md bg-gray-300 shadow-sm"
-                required
-              />
-            </div>
-            <div className="col-span-1">
-              <label htmlFor="year" className="block text-lg font-medium text-gray-700">Year</label>
-              <input
-                type="number"
-                id="year"
-                name="year"
-                value={formState.year}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md bg-gray-300 shadow-sm"
-                required
-              />
-            </div>
-            <div className="col-span-1">
-              <label htmlFor="awardName" className="block text-lg font-medium text-gray-700">Award Name</label>
-              <input
-                type="text"
-                id="awardName"
-                name="awardName"
-                value={formState.awardName}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md bg-gray-300 shadow-sm"
-                required
-              />
-            </div>
-            <div className="col-span-3">
-              <button type="submit" className="px-4 py-2 bg-green-600 text-white rounded-md">
-                Submit
-              </button>
-            </div>
-          </form>
-        </div>
+          <div className="mb-6">
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="col-span-1">
+                <label htmlFor="country" className="block text-lg font-medium text-gray-700">Country</label>
+                <input
+                  type="text"
+                  id="country"
+                  name="country"
+                  value={formState.country}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md bg-gray-300 shadow-sm"
+                  required
+                />
+              </div>
+              <div className="col-span-1">
+                <label htmlFor="year" className="block text-lg font-medium text-gray-700">Year</label>
+                <input
+                  type="number"
+                  id="year"
+                  name="year"
+                  value={formState.year}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md bg-gray-300 shadow-sm"
+                  required
+                />
+              </div>
+              <div className="col-span-1">
+                <label htmlFor="awardName" className="block text-lg font-medium text-gray-700">Award Name</label>
+                <input
+                  type="text"
+                  id="awardName"
+                  name="awardName"
+                  value={formState.awardName}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md bg-gray-300 shadow-sm"
+                  required
+                />
+              </div>
+              <div className="col-span-3">
+                <button type="submit" className="px-4 py-2 bg-green-600 text-white rounded-md">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
 
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-800 text-white">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">No</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Country</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Year</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Award Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            {loading ? (
+              <p className="text-center text-gray-500">Loading awards...</p>
+            ) : error ? (
+              <p className="text-center text-red-500">{error}</p>
+            ) : (
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-800 text-white">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">No</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Country</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Year</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Award Name</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {awards.map((award, index) => (
+                    <tr key={award.id}>
+                      <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{award.Country.name}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{award.year}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{award.award}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <button
+                          onClick={() => editAward(award.id)}
+                          className="text-blue-600 hover:text-blue-900"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => deleteAward(award.id)}
+                          className="ml-4 text-red-600 hover:text-red-900"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         </div>
       </div>
-    </div>
     </div>
   );
 };
