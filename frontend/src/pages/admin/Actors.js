@@ -218,11 +218,7 @@ const Actors = () => {
                         {new Date(actor.birthdate).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <img
-                          src={`http://localhost:5000/uploads/${actor.urlphoto}`}
-                          alt={actor.name}
-                          className="h-16 w-16 object-cover rounded-md"
-                        />
+                      <img src={actor.urlphoto} alt={actor.title} className="h-16 w-16 object-cover rounded-md" />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button

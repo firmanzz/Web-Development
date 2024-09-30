@@ -180,7 +180,7 @@ const Actors = () => {
           {/* Table for Displaying Actors */}
           <div className="overflow-x-auto">
             {loading ? (
-              <p>Loading actors...</p>
+              <p>Loading directors...</p>
             ) : error ? (
               <p className="text-red-500">{error}</p>
             ) : (
@@ -217,11 +217,7 @@ const Actors = () => {
                         {new Date(director.birthdate).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <img
-                          src={`http://localhost:5000/uploads/${director.urlphoto}`}
-                          alt={director.name}
-                          className="h-16 w-16 object-cover rounded-md"
-                        />
+                      <img src={director.urlphoto} alt={director.title} className="h-16 w-16 object-cover rounded-md" />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button
