@@ -12,7 +12,7 @@ const Sidebar = forwardRef(({ open, setOpen }, ref) => {
         { title: "INPUT NEW MOVIE", key: "input-new-movie", path: "/admin/addMovie" },
       ],
     },
-    { title: "COUNTRIES", key: "countries", path: "/admin/countries" },
+    { title: "COUNTRIES", key: "countries", path: "/admin/Countries" },
     { title: "AWARDS", key: "awards", path: "/admin/Awards" },
     { title: "GENRES", key: "genres", path: "/admin/Genres" },
     { title: "ACTORS", key: "actors", path: "/admin/Actors" },
