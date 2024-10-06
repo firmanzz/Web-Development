@@ -18,8 +18,6 @@ const MovieList = () => {
   const [moviesPerPage] = useState(18);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const maxMovies = 10;
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -105,17 +103,6 @@ const MovieList = () => {
     }
   };
 
-const handlePrevClick = () => {
-  setCurrentIndex((prevIndex) =>
-    prevIndex === 0 ? Math.min(movies.length, maxMovies) - 1 : prevIndex - 1
-  );
-};
-
-const handleNextClick = () => {
-  setCurrentIndex((prevIndex) =>
-    prevIndex === Math.min(movies.length, maxMovies) - 1 ? 0 : prevIndex + 1
-  );
-};
 
   const indexOfLastMovie = currentPage * moviesPerPage;
   const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
@@ -127,7 +114,6 @@ const handleNextClick = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const totalPages = Math.ceil(filteredMovies.length / moviesPerPage);
 
-  const featuredMovie = movies[currentIndex];
 
   return (
     <div className="container mx-auto">
@@ -140,23 +126,6 @@ const handleNextClick = () => {
         <p className="text-red-500 text-center">{error}</p>
       ) : (
         <>
-          {featuredMovie && (
-            <div className="mb-8 hidden md:block relative">
-              <button onClick={handlePrevClick} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-5xl px-3 py-2 rounded-full">&lt;</button>
-              <div className="relative bg-gray-800 rounded-md overflow-hidden mx-auto h-[48rem] sm:w-[33rem]">
-                <Link to={`/details/${featuredMovie.id}`} className="block">
-                  <img src={featuredMovie.urlphoto} alt={featuredMovie.title} className="absolute inset-0 w-full h-full object-cover rounded-md" />
-                  <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center">
-                    <h2 className="text-white text-2xl sm:text-3xl font-bold text-center">{featuredMovie.title}</h2>
-                    <p className="text-white text-lg font-semibold text-center">{featuredMovie.Genres.map((genre) => genre.name).join(", ")}</p>
-                    <p className="text-yellow-500 text-lg font-semibold text-center">Rating: {featuredMovie.rating}</p>
-                  </div>
-                </Link>
-              </div>
-              <button onClick={handleNextClick} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-5xl px-3 py-2 rounded-full">&gt;</button>
-            </div>
-          )}
-
           <Filter
             genre={genre}
             setGenre={setGenre}
