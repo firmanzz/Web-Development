@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -11,7 +12,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4">
+    <div className="flex items-center justify-center min-h-screen px-4 bg-gray-800">
       <div className="w-full max-w-xs p-6 bg-white rounded shadow-md">
         <h2 className="mb-4 text-xl font-bold text-center">MasterFilm</h2>
         <form onSubmit={handleSubmit}>
@@ -39,23 +40,19 @@ const Login = () => {
               className="w-full px-2 py-1.5 border rounded shadow appearance-none focus:outline-none focus:ring focus:border-blue-300 text-sm"
             />
           </div>
-          <div className="flex items-center justify-between">
-            <button
-              type="submit"
-              className="w-full px-3 py-1.5 font-bold text-white bg-orange-500 rounded hover:bg-orange-600 focus:outline-none focus:ring focus:border-blue-300 text-sm"
-            >
-              Sign In
-            </button>
-          </div>
-          <div className="flex items-center justify-between mt-3">
-            <button
-              type="button"
-              className="w-full px-3 py-1.5 font-bold text-white bg-orange-400 rounded hover:bg-orange-500 focus:outline-none focus:ring focus:border-blue-300 text-sm"
-            >
-              Sign in with Google
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="w-full px-3 py-1.5 font-bold text-white bg-orange-500 rounded hover:bg-orange-600 focus:outline-none focus:ring focus:border-blue-300 text-sm"
+          >
+            Sign In
+          </button>
         </form>
+        <p className="mt-3 text-center text-sm text-gray-600">
+          Don't have an account?{' '}
+          <Link to="/admin/register" className="text-blue-500 hover:underline">
+            Register
+          </Link>
+        </p>
       </div>
     </div>
   );

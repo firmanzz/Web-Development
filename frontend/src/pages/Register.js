@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -13,7 +14,7 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4">
+    <div className="flex items-center justify-center min-h-screen px-4 bg-gray-800">
       <div className="w-full max-w-xs p-6 bg-white rounded shadow-md">
         <h2 className="mb-4 text-xl font-bold text-center">MasterFilm</h2>
         <form onSubmit={handleSubmit}>
@@ -53,23 +54,19 @@ const Register = () => {
               className="w-full px-2 py-1.5 border rounded shadow appearance-none focus:outline-none focus:ring focus:border-blue-300 text-sm"
             />
           </div>
-          <div className="flex items-center justify-between">
-            <button
-              type="submit"
-              className="w-full px-3 py-1.5 font-bold text-white bg-orange-500 rounded hover:bg-orange-600 focus:outline-none focus:ring focus:border-blue-300 text-sm"
-            >
-              Sign Up
-            </button>
-          </div>
-          <div className="flex items-center justify-between mt-3">
-            <button
-              type="button"
-              className="w-full px-3 py-1.5 font-bold text-white bg-orange-400 rounded hover:bg-orange-500 focus:outline-none focus:ring focus:border-blue-300 text-sm"
-            >
-              Sign up with Google
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="w-full px-3 py-1.5 font-bold text-white bg-orange-500 rounded hover:bg-orange-600 focus:outline-none focus:ring focus:border-blue-300 text-sm"
+          >
+            Sign Up
+          </button>
         </form>
+        <p className="mt-3 text-center text-sm text-gray-600">
+          Already have an account?{' '}
+          <Link to="/admin/login" className="text-blue-500 hover:underline">
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );

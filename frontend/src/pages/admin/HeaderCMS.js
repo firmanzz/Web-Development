@@ -24,13 +24,13 @@ const Header = ({ open, setOpen }) => {
       </div>
       <div className="flex items-center space-x-2">
         <Link
-          to="/login"
+          to="/admin/login/"
           className="text-white bg-blue-500 hover:bg-blue-400 px-3 py-1 text-sm rounded"
         >
           Login
         </Link>
         <Link
-          to="/register"
+          to="/admin/register/"
           className="text-white bg-green-500 hover:bg-green-400 px-3 py-1 text-sm rounded"
         >
           Sign Up
