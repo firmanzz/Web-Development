@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const [name, setName] = useState('');
+  const [email, setEmail] = useState(''); // Ganti jadi email
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("NAME: ", name);
+      console.log("EMAIL: ", email);
       console.log("PASSWORD: ", password);
 
       const response = await fetch('http://localhost:5000/api/login', {
@@ -17,27 +17,24 @@ const Login = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, password }), // Sesuaikan dengan email dan password
+        body: JSON.stringify({ email, password }), // Kirim email dan password
       });
 
-      const data = await response.json(); // Menunggu respons selesai
-
-      console.log("DATA: ", data); // Cek apakah token sudah ada
+      const data = await response.json();
+      console.log("DATA: ", data);
 
       if (response.ok) {
-        // Simpan token di Local Storage
-        localStorage.setItem('token', data.token);
+        localStorage.setItem('token', data.token); // Simpan token di Local Storage
         alert('Login successful!');
-
-        // Redirect ke halaman dashboard
-        window.location.href = '/admin';
+        window.location.href = '/admin'; // Redirect ke halaman dashboard
       } else {
         alert('Login failed: ' + data.message);
       }
     } catch (error) {
       console.log(error);
+      alert('Login failed: Server error');
     }
-  }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen px-4 bg-gray-800">
@@ -45,14 +42,14 @@ const Login = () => {
         <h2 className="mb-4 text-xl font-bold text-center">MasterFilm</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="block mb-1 text-sm font-bold text-gray-700" htmlFor="name">
-              name
+            <label className="block mb-1 text-sm font-bold text-gray-700" htmlFor="email">
+              Email
             </label>
             <input
-              type="text"
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-2 py-1.5 border rounded shadow appearance-none focus:outline-none focus:ring focus:border-blue-300 text-sm"
             />
           </div>

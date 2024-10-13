@@ -1,11 +1,21 @@
 const express = require('express');
-const { loginUser, registerUser, getAllUsers, editUser, deleteUser } = require('../controllers/userController');
+const {  
+    getAllUsers, 
+    editUser, 
+    deleteUser 
+} = require('../controllers/userController');
+const { 
+    loginUser, 
+    registerUser,
+    verifyEmail 
+} = require('../controllers/authController');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const authMiddleware = require('../middleware/authMiddleware');
 
 router.post('/login', loginUser);
 router.post('/register', registerUser);
+router.post('/verify-email', verifyEmail);
 
 // Admin routes for managing users
 router.get('/users', getAllUsers);
