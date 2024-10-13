@@ -10,6 +10,7 @@ import Comments from "../pages/admin/Comments";
 import Users from "../pages/admin/Users";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import ForgotPassword from "../pages/admin/ForgotPassword";
 
 // Fungsi untuk mengecek apakah pengguna sudah login
 const isAuthenticated = async () => {
@@ -33,6 +34,7 @@ export default function AdminRoutes() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
       
       {/* Rute yang memerlukan autentikasi */}
       <Route path="/" element={isAuthenticated() ? <MovieListCMS /> : <Navigate to="/admin/login/" />} />

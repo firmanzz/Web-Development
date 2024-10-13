@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
-  const [email, setEmail] = useState(''); // Ganti jadi email
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,16 +16,16 @@ const Login = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }), // Kirim email dan password
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
       console.log("DATA: ", data);
 
       if (response.ok) {
-        localStorage.setItem('token', data.token); // Simpan token di Local Storage
+        localStorage.setItem('token', data.token);
         alert('Login successful!');
-        window.location.href = '/admin'; // Redirect ke halaman dashboard
+        window.location.href = '/admin';
       } else {
         alert('Login failed: ' + data.message);
       }
@@ -77,6 +76,12 @@ const Login = () => {
           <Link to="/admin/register" className="text-blue-500 hover:underline">
             Register
           </Link>
+        </p>
+        <p className="mt-1 text-center text-sm text-gray-600">
+          Forgot your password?{' '}
+          <a href="http://localhost:3000/admin/forgot-password" className="text-blue-500 hover:underline">
+            Click here
+          </a>
         </p>
       </div>
     </div>

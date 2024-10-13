@@ -5,9 +5,11 @@ const {
     deleteUser 
 } = require('../controllers/userController');
 const { 
+    forgotPassword,
+    resetPassword,
     loginUser, 
     registerUser,
-    verifyEmail 
+    verifyEmail
 } = require('../controllers/authController');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
@@ -16,6 +18,8 @@ const authMiddleware = require('../middleware/authMiddleware');
 router.post('/login', loginUser);
 router.post('/register', registerUser);
 router.post('/verify-email', verifyEmail);
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password', resetPassword);
 
 // Admin routes for managing users
 router.get('/users', getAllUsers);

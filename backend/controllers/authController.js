@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const User = require('../models/User');
 const transporter = require('../config/mailer');
+const { sendVerificationCode } = require('../utils/nodemailer');
 
 // Fungsi untuk menghasilkan kode verifikasi 6 digit
 const generateVerificationCode = () => {
@@ -82,24 +83,19 @@ exports.verifyEmail = async (req, res) => {
   }
 };
 
-// Login user (cek status isVerified)
+// Login User tanpa validasi percobaan gagal
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
+  console.log('Login Attempt:', email);
 
   try {
     const user = await User.findOne({ where: { email } });
-    console.log('User Found:', user); // Debugging
 
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
 
-    if (!user.isVerified) {
-      return res.status(400).json({ message: 'Please verify your email first' });
-    }
-
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log('Password Match:', isMatch); // Debugging
 
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
@@ -113,7 +109,53 @@ exports.loginUser = async (req, res) => {
 
     res.json({ token });
   } catch (error) {
-    console.error('Login Error:', error); // Debugging
+    console.error('Login Error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Forgot Password Handler
+exports.forgotPassword = async (req, res) => {
+  const { email, name } = req.body;
+
+  try {
+    const user = await User.findOne({ where: { email, name } });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    user.verificationCode = verificationCode;
+    await user.save();
+
+    await sendVerificationCode(email, verificationCode); // Kirim email dengan kode verifikasi
+    res.json({ message: 'Verification code sent. Please check your email.' });
+  } catch (error) {
+    console.error('Forgot Password Error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Reset Password Handler
+exports.resetPassword = async (req, res) => {
+  const { email, code, newPassword } = req.body;
+
+  try {
+    const user = await User.findOne({ where: { email, verificationCode: code } });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid verification code' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    user.verificationCode = null; // Reset kode verifikasi
+    await user.save();
+
+    res.json({ message: 'Password reset successful' });
+  } catch (error) {
+    console.error('Reset Password Error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
