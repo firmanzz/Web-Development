@@ -12,9 +12,20 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 
 // Fungsi untuk mengecek apakah pengguna sudah login
-const isAuthenticated = () => {
-  const token = localStorage.getItem('token');
-  return token === 'dummyToken'; // Pastikan token valid
+const isAuthenticated = async () => {
+  try {
+    const response = await fetch('http://localhost:5000/api/get-user', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.AUTH_SECRET}`
+      }
+    });
+    const data = await response.json();
+    console.log("DATA USER", data);    
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export default function AdminRoutes() {

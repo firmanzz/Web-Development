@@ -4,10 +4,10 @@ const bcrypt = require('bcryptjs');
 
 // Register a new user
 exports.registerUser = async (req, res) => {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
   
     try {
-      let user = await User.findOne({ email });
+      let user = await User.findOne({ where: { email } });
       if (user) {
         return res.status(400).json({ msg: 'User already exists' });
       }
@@ -16,7 +16,7 @@ exports.registerUser = async (req, res) => {
         name,
         email,
         password,
-        role,
+        role: "editor",
       });
   
       const salt = await bcrypt.genSalt(10);
@@ -33,28 +33,37 @@ exports.registerUser = async (req, res) => {
 
 // Log in a user
 exports.loginUser = async (req, res) => {
-    const { email, password } = req.body;
-
+    const { name, password } = req.body;
+  
     try {
-        const user = await User.findOne({ email });
-
-        if (!user) {
-            return res.status(400).json({ message: 'User not found' });
-        }
-
-        const isMatch = await bcrypt.compare(password, user.password);
-
-        if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
-        }
-
-        const token = jwt.sign({ user: { id: user.id } }, 'secret', { expiresIn: '1h' });
-
-        res.json({ user, token });
+      const user = await User.findOne({ where: { name } });
+  
+      if (!user) {
+        return res.status(400).json({ message: 'User not found' });
+      }
+  
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(400).json({ message: 'Invalid credentials' });
+      }
+  
+      // Generate JWT token
+    const token = jwt.sign(
+      { id: user.id, name: user.name, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+  
+      // Send token and user data in response
+      res.json({ 
+        token, 
+        data: { id: user.id, name: user.name, role: user.role } 
+      });
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+      console.error('Login Error:', error);
+      res.status(500).json({ message: 'Server error' });
     }
-};
+  };
 
 // Get all users
 exports.getAllUsers = async (req, res) => {

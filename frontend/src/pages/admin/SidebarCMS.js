@@ -65,9 +65,7 @@ const MenuItem = ({ menu, open }) => {
       >
         <span className={`text-base font-medium flex-1 ${!open && 'hidden'}`}>{menu.title}</span>
       </li>
-      {menu.submenu && open && (
-        <SubMenu submenuItems={menu.submenuItem} />
-      )}
+      {menu.submenu && open && <SubMenu submenuItems={menu.submenuItem} />}
     </>
   );
 };

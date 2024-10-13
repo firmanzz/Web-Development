@@ -2,31 +2,56 @@ import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaDoorOpen } from "react-icons/fa";
 
-const Header = ({ open, setOpen }) => {
+const HeaderCMS = ({ open, setOpen }) => {
   const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [username, setUsername] = useState("");
+  const [user, setUser] = useState(null); // Simpan data user
+
+  // Fungsi untuk mengambil data user dari backend
+  const getUserData = async () => {
+    try {
+      const token = localStorage.getItem('token'); // Ambil token dari Local Storage
+      console.log('Token:', token);
+      if (!token) throw new Error('No token found');
+  
+      console.log('Token:', token); // Debug untuk memastikan token ada
+  
+      const response = await fetch('http://localhost:5000/api/get-user', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`, // Kirim token di header Authorization
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        const errorMessage = await response.json();
+        console.error('DATA USER:', errorMessage); // Debug error respons dari server
+        throw new Error('Failed to fetch user data');
+      }
+  
+      const userData = await response.json();
+      console.log('User Data:', userData); // Debug respons user
+  
+      setUser(userData); // Simpan data user ke state
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.error(error);
+      setIsAuthenticated(false);
+      window.location.href = '/admin/login/'; // Redirect jika token tidak valid
+    }
+  };
+  
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    if (token === "dummyToken") {
-      setIsAuthenticated(true);
-      const currentUser = users.find((user) => user.username && token === 'dummyToken');
-      if (currentUser) {
-        setUsername(currentUser.username);
-      }
-    } else {
-      setIsAuthenticated(false);
-      setUsername("");
-    }
-  }, [isAuthenticated]);
+    getUserData(); // Ambil data user saat komponen pertama kali dimuat
+  }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("token"); // Hapus token
     setIsAuthenticated(false);
-    setUsername("");
-    window.location.href = "/admin/login/";
+    setUser(null); // Reset state user
+    window.location.href = "/admin/login/"; // Redirect ke halaman login
   };
 
   return (
@@ -49,9 +74,9 @@ const Header = ({ open, setOpen }) => {
         </Link>
       </div>
       <div className="flex items-center space-x-2">
-        {isAuthenticated ? (
+        {isAuthenticated && user ? (
           <>
-            <span>{username}</span>
+            <span>{user.name}</span> {/* Tampilkan nama user */}
             <FaDoorOpen
               onClick={handleLogout}
               className="text-white text-2xl cursor-pointer hover:text-red-400"
@@ -78,4 +103,4 @@ const Header = ({ open, setOpen }) => {
   );
 };
 
-export default Header;
+export default HeaderCMS;
