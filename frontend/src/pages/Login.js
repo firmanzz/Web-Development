@@ -1,14 +1,27 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Username:', username);
-    console.log('Password:', password);
+    console.log("Login form submitted");
+
+    // Periksa pengguna dari localStorage
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(user => user.username === username && user.password === password);
+
+    if (user) {
+      // Menyimpan token ke localStorage untuk simulasi autentikasi
+      localStorage.setItem('token', 'dummyToken');
+      console.log("Login successful, token saved");
+      navigate('/admin'); // Arahkan ke halaman admin setelah login berhasil
+    } else {
+      alert('Username atau password salah!');
+    }
   };
 
   return (

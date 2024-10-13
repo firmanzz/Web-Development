@@ -8,13 +8,23 @@ const movieGenreRoutes = require('./routes/moviegenreRoutes');
 const actorRoutes = require('./routes/actorRoutes');
 const directorRoutes = require('./routes/directorRoutes');
 const availRoutes = require('./routes/availRoutes');
-const sequelize = require('./config/database'); 
 const movieDetailRoutes = require('./routes/movieDetailRoutes');
+const sequelize = require('./config/database');
 const cors = require('cors');
+
+// Import middleware
+const authMiddleware = require('./middleware/authMiddleware');
+const adminMiddleware = require('./middleware/adminMiddleware');
 
 app.use(cors());
 app.use(express.json());
 
+// Rute yang tidak memerlukan autentikasi
+app.get('/', (req, res) => {
+  res.send('Selamat datang di halaman utama!');
+});
+
+// Rute API yang dapat diakses oleh semua pengguna
 app.use('/api', movieRoutes);
 app.use('/api', genreRoutes);
 app.use('/api', countryRoutes);
@@ -24,6 +34,14 @@ app.use('/api', actorRoutes);
 app.use('/api', directorRoutes);
 app.use('/api', availRoutes);
 app.use('/api', movieDetailRoutes);
+
+// Rute khusus admin yang dilindungi oleh middleware autentikasi dan admin
+app.use('/admin', authMiddleware, adminMiddleware, (req, res, next) => {
+  if (!req.user) {
+    return res.redirect('/admin/login');
+  }
+  res.send('Selamat datang di halaman admin!');
+});
 
 // Tes koneksi database
 sequelize.authenticate().then(() => {

@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import MovieListCMS from "../pages/admin/MovieListCMS";
 import MovieForm from "../pages/admin/MovieForm";
 import Countries from "../pages/admin/Countries";
@@ -11,21 +11,29 @@ import Users from "../pages/admin/Users";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 
+// Fungsi untuk mengecek apakah pengguna sudah login
+const isAuthenticated = () => {
+  const token = localStorage.getItem('token');
+  return token === 'dummyToken'; // Pastikan token valid
+};
+
 export default function AdminRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/" element={<MovieListCMS />} />
-      <Route path="addMovie" element={<MovieForm />} />
-      <Route path="editMovie/:id" element={<MovieForm />} />
-      <Route path="countries" element={<Countries />} />
-      <Route path="awards" element={<Awards />} />
-      <Route path="genres" element={<Genres />} />
-      <Route path="actors" element={<Actors />} />
-      <Route path="directors" element={<Directors />} />
-      <Route path="comments" element={<Comments />} />
-      <Route path="users" element={<Users />} />
+      
+      {/* Rute yang memerlukan autentikasi */}
+      <Route path="/" element={isAuthenticated() ? <MovieListCMS /> : <Navigate to="/admin/login/" />} />
+      <Route path="/addMovie" element={isAuthenticated() ? <MovieForm /> : <Navigate to="/admin/login/" />} />
+      <Route path="/editMovie/:id" element={isAuthenticated() ? <MovieForm /> : <Navigate to="/admin/login/" />} />
+      <Route path="/countries" element={isAuthenticated() ? <Countries /> : <Navigate to="/admin/login/" />} />
+      <Route path="/awards" element={isAuthenticated() ? <Awards /> : <Navigate to="/admin/login/" />} />
+      <Route path="/genres" element={isAuthenticated() ? <Genres /> : <Navigate to="/admin/login/" />} />
+      <Route path="/actors" element={isAuthenticated() ? <Actors /> : <Navigate to="/admin/login/" />} />
+      <Route path="/directors" element={isAuthenticated() ? <Directors /> : <Navigate to="/admin/login/" />} />
+      <Route path="/comments" element={isAuthenticated() ? <Comments /> : <Navigate to="/admin/login/" />} />
+      <Route path="/users" element={isAuthenticated() ? <Users /> : <Navigate to="/admin/login/" />} />
     </Routes>
   );
 }

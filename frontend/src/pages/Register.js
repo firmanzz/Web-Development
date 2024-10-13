@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Username:', username);
-    console.log('Email:', email);
-    console.log('Password:', password);
+
+    // Simpan pengguna di localStorage
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const userExists = users.some(user => user.username === username || user.email === email);
+
+    if (userExists) {
+      alert('Username atau email sudah digunakan.');
+    } else {
+      users.push({ username, email, password });
+      localStorage.setItem('users', JSON.stringify(users));
+      alert('Registrasi berhasil! Silakan login.');
+      navigate('/admin/login');
+    }
   };
 
   return (
