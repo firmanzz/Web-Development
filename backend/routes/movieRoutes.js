@@ -4,6 +4,7 @@ const movieController = require('../controllers/movieController');
 
 router.get('/movies', movieController.getAllMovies);
 router.get('/movies/top', movieController.getTopRatedMovies);
+router.get('/movies/new', movieController.getNewestMovies);
 router.get('/movies/:id', movieController.getMovieById);
 router.post('/addMovie', movieController.addMovie);
 router.put('/movies/:id', movieController.updateMovie);

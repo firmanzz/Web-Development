@@ -1,19 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import Sidebar from '../components/Sidebar';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import React, { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const MovieDetail = () => {
+  const [open, setOpen] = useState(false);
   const { id } = useParams(); // Get movie ID from URL
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const sidebarRef = useRef(null);
 
   useEffect(() => {
     const fetchMovie = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/movies/${id}/detail`);
+        const response = await fetch(
+          `http://localhost:5000/api/movies/${id}/detail`
+        );
         if (!response.ok) {
           throw new Error(`Error fetching movie: ${response.statusText}`);
         }
@@ -21,7 +25,7 @@ const MovieDetail = () => {
         setMovie(data);
         setLoading(false);
       } catch (error) {
-        setError('Failed to load movie data. Please try again later.');
+        setError("Failed to load movie data. Please try again later.");
         setLoading(false);
       }
     };
@@ -45,9 +49,9 @@ const MovieDetail = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      <Header open={open} setOpen={setOpen} />
       <div className="flex flex-grow">
-        <Sidebar />
+        <Sidebar ref={sidebarRef} open={open} setOpen={setOpen} />
         <div className="flex-grow bg-gray-800">
           <div
             className="relative bg-cover bg-center bg-no-repeat"
@@ -57,7 +61,8 @@ const MovieDetail = () => {
           >
             <div
               className="fixed top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat z-0"
-              style={{ backgroundImage: `url(${movie.urlphoto})` }}>
+              style={{ backgroundImage: `url(${movie.urlphoto})` }}
+            >
               <div className="absolute inset-0 backdrop-blur-lg"></div>
             </div>
 
@@ -68,7 +73,7 @@ const MovieDetail = () => {
                     src={movie.urlphoto}
                     alt={movie.title}
                     className="w-auto h-auto max-w-full max-h-full rounded-lg shadow-lg"
-                    style={{ maxHeight: '450px', objectFit: 'cover' }}
+                    style={{ maxHeight: "450px", objectFit: "cover" }}
                   />
                 </div>
 
@@ -92,25 +97,39 @@ const MovieDetail = () => {
                   {movie.title}
                 </h2>
                 <p className="mb-2 text-sm text-gray-800">
-                  <strong>Date:</strong> {new Date(movie.releasedate).toLocaleDateString()}
+                  <strong>Date:</strong>{" "}
+                  {new Date(movie.releasedate).toLocaleDateString()}
                 </p>
                 <p className="mb-2 text-sm text-gray-800">
                   <strong>Duration:</strong> {movie.duration} min
                 </p>
-                <p className="mb-4 text-sm text-gray-800">
-                  {movie.synopsis}
+                <p className="mb-4 text-sm text-gray-800">{movie.synopsis}</p>
+                <p className="mb-2 text-sm text-gray-800">
+                  <strong>Genre:</strong>{" "}
+                  {movie.Genres
+                    ? movie.Genres.map((genre) => genre.name).join(", ")
+                    : "No Genres"}
                 </p>
-                <p className="mb-2 text-sm text-gray-800"><strong>Genre:</strong> {movie.Genres ? movie.Genres.map(genre => genre.name).join(', ') : 'No Genres'}</p>
-                <p className="mb-2 text-sm text-gray-800"><strong>Rating:</strong> {movie.rating}/10</p>
+                <p className="mb-2 text-sm text-gray-800">
+                  <strong>Rating:</strong> {movie.rating}/10
+                </p>
 
                 {/* Display availabilities */}
                 <p className="mb-2 text-sm text-gray-800">
-                  <strong>Available on:</strong> {movie.Availabilities ? movie.Availabilities.map(avail => avail.name).join(', ') : 'No Availability'}
+                  <strong>Available on:</strong>{" "}
+                  {movie.Availabilities
+                    ? movie.Availabilities.map((avail) => avail.name).join(", ")
+                    : "No Availability"}
                 </p>
 
                 {/* Display awards */}
                 <p className="mb-2 text-sm text-gray-800">
-                  <strong>Awards:</strong> {movie.Awards ? movie.Awards.map(award => `${award.award} (${award.year})`).join(', ') : 'No Awards'}
+                  <strong>Awards:</strong>{" "}
+                  {movie.Awards
+                    ? movie.Awards.map(
+                        (award) => `${award.award} (${award.year})`
+                      ).join(", ")
+                    : "No Awards"}
                 </p>
               </div>
 
@@ -119,7 +138,9 @@ const MovieDetail = () => {
                 <div className="flex justify-between">
                   {/* Cast section */}
                   <div className="flex flex-col w-3/4">
-                    <h3 className="text-lg font-bold mb-3 text-gray-800">Cast</h3>
+                    <h3 className="text-lg font-bold mb-3 text-gray-800">
+                      Cast
+                    </h3>
                     <div className="flex space-x-4 overflow-x-auto no-scrollbar">
                       {movie.Actors && movie.Actors.length > 0 ? (
                         movie.Actors.map((actor) => (
@@ -129,7 +150,9 @@ const MovieDetail = () => {
                               alt={actor.name}
                               className="w-20 h-20 rounded-full shadow-lg"
                             />
-                            <p className="text-sm text-gray-800 mt-2">{actor.name}</p>
+                            <p className="text-sm text-gray-800 mt-2">
+                              {actor.name}
+                            </p>
                           </div>
                         ))
                       ) : (
@@ -140,7 +163,9 @@ const MovieDetail = () => {
 
                   {/* Director section */}
                   <div className="flex flex-col w-1/4">
-                    <h3 className="text-lg font-bold mb-3 text-gray-800">Directors</h3>
+                    <h3 className="text-lg font-bold mb-3 text-gray-800">
+                      Directors
+                    </h3>
                     <div className="flex flex-col items-center">
                       {movie.Directors && movie.Directors.length > 0 ? (
                         movie.Directors.map((director) => (
@@ -150,7 +175,9 @@ const MovieDetail = () => {
                               alt={director.name}
                               className="w-20 h-20 rounded-full shadow-lg"
                             />
-                            <p className="text-sm text-gray-800 mt-2">{director.name}</p>
+                            <p className="text-sm text-gray-800 mt-2">
+                              {director.name}
+                            </p>
                           </div>
                         ))
                       ) : (
@@ -162,7 +189,9 @@ const MovieDetail = () => {
               </div>
 
               <div className="p-6 rounded-lg shadow-lg mb-6 bg-white">
-                <h3 className="text-lg font-bold mb-3 text-gray-800">User Reviews</h3>
+                <h3 className="text-lg font-bold mb-3 text-gray-800">
+                  User Reviews
+                </h3>
               </div>
             </div>
           </div>

@@ -123,6 +123,46 @@ exports.getTopRatedMovies = async (req, res) => {
   }
 };
 
+exports.getNewestMovies = async (req, res) => {
+  try {
+    const movies = await Movie.findAll({
+      include: [
+        {
+          model: Genre,
+          attributes: ['id', 'name'],
+          through: { attributes: [] }, 
+        },
+        {
+          model: Actor,
+          attributes: ['id', 'name'],
+          through: { attributes: [] }, 
+        },
+        {
+          model: Award,
+          attributes: ['id', 'award'],
+          through: { attributes: [] }, 
+        },
+        {
+          model: Availability,  
+          attributes: ['id', 'name'],
+          through: { attributes: [] },
+        },
+        {
+          model: Director,
+          attributes: ['id', 'name'],
+          through: { attributes: [] }, 
+        },
+      ],
+      order: [['releasedate', 'DESC']], 
+      limit: 12,
+      logging: false,
+    });
+    res.json(movies);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch movies" });
+  }
+};
+
 exports.addMovie = async (req, res) => {
   const {
     title,

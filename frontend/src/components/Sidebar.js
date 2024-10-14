@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const Sidebar = forwardRef(({ open, setOpen }, ref) =>{
   const Menus = [
     { title: "HOME", key: "home", path: "/"},
+    { title: "NEWEST",key: "newest", path: "/Newest " },
     { title: "TOP RATED",key: "top rated", path: "/TopRated " },
     { title: "CELEBS", key: "celebs", path: "/Celebs" },
     { title: "DIRECTORS", key: "directors", path: "/Directors" },
