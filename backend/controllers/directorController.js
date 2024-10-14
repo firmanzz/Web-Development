@@ -12,7 +12,7 @@ exports.getAllDirector = async (req, res) => {
       ],
       logging: false,
     });
-    res.status(200).json(actors);
+    res.status(200).json(directors);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "An error occurred" });
