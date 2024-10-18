@@ -44,18 +44,18 @@ const Header = ({ open, setOpen }) => {
     localStorage.removeItem("token"); // Hapus token
     setIsAuthenticated(false);
     setUser(null); // Reset state user
-    navigate("/admin/login"); // Redirect ke halaman login
+    navigate("/Login"); // Redirect ke halaman login
   };
 
   const handleAvatarClick = () => {
     if (!isAuthenticated) {
-      navigate("/admin/login"); // Redirect ke halaman login jika belum login
+      navigate("/Login"); // Redirect ke halaman login jika belum login
     }
   };
 
   return (
     <header className="bg-gray-700 text-white text-3xl p-4 flex sticky top-0 z-50">
-      {location.pathname !== "/login" && location.pathname !== "/register" && (
+      {location.pathname !== "/Login" && location.pathname !== "/Register" && (
         <button
           className="text-white text-2xl focus:outline-none"
           onClick={() => setOpen(!open)}

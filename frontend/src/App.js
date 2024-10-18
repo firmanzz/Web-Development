@@ -6,11 +6,17 @@ import TopRated from "./pages/TopRated";
 import Newest from "./pages/Newest";
 import MovieDetail from "./pages/MovieDetail";
 import AdminRoutes from "./routes/AdminRoutes";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ForgotPassword from "./pages/admin/ForgotPassword";
 
 function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/Login" element={<Login />} />
+        <Route path="/Register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/" element={<Home />} />
         <Route path="/Newest" element={<Newest />} />
         <Route path="/TopRated" element={<TopRated />} />

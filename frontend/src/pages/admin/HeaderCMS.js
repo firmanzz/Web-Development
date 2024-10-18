@@ -35,7 +35,7 @@ const HeaderCMS = ({ open, setOpen }) => {
     } catch (error) {
       console.error(error);
       setIsAuthenticated(false);
-      window.location.href = '/admin/login/'; // Redirect jika token tidak valid
+      window.location.href = '/Login'; // Redirect jika token tidak valid
     }
   };
 
@@ -47,12 +47,12 @@ const HeaderCMS = ({ open, setOpen }) => {
     localStorage.removeItem('token'); // Hapus token
     setIsAuthenticated(false);
     setUser(null); // Reset state user
-    window.location.href = '/admin/login/'; // Redirect ke halaman login
+    window.location.href = '/Login'; // Redirect ke halaman login
   };
 
   return (
     <header className="bg-gray-700 text-white text-3xl p-4 flex sticky top-0 z-50">
-      {location.pathname !== '/login/' && location.pathname !== '/register/' && (
+      {location.pathname !== '/Login' && location.pathname !== '/Register' && (
         <button
           className="text-white md:px-14 text-2xl focus:outline-none"
           onClick={() => setOpen(!open)}

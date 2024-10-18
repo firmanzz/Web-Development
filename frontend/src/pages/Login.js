@@ -8,32 +8,38 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("EMAIL: ", email);
-      console.log("PASSWORD: ", password);
-
       const response = await fetch('http://localhost:5000/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password }),  // Mengirim email dan password
       });
-
-      const data = await response.json();
-      console.log("DATA: ", data);
-
+  
+      const data = await response.json();  // Mengambil respons lengkap
+      console.log("DATA: ", data);  // Pastikan token dan data ikut ditampilkan
+  
       if (response.ok) {
         localStorage.setItem('token', data.token);
         alert('Login successful!');
-        window.location.href = '/admin';
+        
+        // Redirect based on the user's role
+        if (data.data.role === 'admin') {
+          window.location.href = '/admin';
+        } else if (data.data.role === 'editor') {
+          window.location.href = '/';
+        } else {
+          alert('Unknown role');
+        }
       } else {
         alert('Login failed: ' + data.message);
       }
     } catch (error) {
-      console.log(error);
+      console.error('Error during login:', error);
       alert('Login failed: Server error');
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen px-4 bg-gray-800">
@@ -73,7 +79,7 @@ const Login = () => {
         </form>
         <p className="mt-3 text-center text-sm text-gray-600">
           Don't have an account?{' '}
-          <Link to="/admin/register" className="text-blue-500 hover:underline">
+          <Link to="/Register" className="text-blue-500 hover:underline">
             Register
           </Link>
         </p>

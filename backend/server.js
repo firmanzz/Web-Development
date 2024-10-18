@@ -40,7 +40,7 @@ app.use('/api', userRoutes)
 // Rute khusus admin yang dilindungi oleh middleware autentikasi dan admin
 app.use('/admin', authMiddleware, adminMiddleware, (req, res, next) => {
   if (!req.user) {
-    return res.redirect('/admin/login');
+    return res.redirect('//Login');
   }
   res.send('Selamat datang di halaman admin!');
 });

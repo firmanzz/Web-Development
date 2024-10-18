@@ -52,7 +52,7 @@ const Register = () => {
       if (response.ok) {
         setMessage('Verification successful! Redirecting to login...');
         setTimeout(() => {
-          navigate('/admin/login');
+          navigate('//Login');
         }, 2000);
       } else {
         setMessage(data.message);
@@ -143,7 +143,7 @@ const Register = () => {
 
         <p className="mt-3 text-center text-sm text-gray-600">
           Already have an account?{' '}
-          <Link to="/admin/login" className="text-blue-500 hover:underline">
+          <Link to="//Login" className="text-blue-500 hover:underline">
             Login
           </Link>
         </p>
