@@ -25,7 +25,7 @@ const Movie = sequelize.define(
     rating: { type: DataTypes.FLOAT },
     duration: { type: DataTypes.FLOAT },
     status: { type: DataTypes.STRING(25) },
-    approvalstatus: { type: DataTypes.BOOLEAN },
+    approvalstatus: { type: DataTypes.BOOLEAN, defaultValue: false },
     countryid: {
       type: DataTypes.INTEGER,
       references: {

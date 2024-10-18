@@ -12,6 +12,7 @@ const MovieListCMS = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [expanded, setExpanded] = useState({});
   const sidebarRef = useRef(null);
+  const [selectedMovie, setSelectedMovie] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -88,12 +89,21 @@ const MovieListCMS = () => {
 
   // Filtering movies based on the search term and status
   const filteredMovies = movies
-    .filter(
-      (movie) => movie.title.toLowerCase().includes(searchTerm.toLowerCase()) // Search by title
-    )
-    .filter(
-      (movie) => filterStatus === "All" || movie.approvalstatus === filterStatus // Filter by status
-    );
+  .filter((movie) => {
+    // Gabungkan semua atribut yang akan dicari (title, synopsis, actors, genres)
+    const searchString = `
+      ${movie.title.toLowerCase()} 
+      ${movie.synopsis ? movie.synopsis.toLowerCase() : ""}
+      ${movie.Actors ? movie.Actors.map((actor) => actor.name.toLowerCase()).join(" ") : ""}
+      ${movie.Genres ? movie.Genres.map((genre) => genre.name.toLowerCase()).join(" ") : ""}
+    `;
+
+    // Cari term dalam atribut yang sudah digabungkan
+    return searchString.includes(searchTerm.toLowerCase());
+  })
+  .filter((movie) => 
+    filterStatus === "All" || (movie.approvalstatus ? "Approved" : "Pending") === filterStatus
+  );
 
   // Pagination logic
   const indexOfLastMovie = currentPage * showCount;
@@ -107,6 +117,54 @@ const MovieListCMS = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const handleSelectMovie = (movie) => {
+    setSelectedMovie(movie);
+  };
+
+  const handleApproveToggle = async () => {
+    if (!selectedMovie) return;
+
+    // Toggle status between true (Approved) and false (Unapproved)
+    const updatedStatus = !selectedMovie.approvalstatus;
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/movies/${selectedMovie.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ approvalstatus: updatedStatus }), // Kirim boolean
+        }
+      );
+
+      if (response.ok) {
+        // Update movie status locally after successful response
+        setMovies((prevMovies) =>
+          prevMovies.map((movie) =>
+            movie.id === selectedMovie.id
+              ? { ...movie, approvalstatus: updatedStatus }
+              : movie
+          )
+        );
+        setSelectedMovie(null); // Close the modal
+        alert("Movie status updated successfully.");
+      } else {
+        const errorData = await response.json(); // Log error detail
+        console.error("Error updating status:", errorData);
+        alert("Failed to update movie status.");
+      }
+    } catch (error) {
+      console.error("Error updating movie status:", error);
+      alert("Error updating movie status.");
+    }
+  };
+
+  const handleCloseModal = () => {
+    setSelectedMovie(null);
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header open={open} setOpen={setOpen} />
@@ -118,7 +176,7 @@ const MovieListCMS = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
             <div>
               <label className="block mb-1" htmlFor="filterStatus">
-                Filtered by:
+                Filter by:
               </label>
               <select
                 id="filterStatus"
@@ -127,7 +185,7 @@ const MovieListCMS = () => {
                 onChange={(e) => setFilterStatus(e.target.value)}
               >
                 <option value="All">All</option>
-                <option value="Unapproved">Pending</option>
+                <option value="Pending">Pending</option>
                 <option value="Approved">Approved</option>
               </select>
             </div>
@@ -192,7 +250,11 @@ const MovieListCMS = () => {
               </thead>
               <tbody>
                 {currentMovies.map((movie, index) => (
-                  <tr key={movie.id}>
+                  <tr
+                    key={movie.id}
+                    onClick={() => handleSelectMovie(movie)}
+                    className="cursor-pointer"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base font-medium text-gray-900">
                       {indexOfFirstMovie + index + 1}
                     </td>
@@ -267,6 +329,125 @@ const MovieListCMS = () => {
               </ul>
             </nav>
           </div>
+          {selectedMovie && (
+            <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+              <div className="bg-white p-6 rounded-lg w-full max-w-lg">
+                <h2 className="text-2xl font-bold mb-4">
+                  {selectedMovie.title}
+                </h2>
+
+                {/* Menampilkan semua atribut movie */}
+                <p>
+                  <strong>Alternative Title:</strong>{" "}
+                  {selectedMovie.alternativetitle || "N/A"}
+                </p>
+                <p>
+                  <strong>Synopsis:</strong> {selectedMovie.synopsis}
+                </p>
+                <p>
+                  <strong>Photo URL:</strong>{" "}
+                  <a
+                    href={selectedMovie.urlphoto}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View Photo
+                  </a>
+                </p>
+                <p>
+                  <strong>Release Date:</strong>{" "}
+                  {selectedMovie.releasedate
+                    ? new Date(selectedMovie.releasedate).toDateString()
+                    : "N/A"}
+                </p>
+                <p>
+                  <strong>Trailer Link:</strong>{" "}
+                  <a
+                    href={selectedMovie.linktrailer}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Watch Trailer
+                  </a>
+                </p>
+                <p>
+                  <strong>Rating:</strong> {selectedMovie.rating || "N/A"}
+                </p>
+                <p>
+                  <strong>Duration:</strong>{" "}
+                  {selectedMovie.duration
+                    ? `${selectedMovie.duration} mins`
+                    : "N/A"}
+                </p>
+                <p>
+                  <strong>Status:</strong> {selectedMovie.status || "N/A"}
+                </p>
+                <p>
+                  <strong>Approval Status:</strong>{" "}
+                  {selectedMovie.approvalstatus ? "Approved" : "Pending"}
+                </p>
+                <p>
+                  <strong>Country:</strong>{" "}
+                  {selectedMovie.Country ? selectedMovie.Country.name : "N/A"}
+                </p>
+
+                {/* Menampilkan Actors */}
+                <p>
+                  <strong>Actors:</strong>{" "}
+                  {selectedMovie.Actors && selectedMovie.Actors.length > 0
+                    ? formatText(
+                        selectedMovie.Actors.map((actor) => actor.name)
+                      )
+                    : "No Actors Listed"}
+                </p>
+
+                {/* Menampilkan Genres */}
+                <p>
+                  <strong>Genres:</strong>{" "}
+                  {selectedMovie.Genres && selectedMovie.Genres.length > 0
+                    ? formatText(
+                        selectedMovie.Genres.map((genre) => genre.name)
+                      )
+                    : "No Genres Listed"}
+                </p>
+
+                {/* Menampilkan Awards */}
+                <p>
+                  <strong>Awards:</strong>{" "}
+                  {selectedMovie.Awards && selectedMovie.Awards.length > 0
+                    ? formatText(
+                        selectedMovie.Awards.map((award) => award.award)
+                      )
+                    : "No Awards Listed"}
+                </p>
+
+                {/* Menampilkan Availability */}
+                <p>
+                  <strong>Availability:</strong>{" "}
+                  {selectedMovie.Availabilities && selectedMovie.Availabilities.length > 0
+                    ? formatText(
+                        selectedMovie.Availabilities.map((avail) => avail.name)
+                      )
+                    : "No Availability Listed"}
+                </p>
+
+                <div className="mt-4 flex justify-between">
+                  <button
+                    onClick={handleApproveToggle}
+                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                  >
+                    {selectedMovie.approvalstatus ? "Unapprove" : "Approve"}
+                  </button>
+                  <button
+                    onClick={handleCloseModal}
+                    className="bg-gray-500 text-white px-4 py-2 rounded"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </div>
