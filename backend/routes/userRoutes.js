@@ -1,3 +1,4 @@
+const passport = require('passport');
 const express = require('express');
 const {  
     getAllUsers, 
@@ -28,12 +29,34 @@ router.post('/users/delete/:id', deleteUser);
 
 router.get('/get-user', authMiddleware, (req, res) => {
     try {
-      const { id, name, role } = req.user; // Ambil data user dari token
-      res.json({ id, name, role }); // Kirim respons dengan nama user
+      const { id, name, role } = req.user;
+      res.json({ id, name, role });
     } catch (error) {
       console.error('Error fetching user data:', error);
       res.status(500).json({ message: 'Error fetching user data' });
     }
   });
-  
+
+// Route untuk memulai proses login dengan Google
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+// Route untuk menangani callback dari Google
+router.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/login', session: false }), 
+  (req, res) => {
+    const role = req.user.role;
+    res.redirect(`/auth/success?token=${req.user.token}&role=${role}`);
+  }
+);
+
+
+// Route untuk menangani hasil sukses setelah Google login
+router.get('/auth/success', (req, res) => {
+  const token = req.query.token;
+  if (!token) {
+    return res.status(400).json({ message: 'Token not provided' });
+  }
+  res.json({ token });
+});
+
 module.exports = router;

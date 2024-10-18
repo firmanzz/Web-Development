@@ -26,4 +26,23 @@ const connection = async () => {
 
 connection();
 
-module.exports = sequelize;
+// Export both sequelize instance and config object
+module.exports = sequelize;  // Ini untuk digunakan oleh model seperti Countries.js
+
+// Export config object for Sequelize CLI to use
+module.exports.config = {
+  development: {
+    username: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_NAME,
+    host: process.env.DATABASE_HOST,
+    dialect: process.env.DATABASE_DIALECT
+  },
+  production: {
+    username: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_NAME,
+    host: process.env.DATABASE_HOST,
+    dialect: process.env.DATABASE_DIALECT
+  }
+};
