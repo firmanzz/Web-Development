@@ -8,7 +8,9 @@ const MovieActor = require('../models/MovieActor');
 const MovieGenre = require('../models/MovieGenre');
 const MovieAvail = require('../models/MovieAvail');
 const MovieAward = require('../models/MovieAward');
-const MovieDirector = require('../models/MovieDirector');  // Import MovieDirector
+const MovieDirector = require('../models/MovieDirector');
+const User = require('../models/User');
+const Comment = require('../models/Comment');
 
 exports.getMovieDetail = async (req, res) => {
   const { id } = req.params;
@@ -36,6 +38,14 @@ exports.getMovieDetail = async (req, res) => {
           model: Award,
           through: MovieAward,
           attributes: ['id', 'award', 'year'],
+        },
+        {
+          model: User,
+          attributes: ['id', 'name'],  // Hanya ambil data User
+          through: { 
+            model: Comment,  // Ambil komentar dan rating melalui Comment
+            attributes: ['comment', 'rate', 'time'],
+          },
         },
         {
           model: Director,  // Include directors

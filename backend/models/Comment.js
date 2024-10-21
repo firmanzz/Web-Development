@@ -1,35 +1,38 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
-const commentSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true
+const Comment = sequelize.define(
+  "Comment",
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    comment: { type: DataTypes.STRING(1000) },
+    movieid: {
+      type: DataTypes.INTEGER,
+      references: { model: "Movies", key: "id" },
+    },
+    userid: {
+      type: DataTypes.INTEGER,
+      references: { model: "Users", key: "id" },
     },
     rate: {
-        type: Number,
-        required: true,
+      type: DataTypes.FLOAT,
+      validate: {
         min: 1,
-        max: 5
-    },
-    drama: {
-        type: String,
-        required: true
-    },
-    text: {
-        type: String,
-        required: true
+        max: 5,
+      },
     },
     status: {
-        type: String,
-        enum: ['Approved', 'Unapproved'],
-        default: 'Unapproved'
+      type: DataTypes.ENUM("Approved", "Unapproved"),
+      defaultValue: "Unapproved",
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
-});
-
-const Comment = mongoose.model('Comment', commentSchema);
+    time: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
+  },
+  {
+    tableName: "comments",
+    timestamps: false, }
+);
 
 module.exports = Comment;

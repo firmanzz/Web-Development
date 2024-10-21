@@ -11,6 +11,8 @@ const Actor = require('./Actor');
 const MovieActor = require('./MovieActor');
 const Director = require('./Director');
 const MovieDirector = require('./MovieDirector');
+const User = require('./User');
+const Comment = require('./Comment');
 
 const Movie = sequelize.define(
   "Movie",
@@ -54,6 +56,7 @@ Movie.belongsToMany(Director, { through: MovieDirector, foreignKey: 'movieid', o
 Director.belongsToMany(Movie, { through: MovieDirector, foreignKey: 'directorid', otherKey: 'movieid' });
 Movie.belongsToMany(Availability, { through: MovieAvailability, foreignKey: 'movieid', otherKey: 'availid' });
 Availability.belongsToMany(Movie, { through: MovieAvailability, foreignKey: 'availid', otherKey: 'movieid' });
-
+Movie.belongsToMany(User, { through: Comment, foreignKey: 'movieid', otherKey: 'userid' });
+User.belongsToMany(Movie, { through: Comment, foreignKey: 'userid', otherKey: 'movieid' });
 
 module.exports = Movie;

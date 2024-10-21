@@ -10,6 +10,11 @@ const MovieDetail = () => {
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [newReview, setNewReview] = useState({
+    rating: 0,
+    comment: "",
+  });
+  const [submitting, setSubmitting] = useState(false);
   const sidebarRef = useRef(null);
 
   useEffect(() => {
@@ -33,6 +38,34 @@ const MovieDetail = () => {
     fetchMovie();
   }, [id]);
 
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/movies/${id}/reviews`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newReview),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to submit review.");
+      }
+
+      const updatedMovie = await response.json();
+      setMovie(updatedMovie);
+      setNewReview({ rating: 0, comment: "" });
+    } catch (error) {
+      setError("Failed to submit review. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
   if (loading) {
     return <p className="text-white text-center">Loading movie details...</p>;
   }
@@ -192,7 +225,91 @@ const MovieDetail = () => {
                 <h3 className="text-lg font-bold mb-3 text-gray-800">
                   User Reviews
                 </h3>
+                {movie.Users && movie.Users.length > 0 ? (
+                  movie.Users.map((user) => (
+                    <div key={user.id} className="mb-4">
+                      <div className="flex justify-between items-center">
+                        <p className="text-2xl font-bold text-gray-800 ">
+                          {user.name}
+                          <span className="text-yellow-500 text-3xl ml-2">
+                            {Array.from({ length: 5 }, (v, i) => (
+                              <span key={i}>
+                                {i < Math.floor(user.Comment.rate) ? "★" : "☆"}
+                              </span>
+                            ))}
+                          </span>
+                        </p>
+                        <p className="text-xs text-gray-600">
+                          {new Date(user.Comment.time).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <p className="text-xl text-gray-800">
+                        {user.Comment.comment}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-600">No Comments</p>
+                )}
               </div>
+              <div className="p-6 rounded-lg shadow-lg mb-6 bg-white">
+              <h3 className="text-lg font-bold mb-3 text-gray-800">
+                Submit Your Review
+              </h3>
+              <form onSubmit={handleReviewSubmit} className="mb-6">
+                <div className="mb-4">
+                  <label
+                    htmlFor="rating"
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                  >
+                    Rating (1-5):
+                  </label>
+                  <input
+                    type="number"
+                    id="rating"
+                    name="rating"
+                    min="1"
+                    max="5"
+                    value={newReview.rating}
+                    onChange={(e) =>
+                      setNewReview({ ...newReview, rating: e.target.value })
+                    }
+                    required
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label
+                    htmlFor="comment"
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                  >
+                    Comment:
+                  </label>
+                  <textarea
+                    id="comment"
+                    name="comment"
+                    value={newReview.comment}
+                    onChange={(e) =>
+                      setNewReview({ ...newReview, comment: e.target.value })
+                    }
+                    required
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                    rows="4"
+                  ></textarea>
+                </div>
+
+                <div>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  >
+                    {submitting ? "Submitting..." : "Submit Review"}
+                  </button>
+                </div>
+              </form>
+            </div>
             </div>
           </div>
         </div>
