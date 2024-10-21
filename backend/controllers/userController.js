@@ -67,24 +67,40 @@ exports.loginUser = async (req, res) => {
 
 // Get all users
 exports.getAllUsers = async (req, res) => {
-    try {
-        const users = await User.find();
-        res.render('users', { users });
-    } catch (err) {
-        res.status(500).send('Server Error');
-    }
+  try {
+    const users = await User.findAll({logging: false,});
+    res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred' });
+  }
 };
 
 // Edit a user
 exports.editUser = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { name, email, role } = req.body;
-        await User.findByIdAndUpdate(id, { name, email, role });
-        res.redirect('/users');
-    } catch (err) {
-        res.status(500).send('Server Error');
+  const { id } = req.params; 
+  const { suspend } = req.body; 
+
+  try {
+    // Cari user berdasarkan ID
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    // Update status suspend
+    user.suspend = suspend;
+
+    // Simpan perubahan
+    await user.save();
+
+    // Kirim respons dengan data user yang telah diperbarui
+    res.status(200).json({ message: "User suspend status updated successfully", user });
+  } catch (error) {
+    console.error("Error updating user suspend status:", error);
+    res.status(500).json({ message: "An error occurred while updating user suspend status" });
+  }
 };
 
 // Delete a user
