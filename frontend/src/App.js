@@ -9,6 +9,7 @@ import AdminRoutes from "./routes/AdminRoutes";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/admin/ForgotPassword";
+import GoogleAuth from "./pages/GoogleAuth";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/Directors" element={<Directors />} />
         <Route path="/details/:id" element={<MovieDetail />} />
         <Route path="/admin/*" element={<AdminRoutes />} />
+        <Route path="/google-auth" element={<GoogleAuth />} />
       </Routes>
     </Router>
   );

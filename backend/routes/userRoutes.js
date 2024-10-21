@@ -44,19 +44,25 @@ router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 
 router.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/login', session: false }), 
   (req, res) => {
-    const role = req.user.role;
-    res.redirect(`/auth/success?token=${req.user.token}&role=${role}`);
+    const role = req.user.role || 'editor';  // Asumsi role default adalah 'editor'
+    const name = req.user.name || 'mathar';  // Ambil nama pengguna dari req.user
+
+    res.redirect(`/api/auth/success?token=${req.user.token}&role=${role}&name=${name}`);
   }
 );
-
 
 // Route untuk menangani hasil sukses setelah Google login
 router.get('/auth/success', (req, res) => {
   const token = req.query.token;
+  const role = req.query.role;
+  const name = req.query.name;
+  
   if (!token) {
     return res.status(400).json({ message: 'Token not provided' });
   }
-  res.json({ token });
+
+  // Redirect ke frontend dengan token dan role
+  return res.redirect(`http://localhost:3000/google-auth?token=${token}&role=${role}&name=${name}`);
 });
 
 module.exports = router;

@@ -7,37 +7,38 @@ const HeaderCMS = ({ open, setOpen }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null); // Simpan data user
 
-  // Fungsi untuk mengambil data user dari backend
-  const getUserData = async () => {
-    try {
-      const token = localStorage.getItem('token'); // Ambil token dari Local Storage
-      if (!token) throw new Error('No token found');
+// Fungsi untuk mengambil data user dari backend
+const getUserData = async () => {
+  try {
+    const token = localStorage.getItem('token'); // Ambil token dari Local Storage
+    if (!token) throw new Error('No token found');
 
-      const response = await fetch('http://localhost:5000/api/get-user', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`, // Kirim token di header Authorization
-          'Content-Type': 'application/json',
-        },
-      });
+    const response = await fetch('http://localhost:5000/api/get-user', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`, // Kirim token di header Authorization
+        'Content-Type': 'application/json',
+      },
+    });
 
-      if (!response.ok) {
-        const errorMessage = await response.json();
-        console.error('DATA USER:', errorMessage); // Debug respons server
-        throw new Error('Failed to fetch user data');
-      }
-
-      const userData = await response.json();
-      console.log('User Data:', userData); // Debug respons user
-
-      setUser(userData); // Simpan data user ke state
-      setIsAuthenticated(true);
-    } catch (error) {
-      console.error(error);
-      setIsAuthenticated(false);
-      window.location.href = '/Login'; // Redirect jika token tidak valid
+    if (!response.ok) {
+      const errorMessage = await response.json();
+      console.error('DATA USER:', errorMessage); // Debug respons server
+      throw new Error('Failed to fetch user data');
     }
-  };
+
+    const userData = await response.json();
+    console.log('User Data:', userData); // Debug respons user
+
+    setUser(userData); // Simpan data user ke state
+    setIsAuthenticated(true);
+  } catch (error) {
+    console.error(error);
+    setIsAuthenticated(false);
+    window.location.href = '/Login'; // Redirect jika token tidak valid
+  }
+};
+
 
   useEffect(() => {
     getUserData(); // Ambil data user saat komponen pertama kali dimuat

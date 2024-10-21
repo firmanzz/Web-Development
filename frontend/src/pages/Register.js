@@ -62,6 +62,10 @@ const Register = () => {
       setMessage('Verification failed. Please try again.');
     }
   };
+
+  const googleSignIn = () => {
+    window.location.href = 'http://localhost:5000/api/auth/google';
+  };
   
   return (
     <div className="flex items-center justify-center min-h-screen px-4 bg-gray-800">
@@ -140,6 +144,13 @@ const Register = () => {
             </button>
           </form>
         )}
+
+        <button
+          onClick={googleSignIn}
+          className="w-full px-3 py-1.5 mt-3 font-bold text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none focus:ring focus:border-blue-300 text-sm"
+        >
+          Sign in with Google
+        </button>
 
         <p className="mt-3 text-center text-sm text-gray-600">
           Already have an account?{' '}

@@ -23,11 +23,15 @@ const Header = ({ open, setOpen }) => {
       });
 
       if (!response.ok) {
+        const errorMessage = await response.json();
+        console.error('DATA USER:', errorMessage); // Debug respons server
         throw new Error('Failed to fetch user data');
       }
 
       const userData = await response.json();
-      setUser(userData); // Simpan data user ke state
+      console.log('User Data:', userData);
+
+      setUser(userData); // Simpan data user ke states
       setIsAuthenticated(true);
     } catch (error) {
       console.error(error);

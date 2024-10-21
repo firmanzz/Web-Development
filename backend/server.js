@@ -27,15 +27,6 @@ app.get('/', (req, res) => {
   res.send('Selamat datang di halaman utama!');
 });
 
-// Route untuk menangani sukses login melalui Google
-app.get('/auth/success', (req, res) => {
-  const token = req.query.token;
-  if (!token) {
-    return res.status(400).json({ message: 'Token not provided' });
-  }
-  res.json({ token });
-});
-
 // Rute API yang dapat diakses oleh semua pengguna
 app.use('/api', movieRoutes);
 app.use('/api', genreRoutes);

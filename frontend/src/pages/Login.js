@@ -1,9 +1,34 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  // Tambahkan useEffect untuk menangani token dari URL setelah login Google berhasil
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');  // Ambil token dari URL
+    const role = urlParams.get('role');  // Ambil role jika ada
+  
+    console.log('Token from URL:', token);  // Debugging
+    console.log('Role from URL:', role);  // Debugging
+  
+    if (token) {
+      localStorage.setItem('token', token);  // Simpan token ke localStorage
+      if (role) {
+        localStorage.setItem('role', role);  // Simpan role jika ada
+      }
+  
+      // Arahkan pengguna berdasarkan role
+      if (role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,17 +38,18 @@ const Login = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),  // Mengirim email dan password
+        body: JSON.stringify({ email, password }),
       });
   
-      const data = await response.json();  // Mengambil respons lengkap
-      console.log("DATA: ", data);  // Pastikan token dan data ikut ditampilkan
-  
+      const data = await response.json();
+      
       if (response.ok) {
+        // Simpan token dari login biasa ke localStorage
         localStorage.setItem('token', data.token);
+        localStorage.setItem('role', data.data.role);
         alert('Login successful!');
-        
-        // Redirect based on the user's role
+
+        // Redirect pengguna berdasarkan role dari respons login
         if (data.data.role === 'admin') {
           window.location.href = '/admin';
         } else if (data.data.role === 'editor') {
@@ -39,7 +65,11 @@ const Login = () => {
       alert('Login failed: Server error');
     }
   };
-  
+
+  const googleSignIn = () => {
+    // Redirect pengguna ke URL Google OAuth
+    window.location.href = 'http://localhost:5000/api/auth/google';
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen px-4 bg-gray-800">
@@ -77,6 +107,12 @@ const Login = () => {
             Sign In
           </button>
         </form>
+        <button
+          onClick={googleSignIn}
+          className="w-full px-3 py-1.5 mt-2 font-bold text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none focus:ring focus:border-blue-300 text-sm"
+        >
+          Sign in with Google
+        </button>
         <p className="mt-3 text-center text-sm text-gray-600">
           Don't have an account?{' '}
           <Link to="/Register" className="text-blue-500 hover:underline">
