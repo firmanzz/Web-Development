@@ -12,7 +12,6 @@ const movieDetailRoutes = require('./routes/movieDetailRoutes');
 const sequelize = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
 const cors = require('cors');
-const passport = require('./config/passport');
 
 // Import middleware
 const authMiddleware = require('./middleware/authMiddleware');
@@ -20,7 +19,6 @@ const adminMiddleware = require('./middleware/adminMiddleware');
 
 app.use(cors());
 app.use(express.json());
-app.use(passport.initialize());
 
 // Rute yang tidak memerlukan autentikasi
 app.get('/', (req, res) => {
@@ -42,7 +40,7 @@ app.use('/api', userRoutes);
 // Rute khusus admin yang dilindungi oleh middleware autentikasi dan admin
 app.use('/admin', authMiddleware, adminMiddleware, (req, res, next) => {
   if (!req.user) {
-    return res.redirect('/Login');
+    return res.redirect('//Login');
   }
   res.send('Selamat datang di halaman admin!');
 });

@@ -185,6 +185,7 @@ exports.addMovie = async (req, res) => {
     selectedGenres,
     selectedActors,
     selectedAwards,
+    selectedAvailabilities,
   } = req.body;
 
   try {
@@ -242,50 +243,97 @@ exports.addMovie = async (req, res) => {
 
 
 exports.updateMovie = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { title, synopsis, genres, actors, availabilities, awards, approvalstatus } = req.body;
+  const {
+    title,
+    alternativetitle,
+    synopsis,
+    urlphoto,
+    releasedate,
+    availability,
+    linktrailer,
+    rating,
+    duration,
+    status,
+    countryid,
+    selectedGenres,
+    selectedActors,
+    selectedAwards,
+    selectedAvailabilities,
+    removedGenres,  // array of genre IDs to be removed
+    removedActors,  // array of actor IDs to be removed
+    removedAwards,  // array of award IDs to be removed
+    removedAvailabilities  // array of availability IDs to be removed
+  } = req.body;
 
-    // Cari movie berdasarkan ID
+  const { id } = req.params;
+
+  try {
     const movie = await Movie.findByPk(id);
     if (!movie) {
-      return res.status(404).json({ error: "Movie not found" });
+      return res.status(404).json({ message: 'Movie not found' });
     }
 
-    // Perbarui field hanya jika ada di request body, jika tidak gunakan nilai yang sudah ada
-    if (title !== undefined) movie.title = title;
-    if (synopsis !== undefined) movie.synopsis = synopsis;
-    
-    // Pastikan approvalstatus yang diterima adalah boolean, simpan sebagai true/false
-    if (approvalstatus !== undefined) {
-      movie.approvalstatus = Boolean(approvalstatus);
+    // Update movie details
+    await movie.update({
+      title,
+      alternativetitle,
+      synopsis,
+      urlphoto,
+      releasedate,
+      availability,
+      linktrailer,
+      rating,
+      duration,
+      status,
+      countryid,
+    });
+
+    // Update genres (add/remove selectively)
+    if (selectedGenres && selectedGenres.length > 0) {
+      const genresToAdd = await Genre.findAll({ where: { id: selectedGenres } });
+      await movie.addGenres(genresToAdd);  // Add new genres
+    }
+    if (removedGenres && removedGenres.length > 0) {
+      const genresToRemove = await Genre.findAll({ where: { id: removedGenres } });
+      await movie.removeGenres(genresToRemove);  // Remove selected genres
     }
 
-    if (genres) {
-      await movie.setGenres(genres);  // setGenres adalah helper Sequelize untuk relasi many-to-many
+    // Update actors (add/remove selectively)
+    if (selectedActors && selectedActors.length > 0) {
+      const actorsToAdd = await Actor.findAll({ where: { id: selectedActors } });
+      await movie.addActors(actorsToAdd);  // Add new actors
     }
-    if (actors) {
-      await movie.setActors(actors);  // setActors adalah helper Sequelize untuk relasi many-to-many
-    }
-    if (awards) {
-      await movie.setAwards(awards);  // setAwards adalah helper Sequelize untuk relasi many-to-many
-    }
-    if (availabilities) {
-      await movie.setaw(awards);  // setAwards adalah helper Sequelize untuk relasi many-to-many
+    if (removedActors && removedActors.length > 0) {
+      const actorsToRemove = await Actor.findAll({ where: { id: removedActors } });
+      await movie.removeActors(actorsToRemove);  // Remove selected actors
     }
 
-    // Simpan perubahan pada movie
-    await movie.save();
+    // Update awards (add/remove selectively)
+    if (selectedAwards && selectedAwards.length > 0) {
+      const awardsToAdd = await Award.findAll({ where: { id: selectedAwards } });
+      await movie.addAwards(awardsToAdd);  // Add new awards
+    }
+    if (removedAwards && removedAwards.length > 0) {
+      const awardsToRemove = await Award.findAll({ where: { id: removedAwards } });
+      await movie.removeAwards(awardsToRemove);  // Remove selected awards
+    }
 
-    // Mengirim kembali data movie yang diperbarui
-    res.status(200).json(movie);
+    // Update availabilities (add/remove selectively)
+    if (selectedAvailabilities && selectedAvailabilities.length > 0) {
+      const availabilitiesToAdd = await Availability.findAll({ where: { id: selectedAvailabilities } });
+      await movie.addAvailabilities(availabilitiesToAdd);  // Add new availabilities
+    }
+    if (removedAvailabilities && removedAvailabilities.length > 0) {
+      const availabilitiesToRemove = await Availability.findAll({ where: { id: removedAvailabilities } });
+      await movie.removeAvailabilities(availabilitiesToRemove);  // Remove selected availabilities
+    }
+
+    res.status(200).json({ message: 'Movie updated successfully!', movie });
   } catch (error) {
-    console.error("Error updating movie:", error);
-    res.status(500).json({ error: "An error occurred while updating the movie" });
+    console.error(error);
+    res.status(500).json({ message: 'Error updating movie', error });
   }
 };
-
-
 
 exports.deleteMovie = async (req, res) => {
   const { id } = req.params;

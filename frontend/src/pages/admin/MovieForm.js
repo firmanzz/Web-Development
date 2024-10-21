@@ -15,14 +15,21 @@ const MovieForm = () => {
   const [filteredGenres, setFilteredGenres] = useState([]);
   const [filteredAwards, setFilteredAwards] = useState([]);
   const [filteredActors, setFilteredActors] = useState([]);
+  const [filteredAvails, setFilteredAvails] = useState([]);
   const [genres, setGenres] = useState([]);
   const [awards, setAwards] = useState([]);
   const [countries, setCountries] = useState([]);
   const [actors, setActors] = useState([]);
+  const [availabilities, setAvailabilities] = useState([]);
 
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [selectedAwards, setSelectedAwards] = useState([]);
   const [selectedActors, setSelectedActors] = useState([]);
+  const [selectedAvailabilities, setSelectedAvailabilities] = useState([]);
+  const [removedGenres, setRemovedGenres] = useState([]);
+  const [removedActors, setRemovedActors] = useState([]);
+  const [removedAwards, setRemovedAwards] = useState([]);
+  const [removedAvailabilities, setRemovedAvailabilities] = useState([]);
 
   const [movieDetails, setMovieDetails] = useState({
     title: "",
@@ -43,29 +50,38 @@ const MovieForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [genreResponse, awardResponse, countryResponse, actorResponse] = await Promise.all([
+        const [
+          genreResponse,
+          awardResponse,
+          countryResponse,
+          actorResponse,
+          availabilityResponse,
+        ] = await Promise.all([
           fetch("http://localhost:5000/api/genres"),
           fetch("http://localhost:5000/api/awards"),
           fetch("http://localhost:5000/api/countries"),
           fetch("http://localhost:5000/api/actors"),
+          fetch("http://localhost:5000/api/avail"),
         ]);
 
         setGenres(await genreResponse.json());
         setAwards(await awardResponse.json());
         setCountries(await countryResponse.json());
         setActors(await actorResponse.json());
+        setAvailabilities(await availabilityResponse.json());
 
-        // If we are in edit mode, fetch the movie details
         if (id) {
-          const movieResponse = await fetch(`http://localhost:5000/api/movies/${id}`);
+          const movieResponse = await fetch(
+            `http://localhost:5000/api/movies/${id}`
+          );
           const movieData = await movieResponse.json();
 
-          // Set the form fields with the movie data for editing
           setMovieDetails(movieData);
           setSelectedGenres(movieData.Genres || []);
           setSelectedAwards(movieData.Awards || []);
           setSelectedActors(movieData.Actors || []);
-          setIsEditMode(true); // Set edit mode to true
+          setSelectedAvailabilities(movieData.Availabilities || []);
+          setIsEditMode(true);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -75,30 +91,27 @@ const MovieForm = () => {
     fetchData();
   }, [id]);
 
-  // Handle form submit for both add and edit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Data to be sent to the backend
     const data = {
-      ...movieDetails, // include movie details
-      selectedGenres, // selected genres
-      selectedActors, // selected actors
-      selectedAwards, // selected awards
+      ...movieDetails,
+      selectedGenres: selectedGenres.map((g) => g.id), // Hanya kirim ID
+      selectedActors: selectedActors.map((a) => a.id),
+      selectedAwards: selectedAwards.map((a) => a.id),
+      selectedAvailabilities: selectedAvailabilities.map((a) => a.id),
+      removedGenres, // Sertakan genre yang akan dihapus
+      removedActors,
+      removedAwards,
+      removedAvailabilities,
     };
 
     try {
       if (isEditMode) {
-        // Send a PUT request if we are editing
         await axios.put(`http://localhost:5000/api/movies/${id}`, data);
-        console.log("Movie updated successfully.");
       } else {
-        // Send a POST request if we are adding a new movie
         await axios.post("http://localhost:5000/api/addMovie", data);
-        console.log("Movie created successfully.");
       }
-
-      // Redirect to the movies list or display success message
       navigate("/admin/");
     } catch (error) {
       console.error("Error submitting movie:", error);
@@ -161,6 +174,43 @@ const MovieForm = () => {
     setFilteredAwards([]);
   };
 
+  const handleAvailChange = (e) => {
+    const query = e.target.value.toLowerCase();
+    const filtered = availabilities.filter((avail) =>
+      avail.name.toLowerCase().includes(query)
+    );
+    setFilteredAvails(filtered);
+  };
+
+  const handleAvailSelect = (avail) => {
+    if (!selectedAvailabilities.some((b) => b.id === avail.id)) {
+      setSelectedAvailabilities([...selectedAvailabilities, avail]);
+    }
+    setFilteredAvails([]);
+  };
+
+  const handleGenreRemove = (genre) => {
+    setSelectedGenres(selectedGenres.filter((g) => g.id !== genre.id));
+    setRemovedGenres([...removedGenres, genre.id]); // Tambahkan ke daftar yang akan dihapus
+  };
+
+  const handleActorRemove = (actor) => {
+    setSelectedActors(selectedActors.filter((a) => a.id !== actor.id));
+    setRemovedActors([...removedActors, actor.id]);
+  };
+
+  const handleAwardRemove = (award) => {
+    setSelectedAwards(selectedAwards.filter((a) => a.id !== award.id));
+    setRemovedAwards([...removedAwards, award.id]);
+  };
+
+  const handleAvailRemove = (avail) => {
+    setSelectedAvailabilities(
+      selectedAvailabilities.filter((a) => a.id !== avail.id)
+    );
+    setRemovedAvailabilities([...removedAvailabilities, avail.id]);
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header open={open} setOpen={setOpen} />
@@ -170,10 +220,17 @@ const MovieForm = () => {
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
             {isEditMode ? "Edit Movie" : "Add Movie"}
           </h1>
-          <form method="POST" encType="multipart/form-data" onSubmit={handleSubmit}>
+          <form
+            method="POST"
+            encType="multipart/form-data"
+            onSubmit={handleSubmit}
+          >
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="title"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Title
                 </label>
                 <input
@@ -221,7 +278,10 @@ const MovieForm = () => {
                 />
               </div>
               <div>
-                <label htmlFor="country" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="country"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Country
                 </label>
                 <select
@@ -243,7 +303,10 @@ const MovieForm = () => {
 
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label htmlFor="duration" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="duration"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Duration
                 </label>
                 <input
@@ -256,7 +319,10 @@ const MovieForm = () => {
                 />
               </div>
               <div>
-                <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="status"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Status
                 </label>
                 <input
@@ -272,7 +338,10 @@ const MovieForm = () => {
 
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label htmlFor="rating" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="rating"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Rating
                 </label>
                 <input
@@ -284,24 +353,54 @@ const MovieForm = () => {
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
                 />
               </div>
-              <div>
-                <label htmlFor="availability" className="block text-sm font-medium text-gray-700">
-                  Availability
+              <div className="mb-4">
+                <label
+                  htmlFor="availabilities"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Add Availabilities
                 </label>
                 <input
                   type="text"
-                  id="availability"
-                  name="availability"
-                  value={movieDetails.availability}
-                  onChange={handleChange}
+                  id="availabilities"
+                  name="availabilities"
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
+                  placeholder="Start typing availabilities..."
+                  onChange={handleAvailChange}
                 />
+                <div className="bg-white shadow-md rounded-md mt-2">
+                  {filteredAvails.map((avail) => (
+                    <div
+                      key={avail.id}
+                      className="p-2 hover:bg-gray-200 cursor-pointer"
+                      onClick={() => handleAvailSelect(avail)}
+                    >
+                      {avail.name}
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-2">
+                  {selectedAvailabilities.map((avail) => (
+                    <span
+                      key={avail.id}
+                      className="inline-block bg-blue-500 text-white p-1 m-1 rounded-md"
+                    >
+                      {avail.name}{" "}
+                      <button onClick={() => handleAvailRemove(avail)}>
+                        x
+                      </button>
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label htmlFor="urlphoto" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="urlphoto"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   URL Poster
                 </label>
                 <input
@@ -314,7 +413,10 @@ const MovieForm = () => {
                 />
               </div>
               <div>
-                <label htmlFor="linktrailer" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="linktrailer"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Link Trailer
                 </label>
                 <input
@@ -329,7 +431,10 @@ const MovieForm = () => {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="synopsis" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="synopsis"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Synopsis
               </label>
               <textarea
@@ -343,7 +448,10 @@ const MovieForm = () => {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="genres" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="genres"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Add Genres
               </label>
               <input
@@ -372,7 +480,7 @@ const MovieForm = () => {
                     className="inline-block bg-blue-500 text-white p-1 m-1 rounded-md"
                   >
                     {genre.name}{" "}
-                    <button onClick={() => setSelectedGenres(selectedGenres.filter(g => g.id !== genre.id))}>
+                    <button onClick={() => handleGenreRemove(genre)}>
                       x
                     </button>
                   </span>
@@ -381,7 +489,10 @@ const MovieForm = () => {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="actors" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="actors"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Add Actors
               </label>
               <input
@@ -409,7 +520,7 @@ const MovieForm = () => {
                     className="inline-block bg-green-500 text-white p-1 m-1 rounded-md"
                   >
                     {actor.name}{" "}
-                    <button onClick={() => setSelectedActors(selectedActors.filter(a => a.id !== actor.id))}>
+                    <button onClick={() => handleActorRemove(actor)}>
                       x
                     </button>
                   </span>
@@ -418,7 +529,10 @@ const MovieForm = () => {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="awards" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="awards"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Add Awards
               </label>
               <input
@@ -446,7 +560,7 @@ const MovieForm = () => {
                     className="inline-block bg-green-500 text-white p-1 m-1 rounded-md"
                   >
                     {award.award} ({award.year}){" "}
-                    <button onClick={() => setSelectedAwards(selectedAwards.filter(a => a.id !== award.id))}>
+                    <button onClick={() => handleAwardRemove(award)}>
                       x
                     </button>
                   </span>
@@ -455,10 +569,16 @@ const MovieForm = () => {
             </div>
 
             <div className="flex justify-end mt-4">
-              <button type="submit" className="px-4 py-2 bg-green-600 text-white rounded-md mr-2">
+              <button
+                type="submit"
+                className="px-4 py-2 bg-green-600 text-white rounded-md mr-2"
+              >
                 {isEditMode ? "Update Movie" : "Submit"}
               </button>
-              <a href="/admin/" className="px-4 py-2 bg-red-600 text-white rounded-md">
+              <a
+                href="/admin/"
+                className="px-4 py-2 bg-red-600 text-white rounded-md"
+              >
                 Cancel
               </a>
             </div>
