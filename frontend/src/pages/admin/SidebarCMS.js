@@ -1,8 +1,9 @@
 import React, { forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const Sidebar = forwardRef(({ open, setOpen }, ref) => {
-  const role = localStorage.getItem('role');  // Ambil role dari local storage
+  const role = Cookies.get('role');  // Ambil role dari cookies
 
   // Menu untuk admin
   const Menus = [

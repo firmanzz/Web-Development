@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const GoogleAuth = () => {
     const navigate = useNavigate();
@@ -12,10 +13,10 @@ const GoogleAuth = () => {
         const name = urlParams.get('name');
         
         if (token) {
-            // Simpan token dan role di localStorage
-            localStorage.setItem('token', token);
-            localStorage.setItem('role', role);
-            localStorage.setItem('name', name);
+            // Simpan token dan role di cookies
+            Cookies.set('token', token);
+            Cookies.set('role', role);
+            Cookies.set('name', name);
 
             // Redirect berdasarkan role
             if (role === 'admin') {

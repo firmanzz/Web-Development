@@ -1,13 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const Logout = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Hapus token dan role dari local storage
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
+    // Hapus token dan role dari cookies
+    Cookies.remove('token');
+    Cookies.remove('role');
     navigate('/login');
   };
 

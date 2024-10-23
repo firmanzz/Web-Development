@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FaUserCircle, FaDoorOpen } from "react-icons/fa"; // Import avatar dan logout icon
+import Cookies from 'js-cookie';
 
 const Header = ({ open, setOpen }) => {
   const location = useLocation();
@@ -11,7 +12,7 @@ const Header = ({ open, setOpen }) => {
   // Cek apakah user sudah login dan ambil data user
   const getUserData = async () => {
     try {
-      const token = localStorage.getItem("token"); // Ambil token
+      const token = Cookies.get("token"); // Ambil token dari cookies
       if (!token) throw new Error("No token found");
 
       const response = await fetch('http://localhost:5000/api/get-user', {
@@ -44,7 +45,7 @@ const Header = ({ open, setOpen }) => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Hapus token
+    Cookies.remove("token"); // Hapus token dari cookies
     setIsAuthenticated(false);
     setUser(null); // Reset state user
     navigate("/Login"); // Redirect ke halaman login

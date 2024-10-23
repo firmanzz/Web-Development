@@ -11,9 +11,10 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/admin/ForgotPassword";
 import GoogleAuth from "./pages/GoogleAuth";
 import MovieForm from "./pages/admin/MovieForm";
+import Cookies from 'js-cookie';
 
 function App() {
-  const role = localStorage.getItem('role'); // Assume role is stored in localStorage after login
+  const role = Cookies.get('role'); // Assume role is stored in cookies after login
 
   return (
     <Router>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -12,9 +13,9 @@ const Login = () => {
     const role = urlParams.get('role');
   
     if (token) {
-      localStorage.setItem('token', token);
+      Cookies.set('token', token);
       if (role) {
-        localStorage.setItem('role', role);
+        Cookies.set('role', role);
       }
   
       if (role === 'admin') {
@@ -39,8 +40,8 @@ const Login = () => {
       const data = await response.json();
       
       if (response.ok) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('role', data.data.role);
+        Cookies.set('token', data.token);
+        Cookies.set('role', data.data.role);
         alert('Login successful!');
 
         if (data.data.role === 'admin') {
@@ -73,7 +74,7 @@ const Login = () => {
       });
 
       const { token } = await response.json();
-      localStorage.setItem('token', token);
+      Cookies.set('token', token);
       navigate('/');
     } catch (error) {
       console.error('Error during guest login:', error);

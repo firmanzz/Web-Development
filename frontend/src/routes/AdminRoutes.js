@@ -8,10 +8,11 @@ import Actors from "../pages/admin/Actors";
 import Directors from "../pages/admin/Directors";
 import Comments from "../pages/admin/Comments";
 import Users from "../pages/admin/Users";
+import Cookies from 'js-cookie';
 
 const AdminRoutes = () => {
-  const token = localStorage.getItem('token'); 
-  const role = localStorage.getItem('role');
+  const token = Cookies.get('token'); 
+  const role = Cookies.get('role');
 
   if (!token) {
     return <Navigate to="/Login" />;
