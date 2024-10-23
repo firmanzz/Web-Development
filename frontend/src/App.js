@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/admin/ForgotPassword";
 import GoogleAuth from "./pages/GoogleAuth";
+import MovieForm from "./pages/admin/MovieForm";
 
 function App() {
   const role = localStorage.getItem('role'); // Assume role is stored in localStorage after login
@@ -26,11 +27,15 @@ function App() {
         <Route path="/Celebs" element={<Celebs />} />
         <Route path="/Directors" element={<Directors />} />
         <Route path="/details/:id" element={<MovieDetail />} />
-        {/* Only allow admin access to /admin routes */}
+        
+        {/* Route for Admin and Editor */}
         {role === 'admin' && <Route path="/admin/*" element={<AdminRoutes />} />}
+        {role === 'editor' && <Route path="/admin/addMovie" element={<MovieForm />} />}
+        
         <Route path="/google-auth" element={<GoogleAuth />} />
-        {/* Redirect if someone tries to access admin routes without being an admin */}
-        {role !== 'admin' && <Route path="/admin/*" element={<Navigate to="/" />} />}
+        
+        {/* Redirect if user is not admin or editor */}
+        {role !== 'admin' && role !== 'editor' && <Route path="/admin/*" element={<Navigate to="/" />} />}
       </Routes>
     </Router>
   );

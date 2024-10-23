@@ -1,11 +1,15 @@
-// backend/routes/adminRoutes.js
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../middleware/authMiddleware');
+const movieController = require('../controllers/movieController');
 const adminMiddleware = require('../middleware/adminMiddleware');
-const adminController = require('../controllers/adminController');
+const authMiddleware = require('../middleware/authMiddleware');
 
-// Semua rute di dalam '/admin' akan melalui kedua middleware ini
-router.get('/', authMiddleware, adminMiddleware, adminController.getAdminPage);
+// Route for adding movie accessible by editor
+router.post('/addMovie', authMiddleware, adminMiddleware, movieController.addMovie);
+
+// Other admin routes
+router.get('/', authMiddleware, adminMiddleware, (req, res) => {
+  res.send('Admin dashboard');
+});
 
 module.exports = router;

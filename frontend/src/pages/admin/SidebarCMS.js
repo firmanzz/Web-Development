@@ -2,6 +2,9 @@ import React, { forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Sidebar = forwardRef(({ open, setOpen }, ref) => {
+  const role = localStorage.getItem('role');  // Ambil role dari local storage
+
+  // Menu untuk admin
   const Menus = [
     {
       title: "MOVIE",
@@ -21,6 +24,21 @@ const Sidebar = forwardRef(({ open, setOpen }, ref) => {
     { title: "USERS", key: "users", path: "/admin/Users" },
   ];
 
+  // Menu untuk editor
+  const editorMenu = [
+    {
+      title: "MOVIE",
+      submenu: true,
+      key: "movie",
+      submenuItem: [
+        { title: "INPUT NEW MOVIE", key: "input-new-movie", path: "/admin/addMovie" },
+      ],
+    },
+  ];
+
+  // Tampilkan menu berdasarkan role
+  const filteredMenus = role === "admin" ? Menus : editorMenu;
+
   return (
     <div
       ref={ref}
@@ -36,10 +54,10 @@ const Sidebar = forwardRef(({ open, setOpen }, ref) => {
           &times;
         </button>
         <ul className="pt-2">
-          {Menus.map((menu, index) => (
+          {filteredMenus.map((menu, index) => (
             <React.Fragment key={menu.key}>
               <MenuItem menu={menu} open={open} />
-              {index < Menus.length - 1 && <hr className="border-t border-gray-600 my-2" />}
+              {index < filteredMenus.length - 1 && <hr className="border-t border-gray-600 my-2" />}
             </React.Fragment>
           ))}
         </ul>

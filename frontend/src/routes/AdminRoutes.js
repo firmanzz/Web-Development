@@ -13,22 +13,35 @@ const AdminRoutes = () => {
   const token = localStorage.getItem('token'); 
   const role = localStorage.getItem('role');
 
-  if (!token || role !== 'admin') {
+  if (!token) {
     return <Navigate to="/Login" />;
   }
 
   return (
     <Routes>
-      <Route path="/" element={<MovieListCMS />} />
-      <Route path="/addMovie" element={<MovieForm />} />
-      <Route path="/editMovie/:id" element={<MovieForm />} />
-      <Route path="/countries" element={<Countries />} />
-      <Route path="/awards" element={<Awards />} />
-      <Route path="/genres" element={<Genres />} />
-      <Route path="/actors" element={<Actors />} />
-      <Route path="/directors" element={<Directors />} />
-      <Route path="/comments" element={<Comments />} />
-      <Route path="/users" element={<Users />} />
+      {/* Admin routes */}
+      {role === 'admin' && (
+        <>
+          <Route path="/" element={<MovieListCMS />} />
+          <Route path="/addMovie" element={<MovieForm />} />
+          <Route path="/editMovie/:id" element={<MovieForm />} />
+          <Route path="/countries" element={<Countries />} />
+          <Route path="/awards" element={<Awards />} />
+          <Route path="/genres" element={<Genres />} />
+          <Route path="/actors" element={<Actors />} />
+          <Route path="/directors" element={<Directors />} />
+          <Route path="/comments" element={<Comments />} />
+          <Route path="/users" element={<Users />} />
+        </>
+      )}
+
+      {/* Editor routes */}
+      {role === 'editor' && (
+        <Route path="/addMovie" element={<MovieForm />} />  // Editor hanya bisa akses menambah film
+      )}
+
+      {/* Default redirect */}
+      <Route path="*" element={<Navigate to="/admin/addMovie" />} />
     </Routes>
   );
 }
