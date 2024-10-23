@@ -12,6 +12,7 @@ const movieDetailRoutes = require('./routes/movieDetailRoutes');
 const sequelize = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
 const commentRoutes = require('./routes/commentRoutes');
+const passport = require('./config/passport'); 
 const cors = require('cors');
 
 // Import middleware
@@ -20,6 +21,7 @@ const adminMiddleware = require('./middleware/adminMiddleware');
 
 app.use(cors());
 app.use(express.json());
+app.use(passport.initialize());
 
 // Rute yang tidak memerlukan autentikasi
 app.get('/', (req, res) => {
