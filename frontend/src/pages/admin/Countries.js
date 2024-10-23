@@ -8,6 +8,8 @@ const Countries = ({ movies }) => {
   const [newCountry, setNewCountry] = useState("");
   const [countries, setCountries] = useState([]);
   const [error, setError] = useState("");
+  const [editingCountryId, setEditingCountryId] = useState(null);
+  const [editingCountryName, setEditingCountryName] = useState("");
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -82,6 +84,49 @@ const Countries = ({ movies }) => {
     }
   };
 
+  const startEditing = (id, name) => {
+    setEditingCountryId(id);
+    setEditingCountryName(name);
+  };
+
+  const handleEditSubmit = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/countries/${editingCountryId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: editingCountryName }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to edit country");
+      }
+
+      const updatedCountry = await response.json();
+
+      setCountries((prevCountries) =>
+        prevCountries.map((country) =>
+          country.id === editingCountryId ? updatedCountry : country
+        )
+      );
+
+      setEditingCountryId(null);
+      setEditingCountryName("");
+    } catch (error) {
+      console.error("Error editing country:", error);
+      setError("Failed to edit country");
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCountryId(null);
+    setEditingCountryName("");
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header open={open} setOpen={setOpen} />
@@ -132,15 +177,49 @@ const Countries = ({ movies }) => {
                       {index + 1}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {country.name}
+                      {editingCountryId === country.id ? (
+                        <input
+                          type="text"
+                          value={editingCountryName}
+                          onChange={(e) => setEditingCountryName(e.target.value)}
+                          className="border rounded-md px-2 py-1"
+                        />
+                      ) : (
+                        country.name
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <button
-                        onClick={() => handleDelete(country.id)}
-                        className="bg-red-600 text-white px-3 py-1 rounded-md"
-                      >
-                        Delete
-                      </button>
+                      {editingCountryId === country.id ? (
+                        <>
+                          <button
+                            onClick={handleEditSubmit}
+                            className="bg-blue-600 text-white px-3 py-1 rounded-md mr-2"
+                          >
+                            OK
+                          </button>
+                          <button
+                            onClick={handleCancelEdit}
+                            className="bg-gray-600 text-white px-3 py-1 rounded-md"
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => startEditing(country.id, country.name)}
+                            className="bg-yellow-600 text-white px-3 py-1 rounded-md mr-2"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(country.id)}
+                            className="bg-red-600 text-white px-3 py-1 rounded-md"
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))}

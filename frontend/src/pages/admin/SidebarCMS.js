@@ -17,10 +17,10 @@ const Sidebar = forwardRef(({ open, setOpen }, ref) => {
       ],
     },
     { title: "COUNTRIES", key: "countries", path: "/admin/Countries" },
-    { title: "AWARDS", key: "awards", path: "/admin/Awards" },
     { title: "GENRES", key: "genres", path: "/admin/Genres" },
     { title: "ACTORS", key: "actors", path: "/admin/Actors" },
     { title: "DIRECTORS", key: "directors", path: "/admin/Directors" },
+    { title: "AWARDS", key: "awards", path: "/admin/Awards" },
     { title: "COMMENTS", key: "comments", path: "/admin/Comments" },
     { title: "USERS", key: "users", path: "/admin/Users" },
   ];

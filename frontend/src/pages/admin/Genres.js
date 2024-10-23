@@ -8,6 +8,8 @@ const Genres = () => {
   const [genres, setGenres] = useState([]);
   const [newGenre, setNewGenre] = useState("");
   const [error, setError] = useState("");
+  const [editingGenreId, setEditingGenreId] = useState(null);
+  const [editingGenreName, setEditingGenreName] = useState("");
 
   useEffect(() => {
     const fetchGenres = async () => {
@@ -45,7 +47,7 @@ const Genres = () => {
       }
 
       setGenres([...genres, data]);
-      setNewGenre(""); 
+      setNewGenre("");
     } catch (error) {
       console.error("Error adding genre:", error);
       setError("Failed to add genre");
@@ -79,13 +81,56 @@ const Genres = () => {
     }
   };
 
+  const startEditing = (id, name) => {
+    setEditingGenreId(id);
+    setEditingGenreName(name);
+  };
+
+  const handleEditSubmit = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/genres/${editingGenreId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: editingGenreName }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to edit genre");
+      }
+
+      const updatedGenre = await response.json();
+
+      setGenres((prevGenres) =>
+        prevGenres.map((genre) =>
+          genre.id === editingGenreId ? updatedGenre : genre
+        )
+      );
+
+      setEditingGenreId(null);
+      setEditingGenreName("");
+    } catch (error) {
+      console.error("Error editing genre:", error);
+      setError("Failed to edit genre");
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingGenreId(null);
+    setEditingGenreName("");
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header open={open} setOpen={setOpen} />
       <div className="flex flex-grow">
         <Sidebar ref={sidebarRef} open={open} setOpen={setOpen} />
         <div className="flex-1 p-4">
-          <h1 className="text-2xl font-bold mb-6">Genres</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-6">Genres</h1>
 
           {error && <p className="text-red-600 mb-4">{error}</p>}
 
@@ -128,15 +173,49 @@ const Genres = () => {
                       {index + 1}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {genre.name}
+                      {editingGenreId === genre.id ? (
+                        <input
+                          type="text"
+                          value={editingGenreName}
+                          onChange={(e) => setEditingGenreName(e.target.value)}
+                          className="border rounded-md px-2 py-1"
+                        />
+                      ) : (
+                        genre.name
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <button
-                        onClick={() => handleDelete(genre.id)}
-                        className="bg-red-600 text-white px-3 py-1 rounded-md"
-                      >
-                        Delete
-                      </button>
+                      {editingGenreId === genre.id ? (
+                        <>
+                          <button
+                            onClick={handleEditSubmit}
+                            className="bg-blue-600 text-white px-3 py-1 rounded-md mr-2"
+                          >
+                            OK
+                          </button>
+                          <button
+                            onClick={handleCancelEdit}
+                            className="bg-gray-600 text-white px-3 py-1 rounded-md"
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => startEditing(genre.id, genre.name)}
+                            className="bg-yellow-600 text-white px-3 py-1 rounded-md mr-2"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(genre.id)}
+                            className="bg-red-600 text-white px-3 py-1 rounded-md"
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))}
