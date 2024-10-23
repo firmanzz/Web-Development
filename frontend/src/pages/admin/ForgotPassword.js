@@ -38,7 +38,7 @@ const ForgotPassword = () => {
 
       const data = await response.json();
       alert(data.message);
-      if (response.ok) window.location.href = '//Login';
+      if (response.ok) window.location.href = '/Login';
     } catch (error) {
       console.log(error);
     }
@@ -118,7 +118,7 @@ const ForgotPassword = () => {
         )}
         <p className="mt-3 text-center text-sm text-gray-600">
           Remember your password?{' '}
-          <Link to="//Login" className="text-blue-500 hover:underline">
+          <Link to="/Login" className="text-blue-500 hover:underline">
             Login
           </Link>
         </p>
