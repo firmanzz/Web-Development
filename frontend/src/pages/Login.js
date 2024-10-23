@@ -12,9 +12,6 @@ const Login = () => {
     const token = urlParams.get('token');  // Ambil token dari URL
     const role = urlParams.get('role');  // Ambil role jika ada
   
-    console.log('Token from URL:', token);  // Debugging
-    console.log('Role from URL:', role);  // Debugging
-  
     if (token) {
       localStorage.setItem('token', token);  // Simpan token ke localStorage
       if (role) {

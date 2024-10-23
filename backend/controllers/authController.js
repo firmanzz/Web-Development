@@ -56,7 +56,6 @@ exports.verifyEmail = async (req, res) => {
 
   try {
     const user = await User.findOne({ where: { email } });
-    console.log('User Found:', user); // Debugging
 
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
@@ -65,8 +64,6 @@ exports.verifyEmail = async (req, res) => {
     if (user.isVerified) {
       return res.status(400).json({ message: 'Email already verified' });
     }
-
-    console.log(`Expected Code: ${user.verificationCode}, Received: ${code}`); // Debugging
 
     if (user.verificationCode !== code) {
       return res.status(400).json({ message: 'Invalid verification code' });
@@ -86,7 +83,6 @@ exports.verifyEmail = async (req, res) => {
 // Login User tanpa validasi percobaan gagal
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
-  console.log('Login Attempt:', email);
 
   try {
     const user = await User.findOne({ where: { email } });

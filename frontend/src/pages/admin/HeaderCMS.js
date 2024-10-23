@@ -28,7 +28,6 @@ const getUserData = async () => {
     }
 
     const userData = await response.json();
-    console.log('User Data:', userData); // Debug respons user
 
     setUser(userData); // Simpan data user ke state
     setIsAuthenticated(true);

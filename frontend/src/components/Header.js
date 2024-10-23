@@ -29,7 +29,6 @@ const Header = ({ open, setOpen }) => {
       }
 
       const userData = await response.json();
-      console.log('User Data:', userData);
 
       setUser(userData); // Simpan data user ke states
       setIsAuthenticated(true);
