@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Celebs from "./pages/Celebs";
 import Directors from "./pages/Directors";
@@ -12,6 +12,8 @@ import ForgotPassword from "./pages/admin/ForgotPassword";
 import GoogleAuth from "./pages/GoogleAuth";
 
 function App() {
+  const role = localStorage.getItem('role'); // Assume role is stored in localStorage after login
+
   return (
     <Router>
       <Routes>
@@ -24,8 +26,11 @@ function App() {
         <Route path="/Celebs" element={<Celebs />} />
         <Route path="/Directors" element={<Directors />} />
         <Route path="/details/:id" element={<MovieDetail />} />
-        <Route path="/admin/*" element={<AdminRoutes />} />
+        {/* Only allow admin access to /admin routes */}
+        {role === 'admin' && <Route path="/admin/*" element={<AdminRoutes />} />}
         <Route path="/google-auth" element={<GoogleAuth />} />
+        {/* Redirect if someone tries to access admin routes without being an admin */}
+        {role !== 'admin' && <Route path="/admin/*" element={<Navigate to="/" />} />}
       </Routes>
     </Router>
   );

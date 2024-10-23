@@ -9,36 +9,28 @@ import Directors from "../pages/admin/Directors";
 import Comments from "../pages/admin/Comments";
 import Users from "../pages/admin/Users";
 
-// Fungsi untuk mengecek apakah pengguna sudah login
-const isAuthenticated = async () => {
-  try {
-    const response = await fetch('http://localhost:5000/api/get-user', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.AUTH_SECRET}`
-      }
-    });
-    await response.json(); 
-  } catch (error) {
-    console.log(error);
-  }
-};
+const AdminRoutes = () => {
+  const token = localStorage.getItem('token'); 
+  const role = localStorage.getItem('role');
 
-export default function AdminRoutes() {
+  if (!token || role !== 'admin') {
+    return <Navigate to="/Login" />;
+  }
+
   return (
-    <Routes>    
-      {/* Rute yang memerlukan autentikasi */}
-      <Route path="/" element={isAuthenticated() ? <MovieListCMS /> : <Navigate to="/Login" />} />
-      <Route path="/addMovie" element={isAuthenticated() ? <MovieForm /> : <Navigate to="/Login" />} />
-      <Route path="/editMovie/:id" element={isAuthenticated() ? <MovieForm /> : <Navigate to="/Login" />} />
-      <Route path="/countries" element={isAuthenticated() ? <Countries /> : <Navigate to="/Login" />} />
-      <Route path="/awards" element={isAuthenticated() ? <Awards /> : <Navigate to="/Login" />} />
-      <Route path="/genres" element={isAuthenticated() ? <Genres /> : <Navigate to="/Login" />} />
-      <Route path="/actors" element={isAuthenticated() ? <Actors /> : <Navigate to="/Login" />} />
-      <Route path="/directors" element={isAuthenticated() ? <Directors /> : <Navigate to="/Login" />} />
-      <Route path="/comments" element={isAuthenticated() ? <Comments /> : <Navigate to="/Login" />} />
-      <Route path="/users" element={isAuthenticated() ? <Users /> : <Navigate to="/Login" />} />
+    <Routes>
+      <Route path="/" element={<MovieListCMS />} />
+      <Route path="/addMovie" element={<MovieForm />} />
+      <Route path="/editMovie/:id" element={<MovieForm />} />
+      <Route path="/countries" element={<Countries />} />
+      <Route path="/awards" element={<Awards />} />
+      <Route path="/genres" element={<Genres />} />
+      <Route path="/actors" element={<Actors />} />
+      <Route path="/directors" element={<Directors />} />
+      <Route path="/comments" element={<Comments />} />
+      <Route path="/users" element={<Users />} />
     </Routes>
   );
 }
+
+export default AdminRoutes;

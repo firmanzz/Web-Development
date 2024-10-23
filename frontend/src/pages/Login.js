@@ -6,19 +6,17 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  // Tambahkan useEffect untuk menangani token dari URL setelah login Google berhasil
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');  // Ambil token dari URL
-    const role = urlParams.get('role');  // Ambil role jika ada
+    const token = urlParams.get('token');
+    const role = urlParams.get('role');
   
     if (token) {
-      localStorage.setItem('token', token);  // Simpan token ke localStorage
+      localStorage.setItem('token', token);
       if (role) {
-        localStorage.setItem('role', role);  // Simpan role jika ada
+        localStorage.setItem('role', role);
       }
   
-      // Arahkan pengguna berdasarkan role
       if (role === 'admin') {
         navigate('/admin');
       } else {
@@ -41,12 +39,10 @@ const Login = () => {
       const data = await response.json();
       
       if (response.ok) {
-        // Simpan token dari login biasa ke localStorage
         localStorage.setItem('token', data.token);
         localStorage.setItem('role', data.data.role);
         alert('Login successful!');
 
-        // Redirect pengguna berdasarkan role dari respons login
         if (data.data.role === 'admin') {
           window.location.href = '/admin';
         } else if (data.data.role === 'editor') {
@@ -64,10 +60,27 @@ const Login = () => {
   };
 
   const googleSignIn = () => {
-    // Redirect pengguna ke URL Google OAuth
     window.location.href = 'http://localhost:5000/api/auth/google';
   };
 
+  const handleGuestLogin = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/guest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const { token } = await response.json();
+      localStorage.setItem('token', token);
+      navigate('/');
+    } catch (error) {
+      console.error('Error during guest login:', error);
+      alert('Guest login failed');
+    }
+  };
+      
   return (
     <div className="flex items-center justify-center min-h-screen px-4 bg-gray-800">
       <div className="w-full max-w-xs p-6 bg-white rounded shadow-md">
@@ -121,6 +134,12 @@ const Login = () => {
           <a href="http://localhost:3000/forgot-password" className="text-blue-500 hover:underline">
             Click here
           </a>
+        </p>
+        <p className="mt-1 text-center text-sm text-gray-600">
+          Just Looking Around?{' '}
+          <span onClick={handleGuestLogin} className="text-blue-500 hover:underline cursor-pointer">
+            Continue as Guest
+          </span>
         </p>
       </div>
     </div>
