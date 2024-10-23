@@ -46,7 +46,7 @@ router.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login', session: false }), 
   (req, res) => {
     const role = req.user.role || 'editor';  // Asumsi role default adalah 'editor'
-    const name = req.user.name || 'mathar';  // Ambil nama pengguna dari req.user
+    const name = req.user.name;  // Ambil nama pengguna dari req.user
 
     res.redirect(`/api/auth/success?token=${req.user.token}&role=${role}&name=${name}`);
   }
