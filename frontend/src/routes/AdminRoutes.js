@@ -19,7 +19,7 @@ const isAuthenticated = async () => {
         'Authorization': `Bearer ${process.env.AUTH_SECRET}`
       }
     });
-    const data = await response.json(); 
+    await response.json(); 
   } catch (error) {
     console.log(error);
   }

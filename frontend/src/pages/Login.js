@@ -118,7 +118,7 @@ const Login = () => {
         </p>
         <p className="mt-1 text-center text-sm text-gray-600">
           Forgot your password?{' '}
-          <a href="http://localhost:3000/admin/forgot-password" className="text-blue-500 hover:underline">
+          <a href="http://localhost:3000/forgot-password" className="text-blue-500 hover:underline">
             Click here
           </a>
         </p>
