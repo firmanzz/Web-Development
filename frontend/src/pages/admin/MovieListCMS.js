@@ -89,21 +89,31 @@ const MovieListCMS = () => {
 
   // Filtering movies based on the search term and status
   const filteredMovies = movies
-  .filter((movie) => {
-    // Gabungkan semua atribut yang akan dicari (title, synopsis, actors, genres)
-    const searchString = `
+    .filter((movie) => {
+      // Gabungkan semua atribut yang akan dicari (title, synopsis, actors, genres)
+      const searchString = `
       ${movie.title.toLowerCase()} 
       ${movie.synopsis ? movie.synopsis.toLowerCase() : ""}
-      ${movie.Actors ? movie.Actors.map((actor) => actor.name.toLowerCase()).join(" ") : ""}
-      ${movie.Genres ? movie.Genres.map((genre) => genre.name.toLowerCase()).join(" ") : ""}
+      ${
+        movie.Actors
+          ? movie.Actors.map((actor) => actor.name.toLowerCase()).join(" ")
+          : ""
+      }
+      ${
+        movie.Genres
+          ? movie.Genres.map((genre) => genre.name.toLowerCase()).join(" ")
+          : ""
+      }
     `;
 
-    // Cari term dalam atribut yang sudah digabungkan
-    return searchString.includes(searchTerm.toLowerCase());
-  })
-  .filter((movie) => 
-    filterStatus === "All" || (movie.approvalstatus ? "Approved" : "Pending") === filterStatus
-  );
+      // Cari term dalam atribut yang sudah digabungkan
+      return searchString.includes(searchTerm.toLowerCase());
+    })
+    .filter(
+      (movie) =>
+        filterStatus === "All" ||
+        (movie.approvalstatus ? "Approved" : "Pending") === filterStatus
+    );
 
   // Pagination logic
   const indexOfLastMovie = currentPage * showCount;
@@ -240,6 +250,9 @@ const MovieListCMS = () => {
                   <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[300px]">
                     Description
                   </th>
+                  <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[300px]">
+                    Photos
+                  </th>
                   <th className="text-center p-3 text-xs sm:text-sm md:text-base w-[100px]">
                     Status
                   </th>
@@ -248,7 +261,7 @@ const MovieListCMS = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="bg-white divide-y divide-gray-200">
                 {currentMovies.map((movie, index) => (
                   <tr
                     key={movie.id}
@@ -283,6 +296,15 @@ const MovieListCMS = () => {
                           {expanded[movie.id] ? "Read Less" : "Read More"}
                         </button>
                       )}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <div className="flex justify-center items-center">
+                        <img
+                          src={movie.urlphoto}
+                          alt={movie.title}
+                          className="h-16 w-16 object-cover rounded-md"
+                        />
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-normal break-words text-xs sm:text-sm md:text-base text-gray-500">
                       {movie.approvalstatus ? "Approved" : "Pending"}
@@ -345,14 +367,12 @@ const MovieListCMS = () => {
                   <strong>Synopsis:</strong> {selectedMovie.synopsis}
                 </p>
                 <p>
-                  <strong>Photo URL:</strong>{" "}
-                  <a
-                    href={selectedMovie.urlphoto}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    View Photo
-                  </a>
+                <strong>Photos:</strong>
+                  <img
+                    src={selectedMovie.urlphoto}
+                    alt={selectedMovie.title}
+                    className="h-46 w-36 object-cover rounded-md"
+                  />
                 </p>
                 <p>
                   <strong>Release Date:</strong>{" "}
@@ -424,7 +444,8 @@ const MovieListCMS = () => {
                 {/* Menampilkan Availability */}
                 <p>
                   <strong>Availability:</strong>{" "}
-                  {selectedMovie.Availabilities && selectedMovie.Availabilities.length > 0
+                  {selectedMovie.Availabilities &&
+                  selectedMovie.Availabilities.length > 0
                     ? formatText(
                         selectedMovie.Availabilities.map((avail) => avail.name)
                       )
