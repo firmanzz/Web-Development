@@ -2,18 +2,30 @@ import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./SidebarCMS";
 import Header from "./HeaderCMS";
 
-const Actors = () => {
+const Directors = () => {
   const [open, setOpen] = useState(false);
   const sidebarRef = useRef(null);
   const [directors, setDirectors] = useState([]);
   const [formState, setFormState] = useState({
-    directorName: '',
-    country: '',
-    birthDate: '',
-    photo: null
+    directorName: "",
+    country: "",
+    birthDate: "",
+    photo: "",
   });
+  const [filteredCountries, setFilteredCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [countries, setCountries] = useState([]);
+  const [selectedDirector, setSelectedDirector] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // State for filter, search, pagination, and item per page
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterCountry, setFilterCountry] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  // eslint-disable-next-line no-unused-vars
+  const maxPageNumbers = 3
 
   useEffect(() => {
     const fetchDirectors = async () => {
@@ -32,71 +44,155 @@ const Actors = () => {
       }
     };
 
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/countries");
+        const countryData = await response.json();
+        setCountries(countryData);
+      } catch (error) {
+        console.error("Error fetching countries:", error);
+      }
+    };
+
     fetchDirectors();
+    fetchCountries();
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormState((prevState) => ({
       ...prevState,
-      [name]: value
-    }));
-  };
-
-  const handleFileChange = (e) => {
-    setFormState((prevState) => ({
-      ...prevState,
-      photo: e.target.files[0]
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const formData = new FormData();
-    formData.append("actorName", formState.actorName);
-    formData.append("countryid", formState.country); // Assuming you are using countryid in the form
-    formData.append("birthdate", formState.birthDate);
-    formData.append("photo", formState.photo);
+
+    const formData = {
+      name: formState.directorName || selectedDirector?.name,
+      countryid: selectedCountry?.id || selectedDirector?.Country?.id || formState.country,
+      birthdate: formState.birthDate || selectedDirector?.birthdate,
+      urlphoto: formState.photo || selectedDirector?.urlphoto,
+    };
 
     try {
-      const response = await fetch("http://localhost:5000/api/actors", {
-        method: "POST",
-        body: formData
-      });
-      if (!response.ok) {
-        throw new Error("Failed to add actor");
+      let response;
+      if (selectedDirector) {
+        response = await fetch(`http://localhost:5000/api/directors/${selectedDirector.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+      } else {
+        response = await fetch("http://localhost:5000/api/addDirector", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
       }
-      const newActor = await response.json();
-      setDirectors([...directors, newActor]); // Add new actor to the list
-      setFormState({ actorName: '', country: '', birthDate: '', photo: null }); // Reset form
+
+      if (!response.ok) {
+        throw new Error("Failed to save director");
+      }
+
+      const updatedDirector = await response.json();
+
+      if (selectedDirector) {
+        setDirectors(directors.map((director) => (director.id === updatedDirector.id ? updatedDirector : director)));
+      } else {
+        setDirectors([...directors, updatedDirector]);
+      }
+
+      setFormState({ directorName: "", country: "", birthDate: "", photo: "" });
+      setSelectedCountry(null);
+      setSelectedDirector(null);
     } catch (error) {
-      console.error("Error adding actor:", error);
-      setError("Failed to add actor. Please try again.");
+      console.error("Error saving director:", error);
+      setError("Failed to save director. Please try again.");
     }
   };
 
-  const handleDeleteActor = async (id) => {
+  const handleDeleteDirector = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/actors/${id}`, {
-        method: "DELETE"
+      const response = await fetch(`http://localhost:5000/api/directors/${id}`, {
+        method: "DELETE",
       });
       if (!response.ok) {
-        throw new Error("Failed to delete actor");
+        throw new Error("Failed to delete director");
       }
-      setDirectors(directors.filter((actor) => actor.id !== id)); // Remove deleted actor from list
+      setDirectors(directors.filter((director) => director.id !== id));
     } catch (error) {
-      console.error("Error deleting actor:", error);
-      setError("Failed to delete actor. Please try again.");
+      console.error("Error deleting director:", error);
+      setError("Failed to delete director. Please try again.");
     }
   };
+
+  const handleCountryChange = (e) => {
+    const query = e.target.value.toLowerCase();
+    const filtered = countries.filter((country) =>
+      country.name.toLowerCase().includes(query)
+    );
+    setFilteredCountries(filtered);
+  };
+
+  const handleCountrySelect = (country) => {
+    setSelectedCountry(country);
+    setFilteredCountries([]);
+  };
+
+  const handleCountryRemove = () => {
+    setSelectedCountry(null);
+  };
+
+  const handleEditDirector = (director) => {
+    setSelectedDirector(director);
+    setFormState({
+      directorName: director.name,
+      birthDate: director.birthdate,
+      photo: director.urlphoto,
+      country: director.countryid,
+    });
+    setSelectedCountry(director.Country);
+  };
+
+  const handleCancelEdit = () => {
+    setSelectedDirector(null);
+    setFormState({ directorName: "", country: "", birthDate: "", photo: "" });
+    setSelectedCountry(null);
+  };
+
+  // Filtering and searching directors
+  const filteredDirectors = directors.filter((director) => {
+    const matchesCountry = filterCountry === "All" || director.Country?.name === filterCountry;
+    const matchesSearch = director.name.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCountry && matchesSearch;
+  });
+
+  // Pagination logic
+  const indexOfLastDirector = currentPage * itemsPerPage;
+  const indexOfFirstDirector = indexOfLastDirector - itemsPerPage;
+  const currentDirectors = filteredDirectors.slice(indexOfFirstDirector, indexOfLastDirector);
+
+  const totalPages = Math.ceil(filteredDirectors.length / itemsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Calculate page numbers for dynamic pagination
+  const startPage = Math.max(1, currentPage - Math.floor(maxPageNumbers / 2));
+  const endPage = Math.min(totalPages, startPage + maxPageNumbers - 1);
 
   return (
     <div className="flex flex-col min-h-screen">
       <Header open={open} setOpen={setOpen} />
       <div className="flex flex-grow">
         <Sidebar ref={sidebarRef} open={open} setOpen={setOpen} />
-        <div className="flex-1 p-4">
-          <h1 className="text-2xl font-bold mb-6">Directors</h1>
+        <main className="flex-col flex-grow overflow-y-auto bg-white px-4 md:px-6 mt-4">
+        <h1 className="text-3xl md:text-4xl font-bold mb-4">Directors</h1>
 
           <div className="mb-6">
             <form
@@ -105,21 +201,22 @@ const Actors = () => {
             >
               <div>
                 <label
-                  htmlFor="actorName"
+                  htmlFor="directorName"
                   className="block text-sm font-medium text-gray-700"
                 >
                   Director Name
                 </label>
                 <input
                   type="text"
-                  id="actorName"
-                  name="actorName"
-                  value={formState.actorName}
+                  id="directorName"
+                  name="directorName"
+                  value={formState.directorName}
                   onChange={handleChange}
-                  className="form-control mt-1 block w-full bg-gray-300 rounded-md shadow-sm"
+                  placeholder="Start typing director name..."
+                  className="form-control mt-1 block w-full p-2 border border-gray-300 rounded"
                 />
               </div>
-              <div>
+              <div className="relative mb-4">
                 <label
                   htmlFor="country"
                   className="block text-sm font-medium text-gray-700"
@@ -130,10 +227,38 @@ const Actors = () => {
                   type="text"
                   id="country"
                   name="country"
-                  value={formState.country}
-                  onChange={handleChange}
-                  className="form-control mt-1 block w-full bg-gray-300 rounded-md shadow-sm"
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                  placeholder={
+                    selectedCountry
+                      ? selectedCountry.name
+                      : "Start typing country..."
+                  }
+                  onChange={handleCountryChange}
+                  value={selectedCountry ? selectedCountry.name : ""}
                 />
+                <div
+                  className={`absolute z-10 bg-white shadow-md rounded-md mt-1 w-full ${
+                    filteredCountries.length === 0 ? "hidden" : ""
+                  }`}
+                >
+                  {filteredCountries.map((country) => (
+                    <div
+                      key={country.id}
+                      className="p-2 hover:bg-gray-200 cursor-pointer"
+                      onClick={() => handleCountrySelect(country)}
+                    >
+                      {country.name}
+                    </div>
+                  ))}
+                </div>
+                {selectedCountry && (
+                  <button
+                    onClick={handleCountryRemove}
+                    className="mt-2 text-sm text-red-600 hover:text-red-800"
+                  >
+                    Remove Country
+                  </button>
+                )}
               </div>
               <div>
                 <label
@@ -148,7 +273,7 @@ const Actors = () => {
                   name="birthDate"
                   value={formState.birthDate}
                   onChange={handleChange}
-                  className="form-control mt-1 block w-full bg-gray-300 rounded-md shadow-sm"
+                  className="form-control mt-1 block w-full p-2 border border-gray-300 rounded"
                 />
               </div>
               <div>
@@ -156,72 +281,150 @@ const Actors = () => {
                   htmlFor="photo"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Photo
+                  Photo URL
                 </label>
                 <input
-                  type="file"
+                  type="text"
                   id="photo"
                   name="photo"
-                  onChange={handleFileChange}
-                  className="form-control mt-1 block w-full bg-gray-300 rounded-md shadow-sm"
+                  value={formState.photo}
+                  onChange={handleChange}
+                  className="form-control mt-1 block w-full p-2 border border-gray-300 rounded"
+                  placeholder="Start typing photo url..."
                 />
               </div>
+
               <div className="md:col-span-4">
                 <button
                   type="submit"
                   className="bg-blue-500 text-white px-4 py-2 rounded-md"
                 >
-                  Add Actor
+                  {selectedDirector ? "Update Director" : "Add Director"}
                 </button>
+                {selectedDirector && (
+                  <button
+                    type="button"
+                    onClick={handleCancelEdit}
+                    className="bg-red-500 text-white px-4 py-2 rounded-md ml-4"
+                  >
+                    Cancel Edit
+                  </button>
+                )}
               </div>
             </form>
           </div>
 
-          {/* Table for Displaying Actors */}
+          {/* Filter and Search Section */}
+          <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label htmlFor="filterCountry" className="block text-sm font-medium text-gray-700">
+                Filter by Country:
+              </label>
+              <select
+                id="filterCountry"
+                value={filterCountry}
+                onChange={(e) => setFilterCountry(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+              >
+                <option value="All">All</option>
+                {countries.map((country) => (
+                  <option key={country.id} value={country.name}>
+                    {country.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="itemsPerPage" className="block text-sm font-medium text-gray-700">
+                Show
+              </label>
+              <select
+                id="itemsPerPage"
+                value={itemsPerPage}
+                onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                className="w-full p-2 border border-gray-300 rounded"
+              >
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="search" className="block text-sm font-medium text-gray-700">
+                Search by Director Name
+              </label>
+              <input
+                type="text"
+                id="search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder="Search by name..."
+              />
+            </div>
+          </div>
+
+          {/* Table for Displaying Filtered and Searched Directors */}
           <div className="overflow-x-auto">
             {loading ? (
               <p>Loading directors...</p>
             ) : error ? (
               <p className="text-red-500">{error}</p>
             ) : (
-              <table className="min-w-full divide-y divide-gray-200">
+              <table className="min-w-full divide-y divide-gray-200 text-sm md:text-base">
                 <thead className="bg-gray-800 text-white">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left font-medium uppercase tracking-wider">
                       No
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                      Country
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left font-medium uppercase tracking-wider">
                       Director Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left font-medium uppercase tracking-wider">
+                      Country
+                    </th>
+                    <th className="px-6 py-3 text-left font-medium uppercase tracking-wider">
                       Birth Date
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left font-medium uppercase tracking-wider">
                       Photos
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left font-medium uppercase tracking-wider">
                       Action
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {directors.map((director, index) => (
+                  {currentDirectors.map((director, index) => (
                     <tr key={director.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{director.Country.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{director.name}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {indexOfFirstDirector + index + 1}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {director.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {director.Country ? director.Country.name : "No Country"}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {new Date(director.birthdate).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                      <img src={director.urlphoto} alt={director.title} className="h-16 w-16 object-cover rounded-md" />
+                        <img
+                          src={director.urlphoto}
+                          alt={director.name}
+                          className="h-16 w-16 object-cover rounded-md"
+                        />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button
-                          onClick={() => handleDeleteActor(director.id)}
+                          onClick={() => handleEditDirector(director)}
+                          className="text-blue-600 hover:text-blue-800 mr-4"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteDirector(director.id)}
                           className="text-red-600 hover:text-red-800"
                         >
                           Delete
@@ -233,10 +436,50 @@ const Actors = () => {
               </table>
             )}
           </div>
-        </div>
+
+          {/* Pagination */}
+          <div className="flex justify-center my-4">
+            <nav className="flex items-center space-x-2">
+              {/* Previous Button */}
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
+                }`}
+              >
+                &larr; Prev
+              </button>
+
+              {/* Page Numbers */}
+              {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
+                <button
+                  key={startPage + i}
+                  onClick={() => paginate(startPage + i)}
+                  className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                    currentPage === startPage + i ? "bg-blue-500" : "hover:bg-gray-600"
+                  }`}
+                >
+                  {startPage + i}
+                </button>
+              ))}
+
+              {/* Next Button */}
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                  currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
+                }`}
+              >
+                Next &rarr;
+              </button>
+            </nav>
+          </div>
+        </main>
       </div>
     </div>
   );
 };
 
-export default Actors;
+export default Directors;

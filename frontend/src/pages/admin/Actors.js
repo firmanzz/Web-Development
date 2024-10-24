@@ -24,7 +24,7 @@ const Actors = () => {
   const [filterCountry, setFilterCountry] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [maxPageNumbers, setMaxPageNumbers] = useState(3);
+  const maxPageNumbers = 3
 
   useEffect(() => {
     const fetchActors = async () => {
@@ -191,7 +191,7 @@ const Actors = () => {
       <div className="flex flex-grow">
         <Sidebar ref={sidebarRef} open={open} setOpen={setOpen} />
         <main className="flex-col flex-grow overflow-y-auto bg-white px-4 md:px-6 mt-4">
-          <h1 className="text-2xl font-bold mb-6">Actors</h1>
+        <h1 className="text-3xl md:text-4xl font-bold mb-4">Actors</h1>
 
           <div className="mb-6">
             <form
@@ -212,7 +212,7 @@ const Actors = () => {
                   value={formState.actorName}
                   onChange={handleChange}
                   placeholder="Start typing actor name..."
-                  className="form-control mt-1 block w-full bg-gray-200 rounded-md shadow-sm"
+                  className="form-control mt-1 block w-full p-2 border border-gray-300 rounded"
                 />
               </div>
               <div className="relative mb-4">
@@ -226,7 +226,7 @@ const Actors = () => {
                   type="text"
                   id="country"
                   name="country"
-                  className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
                   placeholder={
                     selectedCountry
                       ? selectedCountry.name
@@ -272,7 +272,7 @@ const Actors = () => {
                   name="birthDate"
                   value={formState.birthDate}
                   onChange={handleChange}
-                  className="form-control mt-1 block w-full bg-gray-200 rounded-md shadow-sm"
+                  className="form-control mt-1 block w-full p-2 border border-gray-300 rounded"
                 />
               </div>
               <div>
@@ -288,7 +288,7 @@ const Actors = () => {
                   name="photo"
                   value={formState.photo}
                   onChange={handleChange}
-                  className="form-control mt-1 block w-full bg-gray-200 rounded-md shadow-sm"
+                  className="form-control mt-1 block w-full p-2 border border-gray-300 rounded"
                   placeholder="Start typing photo url..."
                 />
               </div>
@@ -316,27 +316,14 @@ const Actors = () => {
           {/* Filter and Search Section */}
           <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label htmlFor="search" className="block text-sm font-medium text-gray-700">
-                Search by Actor Name
-              </label>
-              <input
-                type="text"
-                id="search"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="form-control mt-1 block w-full bg-gray-200 rounded-md shadow-sm"
-                placeholder="Search by name..."
-              />
-            </div>
-            <div>
               <label htmlFor="filterCountry" className="block text-sm font-medium text-gray-700">
-                Filter by Country
+                Filter by Country:
               </label>
               <select
                 id="filterCountry"
                 value={filterCountry}
-                onChange={(e) => setFilterCountry(e.target.value)}
-                className="form-control mt-1 block w-full bg-gray-200 rounded-md shadow-sm"
+                onChange={(e) => setFilterCountry(e.target.value)}  
+                className="w-full p-2 border border-gray-300 rounded"
               >
                 <option value="All">All</option>
                 {countries.map((country) => (
@@ -354,12 +341,25 @@ const Actors = () => {
                 id="itemsPerPage"
                 value={itemsPerPage}
                 onChange={(e) => setItemsPerPage(Number(e.target.value))}
-                className="form-control mt-1 block w-full bg-gray-200 rounded-md shadow-sm"
+                className="w-full p-2 border border-gray-300 rounded"
               >
                 <option value={10}>10</option>
                 <option value={20}>20</option>
                 <option value={50}>50</option>
               </select>
+            </div>
+            <div>
+              <label htmlFor="search" className="block text-sm font-medium text-gray-700">
+                Search by Actor Name
+              </label>
+              <input
+                type="text"
+                id="search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder="Search by name..."
+              />
             </div>
           </div>
 

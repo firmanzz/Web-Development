@@ -14,7 +14,7 @@ const Genres = () => {
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
   const [genresPerPage] = useState(10); // Limit genres per page
-  const maxPageNumbers = 5; // Maximum number of page buttons to show at once
+  const maxPageNumbers = 3; // Maximum number of page buttons to show at once
 
   useEffect(() => {
     const fetchGenres = async () => {

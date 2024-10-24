@@ -18,7 +18,7 @@ const MovieList = () => {
   const [moviesPerPage] = useState(18);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const maxPageNumbers = 5; // Jumlah halaman yang ingin ditampilkan secara bersamaan
+  const maxPageNumbers = 3; 
 
   useEffect(() => {
     const fetchMovies = async () => {

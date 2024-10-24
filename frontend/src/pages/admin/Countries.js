@@ -14,7 +14,7 @@ const Countries = ({ movies }) => {
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
   const [countriesPerPage] = useState(10); // Limit countries per page
-  const maxPageNumbers = 5; // Maximum number of page buttons to show at once
+  const maxPageNumbers = 3; // Maximum number of page buttons to show at once
 
   useEffect(() => {
     const fetchCountries = async () => {
