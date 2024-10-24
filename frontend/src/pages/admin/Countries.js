@@ -11,6 +11,11 @@ const Countries = ({ movies }) => {
   const [editingCountryId, setEditingCountryId] = useState(null);
   const [editingCountryName, setEditingCountryName] = useState("");
 
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [countriesPerPage] = useState(10); // Limit countries per page
+  const maxPageNumbers = 5; // Maximum number of page buttons to show at once
+
   useEffect(() => {
     const fetchCountries = async () => {
       try {
@@ -127,6 +132,18 @@ const Countries = ({ movies }) => {
     setEditingCountryName("");
   };
 
+  // Pagination Logic
+  const indexOfLastCountry = currentPage * countriesPerPage;
+  const indexOfFirstCountry = indexOfLastCountry - countriesPerPage;
+  const currentCountries = countries.slice(indexOfFirstCountry, indexOfLastCountry);
+  const totalPages = Math.ceil(countries.length / countriesPerPage);
+
+  // Dynamic Pagination Logic
+  const startPage = Math.max(1, currentPage - Math.floor(maxPageNumbers / 2));
+  const endPage = Math.min(totalPages, startPage + maxPageNumbers - 1);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header open={open} setOpen={setOpen} />
@@ -171,10 +188,10 @@ const Countries = ({ movies }) => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {countries.map((country, index) => (
+                {currentCountries.map((country, index) => (
                   <tr key={country.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {index + 1}
+                      {indexOfFirstCountry + index + 1}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {editingCountryId === country.id ? (
@@ -207,7 +224,9 @@ const Countries = ({ movies }) => {
                       ) : (
                         <>
                           <button
-                            onClick={() => startEditing(country.id, country.name)}
+                            onClick={() =>
+                              startEditing(country.id, country.name)
+                            }
                             className="bg-yellow-600 text-white px-3 py-1 rounded-md mr-2"
                           >
                             Edit
@@ -225,6 +244,52 @@ const Countries = ({ movies }) => {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="flex justify-center my-4">
+            <nav className="flex items-center space-x-2">
+              {/* Previous Button */}
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                  currentPage === 1
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-gray-600"
+                }`}
+              >
+                &larr; Prev
+              </button>
+
+              {/* Page Numbers */}
+              {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
+                <button
+                  key={startPage + i}
+                  onClick={() => paginate(startPage + i)}
+                  className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                    currentPage === startPage + i
+                      ? "bg-blue-500"
+                      : "hover:bg-gray-600"
+                  }`}
+                >
+                  {startPage + i}
+                </button>
+              ))}
+
+              {/* Next Button */}
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                  currentPage === totalPages
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-gray-600"
+                }`}
+              >
+                Next &rarr;
+              </button>
+            </nav>
           </div>
         </div>
       </div>

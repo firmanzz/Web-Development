@@ -14,6 +14,7 @@ const MovieListCMS = () => {
   const sidebarRef = useRef(null);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const navigate = useNavigate();
+  const maxPageNumbers = 3; // Number of pagination buttons to show at once
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -90,7 +91,6 @@ const MovieListCMS = () => {
   // Filtering movies based on the search term and status
   const filteredMovies = movies
     .filter((movie) => {
-      // Gabungkan semua atribut yang akan dicari (title, synopsis, actors, genres)
       const searchString = `
       ${movie.title.toLowerCase()} 
       ${movie.synopsis ? movie.synopsis.toLowerCase() : ""}
@@ -105,8 +105,6 @@ const MovieListCMS = () => {
           : ""
       }
     `;
-
-      // Cari term dalam atribut yang sudah digabungkan
       return searchString.includes(searchTerm.toLowerCase());
     })
     .filter(
@@ -134,7 +132,6 @@ const MovieListCMS = () => {
   const handleApproveToggle = async () => {
     if (!selectedMovie) return;
 
-    // Toggle status between true (Approved) and false (Unapproved)
     const updatedStatus = !selectedMovie.approvalstatus;
 
     try {
@@ -145,12 +142,11 @@ const MovieListCMS = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ approvalstatus: updatedStatus }), // Kirim boolean
+          body: JSON.stringify({ approvalstatus: updatedStatus }),
         }
       );
 
       if (response.ok) {
-        // Update movie status locally after successful response
         setMovies((prevMovies) =>
           prevMovies.map((movie) =>
             movie.id === selectedMovie.id
@@ -161,7 +157,7 @@ const MovieListCMS = () => {
         setSelectedMovie(null); // Close the modal
         alert("Movie status updated successfully.");
       } else {
-        const errorData = await response.json(); // Log error detail
+        const errorData = await response.json();
         console.error("Error updating status:", errorData);
         alert("Failed to update movie status.");
       }
@@ -174,6 +170,10 @@ const MovieListCMS = () => {
   const handleCloseModal = () => {
     setSelectedMovie(null);
   };
+
+  // Calculate dynamic pagination
+  const startPage = Math.max(1, currentPage - Math.floor(maxPageNumbers / 2));
+  const endPage = Math.min(totalPages, startPage + maxPageNumbers - 1);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -207,7 +207,7 @@ const MovieListCMS = () => {
                 id="showCount"
                 className="w-full p-2 border border-gray-300 rounded"
                 value={showCount}
-                onChange={(e) => setShowCount(Number(e.target.value))} // Convert to number
+                onChange={(e) => setShowCount(Number(e.target.value))}
               >
                 <option value={10}>10</option>
                 <option value={20}>20</option>
@@ -302,7 +302,7 @@ const MovieListCMS = () => {
                         <img
                           src={movie.urlphoto}
                           alt={movie.title}
-                          className="h-16 w-16 object-cover rounded-md"
+                          className="h-auto md:w-32 object-cover rounded-md"
                         />
                       </div>
                     </td>
@@ -331,24 +331,41 @@ const MovieListCMS = () => {
 
           {/* Pagination */}
           <div className="flex justify-center my-4">
-            <nav>
-              <ul className="flex list-none">
-                {Array.from({ length: totalPages }, (_, i) => (
-                  <li
-                    key={i + 1}
-                    className={`mx-1 ${
-                      currentPage === i + 1 ? "text-blue-500" : ""
-                    }`}
-                  >
-                    <button
-                      onClick={() => paginate(i + 1)}
-                      className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 mb-6"
-                    >
-                      {i + 1}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+            <nav className="flex items-center space-x-2">
+              {/* Previous Button */}
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
+                }`}
+              >
+                &larr; Prev
+              </button>
+
+              {/* Page Numbers */}
+              {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
+                <button
+                  key={startPage + i}
+                  onClick={() => paginate(startPage + i)}
+                  className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                    currentPage === startPage + i ? "bg-blue-500" : "hover:bg-gray-600"
+                  }`}
+                >
+                  {startPage + i}
+                </button>
+              ))}
+
+              {/* Next Button */}
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                  currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
+                }`}
+              >
+                Next &rarr;
+              </button>
             </nav>
           </div>
           {selectedMovie && (

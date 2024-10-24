@@ -15,9 +15,16 @@ const Actors = () => {
   const [filteredCountries, setFilteredCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [countries, setCountries] = useState([]);
-  const [selectedActor, setSelectedActor] = useState(null); // Menyimpan aktor yang akan di-edit
+  const [selectedActor, setSelectedActor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // State for filter, search, pagination, and item per page
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterCountry, setFilterCountry] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [maxPageNumbers, setMaxPageNumbers] = useState(3);
 
   useEffect(() => {
     const fetchActors = async () => {
@@ -60,22 +67,17 @@ const Actors = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
-    // Debugging: Lihat data yang akan dikirim
-    console.log("Form State:", formState);
-    console.log("Selected Country:", selectedCountry);
-  
+
     const formData = {
-      name: formState.actorName, 
-      countryid: selectedCountry?.id || "", 
-      birthdate: formState.birthDate, 
-      urlphoto: formState.photo
+      name: formState.actorName || selectedActor?.name,
+      countryid: selectedCountry?.id || selectedActor?.Country?.id || formState.country,
+      birthdate: formState.birthDate || selectedActor?.birthdate,
+      urlphoto: formState.photo || selectedActor?.urlphoto,
     };
-  
+
     try {
       let response;
       if (selectedActor) {
-        // Update actor jika dalam mode edit
         response = await fetch(`http://localhost:5000/api/actors/${selectedActor.id}`, {
           method: "PUT",
           headers: {
@@ -84,7 +86,6 @@ const Actors = () => {
           body: JSON.stringify(formData),
         });
       } else {
-        // Tambah actor jika tidak dalam mode edit
         response = await fetch("http://localhost:5000/api/addActor", {
           method: "POST",
           headers: {
@@ -93,23 +94,20 @@ const Actors = () => {
           body: JSON.stringify(formData),
         });
       }
-  
+
       if (!response.ok) {
         throw new Error("Failed to save actor");
       }
-  
+
       const updatedActor = await response.json();
-  
+
       if (selectedActor) {
-        // Update actor in state setelah berhasil di-update
         setActors(actors.map((actor) => (actor.id === updatedActor.id ? updatedActor : actor)));
       } else {
-        // Tambahkan actor baru ke daftar
         setActors([...actors, updatedActor]);
       }
-  
-      // Reset form dan state
-      setFormState({ actorName: '', country: '', birthDate: '', photo: '' });
+
+      setFormState({ actorName: "", country: "", birthDate: "", photo: "" });
       setSelectedCountry(null);
       setSelectedActor(null);
     } catch (error) {
@@ -117,8 +115,6 @@ const Actors = () => {
       setError("Failed to save actor. Please try again.");
     }
   };
-  
-  
 
   const handleDeleteActor = async (id) => {
     try {
@@ -158,26 +154,45 @@ const Actors = () => {
       actorName: actor.name,
       birthDate: actor.birthdate,
       photo: actor.urlphoto,
+      country: actor.countryid,
     });
     setSelectedCountry(actor.Country);
   };
 
   const handleCancelEdit = () => {
-    // Batalkan mode edit
     setSelectedActor(null);
     setFormState({ actorName: "", country: "", birthDate: "", photo: "" });
     setSelectedCountry(null);
   };
+
+  // Filtering and searching actors
+  const filteredActors = actors.filter((actor) => {
+    const matchesCountry = filterCountry === "All" || actor.Country?.name === filterCountry;
+    const matchesSearch = actor.name.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCountry && matchesSearch;
+  });
+
+  // Pagination logic
+  const indexOfLastActor = currentPage * itemsPerPage;
+  const indexOfFirstActor = indexOfLastActor - itemsPerPage;
+  const currentActors = filteredActors.slice(indexOfFirstActor, indexOfLastActor);
+
+  const totalPages = Math.ceil(filteredActors.length / itemsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Calculate page numbers for dynamic pagination
+  const startPage = Math.max(1, currentPage - Math.floor(maxPageNumbers / 2));
+  const endPage = Math.min(totalPages, startPage + maxPageNumbers - 1);
 
   return (
     <div className="flex flex-col min-h-screen">
       <Header open={open} setOpen={setOpen} />
       <div className="flex flex-grow">
         <Sidebar ref={sidebarRef} open={open} setOpen={setOpen} />
-        <div className="flex-1 p-4">
+        <main className="flex-col flex-grow overflow-y-auto bg-white px-4 md:px-6 mt-4">
           <h1 className="text-2xl font-bold mb-6">Actors</h1>
 
-          {/* Form for Adding/Editing Actors */}
           <div className="mb-6">
             <form
               onSubmit={handleSubmit}
@@ -197,7 +212,7 @@ const Actors = () => {
                   value={formState.actorName}
                   onChange={handleChange}
                   placeholder="Start typing actor name..."
-                  className="form-control mt-1 block w-full bg-gray-300 rounded-md shadow-sm"
+                  className="form-control mt-1 block w-full bg-gray-200 rounded-md shadow-sm"
                 />
               </div>
               <div className="relative mb-4">
@@ -211,7 +226,7 @@ const Actors = () => {
                   type="text"
                   id="country"
                   name="country"
-                  className="mt-1 block w-full rounded-md bg-gray-300 shadow-sm"
+                  className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
                   placeholder={
                     selectedCountry
                       ? selectedCountry.name
@@ -257,7 +272,7 @@ const Actors = () => {
                   name="birthDate"
                   value={formState.birthDate}
                   onChange={handleChange}
-                  className="form-control mt-1 block w-full bg-gray-300 rounded-md shadow-sm"
+                  className="form-control mt-1 block w-full bg-gray-200 rounded-md shadow-sm"
                 />
               </div>
               <div>
@@ -273,7 +288,7 @@ const Actors = () => {
                   name="photo"
                   value={formState.photo}
                   onChange={handleChange}
-                  className="form-control mt-1 block w-full bg-gray-300 rounded-md shadow-sm"
+                  className="form-control mt-1 block w-full bg-gray-200 rounded-md shadow-sm"
                   placeholder="Start typing photo url..."
                 />
               </div>
@@ -298,41 +313,91 @@ const Actors = () => {
             </form>
           </div>
 
-          {/* Table for Displaying Actors */}
+          {/* Filter and Search Section */}
+          <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label htmlFor="search" className="block text-sm font-medium text-gray-700">
+                Search by Actor Name
+              </label>
+              <input
+                type="text"
+                id="search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="form-control mt-1 block w-full bg-gray-200 rounded-md shadow-sm"
+                placeholder="Search by name..."
+              />
+            </div>
+            <div>
+              <label htmlFor="filterCountry" className="block text-sm font-medium text-gray-700">
+                Filter by Country
+              </label>
+              <select
+                id="filterCountry"
+                value={filterCountry}
+                onChange={(e) => setFilterCountry(e.target.value)}
+                className="form-control mt-1 block w-full bg-gray-200 rounded-md shadow-sm"
+              >
+                <option value="All">All</option>
+                {countries.map((country) => (
+                  <option key={country.id} value={country.name}>
+                    {country.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="itemsPerPage" className="block text-sm font-medium text-gray-700">
+                Show
+              </label>
+              <select
+                id="itemsPerPage"
+                value={itemsPerPage}
+                onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                className="form-control mt-1 block w-full bg-gray-200 rounded-md shadow-sm"
+              >
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Table for Displaying Filtered and Searched Actors */}
           <div className="overflow-x-auto">
             {loading ? (
               <p>Loading actors...</p>
             ) : error ? (
               <p className="text-red-500">{error}</p>
             ) : (
-              <table className="min-w-full divide-y divide-gray-200">
+              <table className="min-w-full divide-y divide-gray-200 text-sm md:text-base">
                 <thead className="bg-gray-800 text-white">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left font-medium uppercase tracking-wider">
                       No
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left font-medium uppercase tracking-wider">
                       Actor Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left font-medium uppercase tracking-wider">
                       Country
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left font-medium uppercase tracking-wider">
                       Birth Date
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left font-medium uppercase tracking-wider">
                       Photos
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left font-medium uppercase tracking-wider">
                       Action
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {actors.map((actor, index) => (
+                  {currentActors.map((actor, index) => (
                     <tr key={actor.id}>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {index + 1}
+                        {indexOfFirstActor + index + 1}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {actor.name}
@@ -370,7 +435,47 @@ const Actors = () => {
               </table>
             )}
           </div>
-        </div>
+
+          {/* Pagination */}
+          <div className="flex justify-center my-4">
+            <nav className="flex items-center space-x-2">
+              {/* Previous Button */}
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
+                }`}
+              >
+                &larr; Prev
+              </button>
+
+              {/* Page Numbers */}
+              {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
+                <button
+                  key={startPage + i}
+                  onClick={() => paginate(startPage + i)}
+                  className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                    currentPage === startPage + i ? "bg-blue-500" : "hover:bg-gray-600"
+                  }`}
+                >
+                  {startPage + i}
+                </button>
+              ))}
+
+              {/* Next Button */}
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                  currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
+                }`}
+              >
+                Next &rarr;
+              </button>
+            </nav>
+          </div>
+        </main>
       </div>
     </div>
   );

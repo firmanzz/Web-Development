@@ -10,11 +10,12 @@ exports.getAllActor = async (req, res) => {
           attributes: ["name"], 
         },
       ],
+      order: [['name', 'ASC']],
       logging: false,
     });
     res.status(200).json(actors);
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching actors:", error);
     res.status(500).json({ error: "An error occurred" });
   }
 };
@@ -78,24 +79,13 @@ exports.editActor = async (req, res) => {
     const { id } = req.params;
     const { name, birthdate, countryid, urlphoto } = req.body;
 
-    // Validasi input
-    if (!name || !birthdate || !countryid || !urlphoto) {
-      return res.status(400).json({ error: "All fields are required" });
-    }
-
     // Cari aktor berdasarkan id
     const actor = await Actor.findByPk(id);
     if (!actor) {
       return res.status(404).json({ error: "Actor not found" });
     }
 
-    // Validasi apakah country ada
-    const country = await Country.findByPk(countryid);
-    if (!country) {
-      return res.status(404).json({ error: "Country not found" });
-    }
-
-    // Update actor dengan data baru
+    // Update data aktor
     actor.name = name;
     actor.birthdate = birthdate;
     actor.countryid = countryid;
@@ -104,7 +94,15 @@ exports.editActor = async (req, res) => {
     // Simpan perubahan
     await actor.save();
 
-    res.status(200).json(actor); // Kembalikan data yang sudah diperbarui
+    // Kembalikan aktor dengan relasi Country
+    const updatedActor = await Actor.findByPk(actor.id, {
+      include: {
+        model: Country, // Sertakan relasi Country dalam response
+        attributes: ["name"],
+      },
+    });
+
+    res.status(200).json(updatedActor); // Kirim data aktor yang sudah diperbarui ke frontend
   } catch (error) {
     console.error("Error editing actor:", error);
     res.status(500).json({ error: "An error occurred while editing the actor" });

@@ -10,7 +10,7 @@ const MovieList = () => {
   const [availability, setAvailability] = useState("");
   const [award, setAward] = useState("");
   const [sortOrder, setSortOrder] = useState("");
-  const [searchQuery, setSearchQuery] = useState(""); // Add search query state
+  const [searchQuery, setSearchQuery] = useState(""); 
 
   const [movies, setMovies] = useState([]);
   const [filteredMovies, setFilteredMovies] = useState([]);
@@ -18,6 +18,7 @@ const MovieList = () => {
   const [moviesPerPage] = useState(18);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const maxPageNumbers = 5; // Jumlah halaman yang ingin ditampilkan secara bersamaan
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -41,57 +42,56 @@ const MovieList = () => {
   }, []);
 
   const handleSubmit = () => {
-  let filtered = movies;
+    let filtered = movies;
 
-  // Search Logic (title, genre, availability, etc.)
-  if (searchQuery) {
-    const lowerCaseQuery = searchQuery.toLowerCase();
-    filtered = filtered.filter((movie) => {
-      return (
-        movie.title.toLowerCase().includes(lowerCaseQuery) || 
-        (movie.Genres && movie.Genres.some((g) => g.name.toLowerCase().includes(lowerCaseQuery))) || 
-        (movie.Availabilities && movie.Availabilities.some((avail) => avail.name.toLowerCase().includes(lowerCaseQuery))) || 
-        (movie.Awards && movie.Awards.some((a) => a.award.toLowerCase().includes(lowerCaseQuery)))
+    // Search Logic
+    if (searchQuery) {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      filtered = filtered.filter((movie) => {
+        return (
+          movie.title.toLowerCase().includes(lowerCaseQuery) || 
+          (movie.Genres && movie.Genres.some((g) => g.name.toLowerCase().includes(lowerCaseQuery))) || 
+          (movie.Availabilities && movie.Availabilities.some((avail) => avail.name.toLowerCase().includes(lowerCaseQuery))) || 
+          (movie.Awards && movie.Awards.some((a) => a.award.toLowerCase().includes(lowerCaseQuery)))
+        );
+      });
+    }
+
+    // Apply Genre Filter
+    if (genre) {
+      filtered = filtered.filter((movie) => 
+        movie.Genres && movie.Genres.some((g) => g.name === genre)
       );
-    });
-  }
+    }
 
-  // Apply Genre Filter
-  if (genre) {
-    filtered = filtered.filter((movie) => 
-      movie.Genres && movie.Genres.some((g) => g.name === genre)
-    );
-  }
+    // Apply Award Filter
+    if (award) {
+      filtered = filtered.filter((movie) =>
+        movie.Awards && movie.Awards.some((a) => a.award === award)
+      );
+    }
 
-  // Apply Award Filter
-  if (award) {
-    filtered = filtered.filter((movie) =>
-      movie.Awards && movie.Awards.some((a) => a.award === award)
-    );
-  }
+    // Apply Availability Filter
+    if (availability) {
+      filtered = filtered.filter((movie) =>
+        movie.Availabilities.some((avail) => avail.name === availability)
+      );
+    }
 
-  // Apply Availability Filter
-  if (availability) {
-    filtered = filtered.filter((movie) =>
-      movie.Availabilities.some((avail) => avail.name === availability)
-    );
-  }
+    // Apply Year Filter
+    if (year) {
+      filtered = filtered.filter((movie) =>
+        new Date(movie.releasedate).getFullYear().toString() === year
+      );
+    }
 
-  // Apply Year Filter
-  if (year) {
-    filtered = filtered.filter((movie) =>
-      new Date(movie.releasedate).getFullYear().toString() === year
-    );
-  }
+    // Apply Status Filter
+    if (status) {
+      filtered = filtered.filter((movie) => movie.status === status);
+    }
 
-  // Apply Status Filter
-  if (status) {
-    filtered = filtered.filter((movie) => movie.status === status);
-  }
-
-  setFilteredMovies(filtered); // Update filtered movies
-};
-
+    setFilteredMovies(filtered); 
+  };
 
   const handleSort = (movies, sortOrder) => {
     if (sortOrder === "title") {
@@ -103,7 +103,6 @@ const MovieList = () => {
     }
   };
 
-
   const indexOfLastMovie = currentPage * moviesPerPage;
   const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
   const currentMovies = handleSort(filteredMovies, sortOrder).slice(
@@ -114,6 +113,9 @@ const MovieList = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const totalPages = Math.ceil(filteredMovies.length / moviesPerPage);
 
+  // Calculate dynamic pagination
+  const startPage = Math.max(1, currentPage - Math.floor(maxPageNumbers / 2));
+  const endPage = Math.min(totalPages, startPage + maxPageNumbers - 1);
 
   return (
     <div className="container mx-auto">
@@ -145,7 +147,7 @@ const MovieList = () => {
             {currentMovies.map((movie) => (
               <Link to={`/details/${movie.id}`} key={movie.id}>
                 <div className="text-center">
-                  <img src={movie.urlphoto} alt={movie.urlphoto} className="h-full w-full object-cover rounded-md mb-2" />
+                  <img src={movie.urlphoto} alt={movie.urlphoto} className="h-72 w-64 object-cover rounded-md mb-2" />
                   <h3 className="text-white text-sm font-bold mb-1">{movie.title}</h3>
                   <p className="text-white text-sm font-semibold">{movie.Genres.map((genre) => genre.name).join(", ")}</p>
                   <p className="text-yellow-500 text-xs font-semibold">Rating: {movie.rating}</p>
@@ -153,15 +155,42 @@ const MovieList = () => {
               </Link>
             ))}
           </div>
-          <div className="flex justify-center my-4">
-            <nav>
-              <ul className="flex list-none">
-                {Array.from({ length: totalPages }, (_, i) => (
-                  <li key={i + 1} className={`mx-1 ${currentPage === i + 1 ? "text-blue-500" : ""}`}>
-                    <button onClick={() => paginate(i + 1)} className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 mb-6">{i + 1}</button>
-                  </li>
-                ))}
-              </ul>
+          <div className="flex justify-center my-4 mb-10">
+            <nav className="flex items-center space-x-2">
+              {/* Previous Button */}
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
+                }`}
+              >
+                &larr; Prev
+              </button>
+
+              {/* Page Numbers */}
+              {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
+                <button
+                  key={startPage + i}
+                  onClick={() => paginate(startPage + i)}
+                  className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                    currentPage === startPage + i ? "bg-blue-500" : "hover:bg-gray-600"
+                  }`}
+                >
+                  {startPage + i}
+                </button>
+              ))}
+
+              {/* Next Button */}
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                  currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
+                }`}
+              >
+                Next &rarr;
+              </button>
             </nav>
           </div>
         </>
