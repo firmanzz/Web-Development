@@ -11,23 +11,26 @@ const MovieForm = () => {
 
   const [isEditMode, setIsEditMode] = useState(false); // State to track if we are in edit mode
 
-  // State to hold data from API for dropdowns
   const [filteredGenres, setFilteredGenres] = useState([]);
   const [filteredAwards, setFilteredAwards] = useState([]);
   const [filteredActors, setFilteredActors] = useState([]);
+  const [filteredDirectors, setFilteredDirectors] = useState([]); // New for directors
   const [filteredAvails, setFilteredAvails] = useState([]);
   const [genres, setGenres] = useState([]);
   const [awards, setAwards] = useState([]);
   const [countries, setCountries] = useState([]);
   const [actors, setActors] = useState([]);
+  const [directors, setDirectors] = useState([]); // New for directors
   const [availabilities, setAvailabilities] = useState([]);
 
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [selectedAwards, setSelectedAwards] = useState([]);
   const [selectedActors, setSelectedActors] = useState([]);
+  const [selectedDirectors, setSelectedDirectors] = useState([]); // New for directors
   const [selectedAvailabilities, setSelectedAvailabilities] = useState([]);
   const [removedGenres, setRemovedGenres] = useState([]);
   const [removedActors, setRemovedActors] = useState([]);
+  const [removedDirectors, setRemovedDirectors] = useState([]); // New for directors
   const [removedAwards, setRemovedAwards] = useState([]);
   const [removedAvailabilities, setRemovedAvailabilities] = useState([]);
 
@@ -55,12 +58,14 @@ const MovieForm = () => {
           awardResponse,
           countryResponse,
           actorResponse,
+          directorResponse, // New fetch for directors
           availabilityResponse,
         ] = await Promise.all([
           fetch("http://localhost:5000/api/genres"),
           fetch("http://localhost:5000/api/awards"),
           fetch("http://localhost:5000/api/countries"),
           fetch("http://localhost:5000/api/actors"),
+          fetch("http://localhost:5000/api/directors"), // New endpoint for directors
           fetch("http://localhost:5000/api/avail"),
         ]);
 
@@ -68,6 +73,7 @@ const MovieForm = () => {
         setAwards(await awardResponse.json());
         setCountries(await countryResponse.json());
         setActors(await actorResponse.json());
+        setDirectors(await directorResponse.json()); // Set directors data
         setAvailabilities(await availabilityResponse.json());
 
         if (id) {
@@ -80,6 +86,7 @@ const MovieForm = () => {
           setSelectedGenres(movieData.Genres || []);
           setSelectedAwards(movieData.Awards || []);
           setSelectedActors(movieData.Actors || []);
+          setSelectedDirectors(movieData.Directors || []); // Set existing directors
           setSelectedAvailabilities(movieData.Availabilities || []);
           setIsEditMode(true);
         }
@@ -96,12 +103,14 @@ const MovieForm = () => {
 
     const data = {
       ...movieDetails,
-      selectedGenres: selectedGenres.map((g) => g.id), // Hanya kirim ID
-      selectedActors: selectedActors.map((a) => a.id),
-      selectedAwards: selectedAwards.map((a) => a.id),
-      selectedAvailabilities: selectedAvailabilities.map((a) => a.id),
-      removedGenres, // Sertakan genre yang akan dihapus
+      selectedGenres: selectedGenres.map((genre) => genre.id),
+      selectedActors: selectedActors.map((actor) => actor.id),
+      selectedDirectors: selectedDirectors.map((director) => director.id), // New for directors
+      selectedAwards: selectedAwards.map((award) => award.id),
+      selectedAvailabilities: selectedAvailabilities.map((avail) => avail.id),
+      removedGenres,
       removedActors,
+      removedDirectors, // New for directors
       removedAwards,
       removedAvailabilities,
     };
@@ -211,6 +220,26 @@ const MovieForm = () => {
     setRemovedAvailabilities([...removedAvailabilities, avail.id]);
   };
 
+  const handleDirectorChange = (e) => {
+    const query = e.target.value.toLowerCase();
+    const filtered = directors.filter((director) =>
+      director.name.toLowerCase().includes(query)
+    );
+    setFilteredDirectors(filtered);
+  };
+
+  const handleDirectorSelect = (director) => {
+    if (!selectedDirectors.some((d) => d.id === director.id)) {
+      setSelectedDirectors([...selectedDirectors, director]);
+    }
+    setFilteredDirectors([]);
+  };
+
+  const handleDirectorRemove = (director) => {
+    setSelectedDirectors(selectedDirectors.filter((d) => d.id !== director.id));
+    setRemovedDirectors([...removedDirectors, director.id]); // Track removed directors
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header open={open} setOpen={setOpen} />
@@ -310,9 +339,11 @@ const MovieForm = () => {
                   Duration
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   id="duration"
                   name="duration"
+                  min="1"
+                  max="1000"
                   value={movieDetails.duration}
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
@@ -325,73 +356,16 @@ const MovieForm = () => {
                 >
                   Status
                 </label>
-                <input
-                  type="text"
+                <select
                   id="status"
                   name="status"
                   value={movieDetails.status}
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div>
-                <label
-                  htmlFor="rating"
-                  className="block text-sm font-medium text-gray-700"
                 >
-                  Rating
-                </label>
-                <input
-                  type="text"
-                  id="rating"
-                  name="rating"
-                  value={movieDetails.rating}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
-                />
-              </div>
-              <div className="mb-4">
-                <label
-                  htmlFor="availabilities"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Add Availabilities
-                </label>
-                <input
-                  type="text"
-                  id="availabilities"
-                  name="availabilities"
-                  className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
-                  placeholder="Start typing availabilities..."
-                  onChange={handleAvailChange}
-                />
-                <div className="bg-white shadow-md rounded-md mt-2">
-                  {filteredAvails.map((avail) => (
-                    <div
-                      key={avail.id}
-                      className="p-2 hover:bg-gray-200 cursor-pointer"
-                      onClick={() => handleAvailSelect(avail)}
-                    >
-                      {avail.name}
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-2">
-                  {selectedAvailabilities.map((avail) => (
-                    <span
-                      key={avail.id}
-                      className="inline-block bg-blue-500 text-white p-1 m-1 rounded-md"
-                    >
-                      {avail.name}{" "}
-                      <button onClick={() => handleAvailRemove(avail)}>
-                        x
-                      </button>
-                    </span>
-                  ))}
-                </div>
+                  <option value="On-going">On-going</option>
+                  <option value="Released">Released</option>
+                </select>
               </div>
             </div>
 
@@ -449,6 +423,45 @@ const MovieForm = () => {
 
             <div className="mb-4">
               <label
+                htmlFor="availabilities"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Add Availabilities
+              </label>
+              <input
+                type="text"
+                id="availabilities"
+                name="availabilities"
+                className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
+                placeholder="Start typing availabilities..."
+                onChange={handleAvailChange}
+              />
+              <div className="bg-white shadow-md rounded-md mt-2">
+                {filteredAvails.map((avail) => (
+                  <div
+                    key={avail.id}
+                    className="p-2 hover:bg-gray-200 cursor-pointer"
+                    onClick={() => handleAvailSelect(avail)}
+                  >
+                    {avail.name}
+                  </div>
+                ))}
+              </div>
+              <div className="mt-2">
+                {selectedAvailabilities.map((avail) => (
+                  <span
+                    key={avail.id}
+                    className="inline-block bg-blue-500 text-white p-1 m-1 rounded-md"
+                  >
+                    {avail.name}{" "}
+                    <button onClick={() => handleAvailRemove(avail)}>x</button>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label
                 htmlFor="genres"
                 className="block text-sm font-medium text-gray-700"
               >
@@ -480,9 +493,7 @@ const MovieForm = () => {
                     className="inline-block bg-blue-500 text-white p-1 m-1 rounded-md"
                   >
                     {genre.name}{" "}
-                    <button onClick={() => handleGenreRemove(genre)}>
-                      x
-                    </button>
+                    <button onClick={() => handleGenreRemove(genre)}>x</button>
                   </span>
                 ))}
               </div>
@@ -520,9 +531,45 @@ const MovieForm = () => {
                     className="inline-block bg-green-500 text-white p-1 m-1 rounded-md"
                   >
                     {actor.name}{" "}
-                    <button onClick={() => handleActorRemove(actor)}>
-                      x
-                    </button>
+                    <button onClick={() => handleActorRemove(actor)}>x</button>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="directors"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Add Directors
+              </label>
+              <input
+                type="text"
+                id="directors"
+                placeholder="Search Director Names"
+                className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm mb-2"
+                onChange={handleDirectorChange}
+              />
+              <div className="bg-white shadow-md rounded-md mt-2">
+                {filteredDirectors.map((director) => (
+                  <div
+                    key={director.id}
+                    className="p-2 hover:bg-gray-200 cursor-pointer"
+                    onClick={() => handleDirectorSelect(director)}
+                  >
+                    {director.name}
+                  </div>
+                ))}
+              </div>
+              <div className="mt-2">
+                {selectedDirectors.map((director) => (
+                  <span
+                    key={director.id}
+                    className="inline-block bg-green-500 text-white p-1 m-1 rounded-md"
+                  >
+                    {director.name}{" "}
+                    <button onClick={() => handleDirectorRemove(director)}>x</button>
                   </span>
                 ))}
               </div>
@@ -560,9 +607,7 @@ const MovieForm = () => {
                     className="inline-block bg-green-500 text-white p-1 m-1 rounded-md"
                   >
                     {award.award} ({award.year}){" "}
-                    <button onClick={() => handleAwardRemove(award)}>
-                      x
-                    </button>
+                    <button onClick={() => handleAwardRemove(award)}>x</button>
                   </span>
                 ))}
               </div>

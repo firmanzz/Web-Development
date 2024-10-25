@@ -306,18 +306,21 @@ const MovieListCMS = () => {
                         />
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-normal break-words text-xs sm:text-sm md:text-base text-gray-500">
-                      {movie.approvalstatus ? "Approved" : "Pending"}
-                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base text-gray-500">
                       <button
-                        onClick={() => handleEdit(movie.id)}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Menghentikan event bubbling untuk mencegah modal terbuka
+                          handleEdit(movie.id);
+                        }}
                         className="bg-blue-500 text-white px-3 py-1 rounded-md mr-2"
                       >
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDelete(movie.id)}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Menghentikan event bubbling untuk mencegah modal terbuka
+                          handleDelete(movie.id);
+                        }}
                         className="bg-red-600 text-white px-3 py-1 rounded-md"
                       >
                         Delete
@@ -337,7 +340,9 @@ const MovieListCMS = () => {
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
                 className={`px-3 py-1 bg-gray-700 text-white rounded ${
-                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
+                  currentPage === 1
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-gray-600"
                 }`}
               >
                 &larr; Prev
@@ -349,7 +354,9 @@ const MovieListCMS = () => {
                   key={startPage + i}
                   onClick={() => paginate(startPage + i)}
                   className={`px-3 py-1 bg-gray-700 text-white rounded ${
-                    currentPage === startPage + i ? "bg-blue-500" : "hover:bg-gray-600"
+                    currentPage === startPage + i
+                      ? "bg-blue-500"
+                      : "hover:bg-gray-600"
                   }`}
                 >
                   {startPage + i}
@@ -361,13 +368,16 @@ const MovieListCMS = () => {
                 onClick={() => paginate(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 className={`px-3 py-1 bg-gray-700 text-white rounded ${
-                  currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
+                  currentPage === totalPages
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-gray-600"
                 }`}
               >
                 Next &rarr;
               </button>
             </nav>
           </div>
+
           {selectedMovie && (
             <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
               <div className="bg-white p-6 rounded-lg w-full max-w-lg">
@@ -384,7 +394,7 @@ const MovieListCMS = () => {
                   <strong>Synopsis:</strong> {selectedMovie.synopsis}
                 </p>
                 <p>
-                <strong>Photos:</strong>
+                  <strong>Photos:</strong>
                   <img
                     src={selectedMovie.urlphoto}
                     alt={selectedMovie.title}
@@ -428,6 +438,15 @@ const MovieListCMS = () => {
                   {selectedMovie.Country ? selectedMovie.Country.name : "N/A"}
                 </p>
 
+                <p>
+                  <strong>Directors:</strong>{" "}
+                  {selectedMovie.Directors && selectedMovie.Directors.length > 0
+                    ? formatText(
+                        selectedMovie.Directors.map((director) => director.name)
+                      )
+                    : "No Directors Listed"}
+                </p>
+
                 {/* Menampilkan Actors */}
                 <p>
                   <strong>Actors:</strong>{" "}
@@ -437,7 +456,7 @@ const MovieListCMS = () => {
                       )
                     : "No Actors Listed"}
                 </p>
-
+                
                 {/* Menampilkan Genres */}
                 <p>
                   <strong>Genres:</strong>{" "}

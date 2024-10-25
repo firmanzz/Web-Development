@@ -176,7 +176,6 @@ exports.addMovie = async (req, res) => {
     synopsis,
     urlphoto,
     releasedate,
-    availability,
     linktrailer,
     rating,
     duration,
@@ -186,16 +185,17 @@ exports.addMovie = async (req, res) => {
     selectedActors,
     selectedAwards,
     selectedAvailabilities,
+    selectedDirectors, // New parameter for directors
   } = req.body;
 
   try {
+    // Buat movie baru
     const newMovie = await Movie.create({
       title,
       alternativetitle,
       synopsis,
       urlphoto,
       releasedate,
-      availability,
       linktrailer,
       rating,
       duration,
@@ -203,44 +203,38 @@ exports.addMovie = async (req, res) => {
       countryid,
     });
 
-    // Add genres to the movie (many-to-many)
+    // Asosiasikan genres, actors, awards, availabilities, dan directors dengan movie baru
     if (selectedGenres && selectedGenres.length > 0) {
-      const genres = await Genre.findAll({
-        where: { id: selectedGenres.map((genre) => genre.id) },
-      });
+      const genres = await Genre.findAll({ where: { id: selectedGenres } });
       await newMovie.addGenres(genres);
     }
 
-    // Add actors to the movie (many-to-many)
     if (selectedActors && selectedActors.length > 0) {
-      const actors = await Actor.findAll({
-        where: { id: selectedActors.map((actor) => actor.id) },
-      });
+      const actors = await Actor.findAll({ where: { id: selectedActors } });
       await newMovie.addActors(actors);
     }
 
-    // Add awards to the movie (many-to-many)
     if (selectedAwards && selectedAwards.length > 0) {
-      const awards = await Award.findAll({
-        where: { id: selectedAwards.map((award) => award.id) },
-      });
+      const awards = await Award.findAll({ where: { id: selectedAwards } });
       await newMovie.addAwards(awards);
     }
 
     if (selectedAvailabilities && selectedAvailabilities.length > 0) {
-      const availabilities = await Availability.findAll({
-        where: { id: selectedAvailabilities.map((avail) => avail.id) },
-      });
-      await newMovie.addAvailabilities(availabilities);  // Tambahkan availabilities
+      const availabilities = await Availability.findAll({ where: { id: selectedAvailabilities } });
+      await newMovie.addAvailabilities(availabilities);
+    }
+
+    if (selectedDirectors && selectedDirectors.length > 0) {
+      const directors = await Director.findAll({ where: { id: selectedDirectors } });
+      await newMovie.addDirectors(directors); // Add directors association
     }
 
     res.status(201).json({ message: 'Movie created successfully!', movie: newMovie });
   } catch (error) {
-    console.error(error);
+    console.error("Error creating movie:", error);
     res.status(500).json({ message: 'Error creating movie', error });
   }
 };
-
 
 exports.updateMovie = async (req, res) => {
   const {
@@ -259,10 +253,12 @@ exports.updateMovie = async (req, res) => {
     selectedActors,
     selectedAwards,
     selectedAvailabilities,
-    removedGenres,  // array of genre IDs to be removed
-    removedActors,  // array of actor IDs to be removed
-    removedAwards,  // array of award IDs to be removed
-    removedAvailabilities  // array of availability IDs to be removed
+    selectedDirectors, // New parameter for directors
+    removedGenres,
+    removedActors,
+    removedAwards,
+    removedAvailabilities,
+    removedDirectors, // New parameter for directors
   } = req.body;
 
   const { id } = req.params;
@@ -291,49 +287,60 @@ exports.updateMovie = async (req, res) => {
     // Update genres (add/remove selectively)
     if (selectedGenres && selectedGenres.length > 0) {
       const genresToAdd = await Genre.findAll({ where: { id: selectedGenres } });
-      await movie.addGenres(genresToAdd);  // Add new genres
+      await movie.addGenres(genresToAdd);
     }
     if (removedGenres && removedGenres.length > 0) {
       const genresToRemove = await Genre.findAll({ where: { id: removedGenres } });
-      await movie.removeGenres(genresToRemove);  // Remove selected genres
+      await movie.removeGenres(genresToRemove);
     }
 
     // Update actors (add/remove selectively)
     if (selectedActors && selectedActors.length > 0) {
       const actorsToAdd = await Actor.findAll({ where: { id: selectedActors } });
-      await movie.addActors(actorsToAdd);  // Add new actors
+      await movie.addActors(actorsToAdd);
     }
     if (removedActors && removedActors.length > 0) {
       const actorsToRemove = await Actor.findAll({ where: { id: removedActors } });
-      await movie.removeActors(actorsToRemove);  // Remove selected actors
+      await movie.removeActors(actorsToRemove);
     }
 
     // Update awards (add/remove selectively)
     if (selectedAwards && selectedAwards.length > 0) {
       const awardsToAdd = await Award.findAll({ where: { id: selectedAwards } });
-      await movie.addAwards(awardsToAdd);  // Add new awards
+      await movie.addAwards(awardsToAdd);
     }
     if (removedAwards && removedAwards.length > 0) {
       const awardsToRemove = await Award.findAll({ where: { id: removedAwards } });
-      await movie.removeAwards(awardsToRemove);  // Remove selected awards
+      await movie.removeAwards(awardsToRemove);
     }
 
     // Update availabilities (add/remove selectively)
     if (selectedAvailabilities && selectedAvailabilities.length > 0) {
       const availabilitiesToAdd = await Availability.findAll({ where: { id: selectedAvailabilities } });
-      await movie.addAvailabilities(availabilitiesToAdd);  // Add new availabilities
+      await movie.addAvailabilities(availabilitiesToAdd);
     }
     if (removedAvailabilities && removedAvailabilities.length > 0) {
       const availabilitiesToRemove = await Availability.findAll({ where: { id: removedAvailabilities } });
-      await movie.removeAvailabilities(availabilitiesToRemove);  // Remove selected availabilities
+      await movie.removeAvailabilities(availabilitiesToRemove);
+    }
+
+    // Update directors (add/remove selectively)
+    if (selectedDirectors && selectedDirectors.length > 0) {
+      const directorsToAdd = await Director.findAll({ where: { id: selectedDirectors } });
+      await movie.addDirectors(directorsToAdd); // Add new directors
+    }
+    if (removedDirectors && removedDirectors.length > 0) {
+      const directorsToRemove = await Director.findAll({ where: { id: removedDirectors } });
+      await movie.removeDirectors(directorsToRemove); // Remove selected directors
     }
 
     res.status(200).json({ message: 'Movie updated successfully!', movie });
   } catch (error) {
-    console.error(error);
+    console.error("Error updating movie:", error);
     res.status(500).json({ message: 'Error updating movie', error });
   }
 };
+
 
 exports.deleteMovie = async (req, res) => {
   const { id } = req.params;
