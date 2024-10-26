@@ -16,6 +16,7 @@ const MovieDetail = () => {
   });
   const [submitting, setSubmitting] = useState(false);
   const sidebarRef = useRef(null);
+  const [displayCount, setDisplayCount] = useState(5);
 
   useEffect(() => {
     const fetchMovie = async () => {
@@ -79,6 +80,14 @@ const MovieDetail = () => {
   }
 
   const embedLink = movie.linktrailer.replace("watch?v=", "embed/");
+
+  const handleReadMore = () => {
+    setDisplayCount((prevCount) => prevCount + 5); // Tambahkan 5 review lagi setiap kali 'Read More' diklik
+  };
+
+  const handleReadLess = () => {
+    setDisplayCount((prevCount) => Math.max(prevCount - 5, 5)); // Kurangi 5 review, minimal 5
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -225,91 +234,107 @@ const MovieDetail = () => {
                 <h3 className="text-lg font-bold mb-3 text-gray-800">
                   User Reviews
                 </h3>
-                {movie.Users && movie.Users.length > 0 ? (
-                  movie.Users.map((user) => (
-                    <div key={user.id} className="mb-4">
+                {movie.Comments && movie.Comments.length > 0 ? (
+                  movie.Comments.slice(0, displayCount).map((comment) => (
+                    <div key={comment.id} className="mb-4">
                       <div className="flex justify-between items-center">
-                        <p className="text-2xl font-bold text-gray-800 ">
-                          {user.name}
-                          <span className="text-yellow-500 text-3xl ml-2">
+                        <p className="text-xs font-bold text-gray-800 ">
+                          {comment.User ? comment.User.name : "Unknown User"}
+                          <span className="text-yellow-500 text-xs ml-2">
                             {Array.from({ length: 5 }, (v, i) => (
                               <span key={i}>
-                                {i < Math.floor(user.Comment.rate) ? "★" : "☆"}
+                                {i < Math.floor(comment.rate) ? "★" : "☆"}
                               </span>
                             ))}
                           </span>
                         </p>
                         <p className="text-xs text-gray-600">
-                          {new Date(user.Comment.time).toLocaleDateString()}
+                          {new Date(comment.time).toLocaleDateString()}
                         </p>
                       </div>
-                      <p className="text-xl text-gray-800">
-                        {user.Comment.comment}
-                      </p>
+                      <p className="text-xs text-gray-800">{comment.comment}</p>
                     </div>
                   ))
                 ) : (
                   <p className="text-sm text-gray-600">No Comments</p>
                 )}
+                <div className="flex justify-center mt-4 space-x-4">
+                  {displayCount < movie.Comments.length && (
+                    <span
+                      onClick={handleReadMore}
+                      className="text-blue-500 cursor-pointer hover:underline text-xs"
+                    >
+                      Read More{">"}{">"}
+                    </span>
+                  )}
+                  {displayCount > 5 && (
+                    <span
+                      onClick={handleReadLess}
+                      className="text-blue-500 cursor-pointer hover:underline text-xs"
+                    >
+                      {"<"}{"<"}Read Less
+                    </span>
+                  )}
+                </div>
               </div>
               <div className="p-6 rounded-lg shadow-lg mb-6 bg-white">
-              <h3 className="text-lg font-bold mb-3 text-gray-800">
-                Submit Your Review
-              </h3>
-              <form onSubmit={handleReviewSubmit} className="mb-6">
-                <div className="mb-4">
-                  <label
-                    htmlFor="rating"
-                    className="block text-gray-700 text-sm font-bold mb-2"
-                  >
-                    Rating (1-5):
-                  </label>
-                  <input
-                    type="number"
-                    id="rating"
-                    name="rating"
-                    min="1"
-                    max="5"
-                    value={newReview.rating}
-                    onChange={(e) =>
-                      setNewReview({ ...newReview, rating: e.target.value })
-                    }
-                    required
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                  />
-                </div>
+                <h3 className="text-lg font-bold mb-3 text-gray-800">
+                  Submit Your Review
+                </h3>
+                <form onSubmit={handleReviewSubmit} className="mb-6">
+                  <div className="mb-4">
+                    <label
+                      htmlFor="rating"
+                      className="block text-gray-700 text-sm font-bold mb-2"
+                    >
+                      Rating (1-5):
+                    </label>
+                    <input
+                      type="number"
+                      id="rating"
+                      name="rating"
+                      min="1"
+                      max="5"
+                      value={newReview.rating}
+                      onChange={(e) =>
+                        setNewReview({ ...newReview, rating: e.target.value })
+                      }
+                      required
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                    />
+                  </div>
 
-                <div className="mb-4">
-                  <label
-                    htmlFor="comment"
-                    className="block text-gray-700 text-sm font-bold mb-2"
-                  >
-                    Comment:
-                  </label>
-                  <textarea
-                    id="comment"
-                    name="comment"
-                    value={newReview.comment}
-                    onChange={(e) =>
-                      setNewReview({ ...newReview, comment: e.target.value })
-                    }
-                    required
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                    rows="4"
-                  ></textarea>
-                </div>
+                  <div className="mb-4">
+                    <label
+                      htmlFor="comment"
+                      className="block text-gray-700 text-sm font-bold mb-2"
+                    >
+                      Comment:
+                    </label>
+                    <textarea
+                      id="comment"
+                      name="comment"
+                      value={newReview.comment}
+                      onChange={(e) =>
+                        setNewReview({ ...newReview, comment: e.target.value })
+                      }
+                      required
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                      rows="4"
+                    ></textarea>
+                  </div>
 
-                <div>
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                  >
-                    {submitting ? "Submitting..." : "Submit Review"}
-                  </button>
-                </div>
-              </form>
-            </div>
+                  <div>
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                      {submitting ? "Submitting..." : "Submit Review"}
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>

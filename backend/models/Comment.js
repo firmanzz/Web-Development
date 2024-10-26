@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
+const Movie = require('./Movie');
+const User = require('./User');
 
 const Comment = sequelize.define(
   "Comment",
@@ -8,11 +10,19 @@ const Comment = sequelize.define(
     comment: { type: DataTypes.STRING(1000) },
     movieid: {
       type: DataTypes.INTEGER,
-      references: { model: "Movies", key: "id" },
+      references: {
+        model: Movie,
+        key: "id",
+      },
+      allowNull: false,
     },
     userid: {
       type: DataTypes.INTEGER,
-      references: { model: "Users", key: "id" },
+      references: {
+        model: User,
+        key: "id",
+      },
+      allowNull: false,
     },
     rate: {
       type: DataTypes.FLOAT,
@@ -34,5 +44,11 @@ const Comment = sequelize.define(
     tableName: "comments",
     timestamps: false, }
 );
+
+Comment.belongsTo(Movie, { foreignKey: "movieid" });
+Movie.hasMany(Comment, { foreignKey: "movieid" });
+
+Comment.belongsTo(User, { foreignKey: "userid" });
+User.hasMany(Comment, { foreignKey: "userid" });
 
 module.exports = Comment;
