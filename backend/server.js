@@ -12,6 +12,7 @@ const movieDetailRoutes = require('./routes/movieDetailRoutes');
 const sequelize = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
 const commentRoutes = require('./routes/commentRoutes');
+const filterRoutes = require('./routes/filterRoutes');
 const passport = require('./config/passport'); 
 const cors = require('cors');
 
@@ -40,6 +41,7 @@ app.use('/api', availRoutes);
 app.use('/api', movieDetailRoutes);
 app.use('/api', commentRoutes);
 app.use('/api', userRoutes);
+app.use('/api', filterRoutes);
 
 // Rute khusus admin yang dilindungi oleh middleware autentikasi dan admin
 app.use('/admin', authMiddleware, adminMiddleware, (req, res, next) => {

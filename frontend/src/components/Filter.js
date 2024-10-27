@@ -15,47 +15,27 @@ const Filter = ({
   setSortOrder,
   handleSubmit,
 }) => {
-  const [genres, setGenres] = useState([]);
-  const [years, setYears] = useState([]);
-  const [awards, setAwards] = useState([]); 
-  const [statusOptions, setStatusOptions] = useState([]); 
-  const [availabilities, setAvailabilities] = useState([]); 
+  const [filterData, setFilterData] = useState({
+    genres: [],
+    years: [],
+    statuses: [],
+    availabilities: [],
+    awards: [],
+  });
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const fetchGenresAndMovies = async () => {
+    const fetchFilterData = async () => {
       try {
-        const genreResponse = await fetch("http://localhost:5000/api/genres");
-        const genreData = await genreResponse.json();
-        setGenres(genreData);
-
-        const awardResponse = await fetch("http://localhost:5000/api/awards");
-        const awardData = await awardResponse.json();
-        setAwards(awardData);
-
-        const movieResponse = await fetch("http://localhost:5000/api/movies");
-        const movieData = await movieResponse.json();
-        
-        const availResponse = await fetch("http://localhost:5000/api/avail");
-        const availData = await availResponse.json();
-        setAvailabilities(availData);
-
-        const releaseYears = [
-          ...new Set(
-            movieData.map((movie) => new Date(movie.releasedate).getFullYear())
-          ),
-        ];
-        setYears(releaseYears.sort((a, b) => b - a));
-
-        const movieStats = [...new Set(movieData.map((movie) => movie.status))];
-        setStatusOptions(movieStats.sort((a, b) => a.localeCompare(b)));
-
+        const response = await fetch("http://localhost:5000/api/filters");
+        const data = await response.json();
+        setFilterData(data);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching filter data:", error);
       }
     };
 
-    fetchGenresAndMovies();
+    fetchFilterData();
   }, []);
 
   return (
@@ -96,30 +76,25 @@ const Filter = ({
                   value={genre}
                   onChange={(e) => setGenre(e.target.value)}
                 >
-                  <option value="">
-                    All Genre
-                  </option>
-                  {genres.map((genre) => (
-                    <option key={genre.id} value={genre.name}>
-                      {genre.name}
+                  <option value="">All Genre</option>
+                  {filterData.genres.map((g) => (
+                    <option key={g.id} value={g.name}>
+                      {g.name} ({g.movieCount || 0})
                     </option>
                   ))}
                 </select>
               </div>
 
-              {/* Year Filter */}
               <div className="flex flex-col w-full md:w-1/5">
                 <select
                   className="p-2 bg-gray-200 rounded w-full"
                   value={year}
                   onChange={(e) => setYear(e.target.value)}
                 >
-                  <option value="">
-                    All Year
-                  </option>
-                  {years.map((year) => (
-                    <option key={year} value={year}>
-                      {year}
+                  <option value="">All Year</option>
+                  {filterData.years.map((y) => (
+                    <option key={y.year} value={y.year}>
+                      {y.year} ({y.movieCount || 0})
                     </option>
                   ))}
                 </select>
@@ -132,12 +107,10 @@ const Filter = ({
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
                 >
-                  <option value="">
-                    All Status
-                  </option>
-                  {statusOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
+                  <option value="">All Status</option>
+                  {filterData.statuses.map((s) => (
+                    <option key={s.status} value={s.status}>
+                      {s.status} ({s.movieCount || 0})
                     </option>
                   ))}
                 </select>
@@ -150,12 +123,10 @@ const Filter = ({
                   value={availability}
                   onChange={(e) => setAvailability(e.target.value)}
                 >
-                  <option value="">
-                    All Availability
-                  </option>
-                  {availabilities.map((avail) => (
-                    <option key={avail.id} value={avail.name}>
-                      {avail.name}
+                  <option value="">All Availability</option>
+                  {filterData.availabilities.map((a) => (
+                    <option key={a.id} value={a.name}>
+                      {a.name} ({a.movieCount || 0})
                     </option>
                   ))}
                 </select>
@@ -168,25 +139,22 @@ const Filter = ({
                   value={award}
                   onChange={(e) => setAward(e.target.value)}
                 >
-                  <option value="">
-                   All Award
-                  </option>
-                  {awards.map((award) => (
+                  <option value="">All Award</option>
+                  {filterData.awards.map((award) => (
                     <option key={award.id} value={award.award}>
-                      {award.award}
+                      {award.award} ({award.movieCount || 0})
                     </option>
                   ))}
                 </select>
               </div>
             </div>
             <button
-            className="p-2 bg-blue-500 text-white rounded mx-auto block mt-5"
-            onClick={handleSubmit}
-          >
-            Submit
-          </button>
+              className="p-2 bg-blue-500 text-white rounded mx-auto block mt-5"
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
           </div>
-
 
           {/* Sorted by Section */}
           <div className="flex flex-col items-center">
