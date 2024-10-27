@@ -18,7 +18,7 @@ const Movie = sequelize.define(
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     title: { type: DataTypes.STRING(100), allowNull: false },
     alternativetitle: { type: DataTypes.STRING(100) },
-    synopsis: { type: DataTypes.STRING(1000) },
+    synopsis: { type: DataTypes.TEXT },
     urlphoto: { type: DataTypes.STRING(255) },
     releasedate: { type: DataTypes.DATE },
     linktrailer: { type: DataTypes.STRING(255) },

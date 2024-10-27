@@ -380,12 +380,12 @@ const MovieListCMS = () => {
 
           {selectedMovie && (
             <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-              <div className="bg-white p-6 rounded-lg w-full max-w-lg">
-                <h2 className="text-2xl font-bold mb-4">
+            <div className="bg-white p-6 rounded-lg w-full max-w-2xl max-h-[85vh] overflow-y-auto mt-12 md:mt-16 mx-4">
+              <h2 className="text-2xl font-bold mb-4">
                   {selectedMovie.title}
                 </h2>
 
-                {/* Menampilkan semua atribut movie */}
+                {/* Movie Details */}
                 <p>
                   <strong>Alternative Title:</strong>{" "}
                   {selectedMovie.alternativetitle || "N/A"}
@@ -447,7 +447,6 @@ const MovieListCMS = () => {
                     : "No Directors Listed"}
                 </p>
 
-                {/* Menampilkan Actors */}
                 <p>
                   <strong>Actors:</strong>{" "}
                   {selectedMovie.Actors && selectedMovie.Actors.length > 0
@@ -456,8 +455,7 @@ const MovieListCMS = () => {
                       )
                     : "No Actors Listed"}
                 </p>
-                
-                {/* Menampilkan Genres */}
+
                 <p>
                   <strong>Genres:</strong>{" "}
                   {selectedMovie.Genres && selectedMovie.Genres.length > 0
@@ -467,7 +465,6 @@ const MovieListCMS = () => {
                     : "No Genres Listed"}
                 </p>
 
-                {/* Menampilkan Awards */}
                 <p>
                   <strong>Awards:</strong>{" "}
                   {selectedMovie.Awards && selectedMovie.Awards.length > 0
@@ -477,7 +474,6 @@ const MovieListCMS = () => {
                     : "No Awards Listed"}
                 </p>
 
-                {/* Menampilkan Availability */}
                 <p>
                   <strong>Availability:</strong>{" "}
                   {selectedMovie.Availabilities &&

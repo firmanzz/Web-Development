@@ -9,7 +9,8 @@ const MovieForm = () => {
   const [open, setOpen] = useState(false);
   const sidebarRef = useRef(null);
 
-  const [isEditMode, setIsEditMode] = useState(false); // State to track if we are in edit mode
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [errors, setErrors] = useState({}); 
 
   const [filteredGenres, setFilteredGenres] = useState([]);
   const [filteredAwards, setFilteredAwards] = useState([]);
@@ -98,8 +99,75 @@ const MovieForm = () => {
     fetchData();
   }, [id]);
 
+  const validateForm = () => {
+    const errors = {};
+
+    // Title validation
+    if (!movieDetails.title.trim()) {
+      errors.title = "Title is required";
+    }
+
+    // Synopsis validation
+    if (!movieDetails.synopsis.trim()) {
+      errors.synopsis = "Synopsis is required";
+    } else if (movieDetails.synopsis.length > 5000) {
+      errors.synopsis = "Synopsis should not exceed 1000 characters";
+    }
+
+    // Release Date validation
+    if (!movieDetails.releasedate) {
+      errors.releasedate = "Release date is required";
+    } else if (new Date(movieDetails.releasedate) > new Date()) {
+      errors.releasedate = "Release date cannot be in the future";
+    }
+
+    // Country validation
+    if (!movieDetails.countryid) {
+      errors.countryid = "Country selection is required";
+    }
+
+    // Duration validation
+    if (!movieDetails.duration || movieDetails.duration <= 0) {
+      errors.duration = "Duration must be a positive number";
+    } else if (movieDetails.duration < 1 || movieDetails.duration > 1000) {
+      errors.duration = "Duration must be between 1 and 1000 minutes";
+    }
+
+    // URL Poster validation
+    if (!movieDetails.urlphoto.trim()) {
+      errors.urlphoto = "Poster URL is required";
+    } else if (!/^https?:\/\/.+\..+$/.test(movieDetails.urlphoto)) {
+      errors.urlphoto = "Poster URL must be valid";
+    }
+
+    // Link Trailer validation
+    if (!movieDetails.linktrailer.trim()) {
+      errors.linktrailer = "Trailer link is required";
+    } else if (!/^https:\/\/.+\..+$/.test(movieDetails.linktrailer)) {
+      errors.linktrailer = "Trailer link must be a valid embeddable URL";
+    }
+
+    // Genres, Actors, and Directors minimum selection
+    if (selectedGenres.length < 1) {
+      errors.genres = "At least one genre must be selected";
+    }
+    if (selectedActors.length < 1) {
+      errors.actors = "At least one actor must be selected";
+    }
+    if (selectedDirectors.length < 1) {
+      errors.directors = "At least one director must be selected";
+    }
+
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
 
     const data = {
       ...movieDetails,
@@ -255,11 +323,8 @@ const MovieForm = () => {
             onSubmit={handleSubmit}
           >
             <div className="grid grid-cols-2 gap-4 mb-4">
-              <div>
-                <label
-                  htmlFor="title"
-                  className="block text-sm font-medium text-gray-700"
-                >
+            <div>
+                <label htmlFor="title" className="block text-sm font-medium text-gray-700">
                   Title
                 </label>
                 <input
@@ -270,13 +335,11 @@ const MovieForm = () => {
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
                 />
+                {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
               </div>
               <div>
-                <label
-                  htmlFor="alternativeTitle"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Alternative Title
+                <label htmlFor="alternativeTitle" className="block text-sm font-medium text-gray-700">
+                  Alternative Title {"("}Optional{")"}
                 </label>
                 <input
                   type="text"
@@ -289,12 +352,10 @@ const MovieForm = () => {
               </div>
             </div>
 
+            {/* Additional Fields for Validation */}
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label
-                  htmlFor="releasedate"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="releasedate" className="block text-sm font-medium text-gray-700">
                   Release Date
                 </label>
                 <input
@@ -305,12 +366,10 @@ const MovieForm = () => {
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
                 />
+                {errors.releasedate && <p className="text-red-500 text-sm">{errors.releasedate}</p>}
               </div>
               <div>
-                <label
-                  htmlFor="country"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="country" className="block text-sm font-medium text-gray-700">
                   Country
                 </label>
                 <select
@@ -327,8 +386,10 @@ const MovieForm = () => {
                     </option>
                   ))}
                 </select>
+                {errors.countryid && <p className="text-red-500 text-sm">{errors.countryid}</p>}
               </div>
             </div>
+
 
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
@@ -336,7 +397,7 @@ const MovieForm = () => {
                   htmlFor="duration"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Duration
+                  Duration {"("}1-1000 min{")"}
                 </label>
                 <input
                   type="number"
