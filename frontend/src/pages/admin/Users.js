@@ -35,21 +35,21 @@ const Users = () => {
 
   const handleSuspendToggle = async () => {
     if (!selectedUser) return;
-
+  
     try {
-      const updatedUser = { ...selectedUser, suspend: !selectedUser.suspend };
-
+      const updatedStatus = !selectedUser.suspend;
+  
       await fetch(`http://localhost:5000/api/users/${selectedUser.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(updatedUser),
+        body: JSON.stringify({ suspend: updatedStatus }),
       });
-
+  
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.id === selectedUser.id ? updatedUser : user
+          user.id === selectedUser.id ? { ...user, suspend: updatedStatus } : user
         )
       );
       closeEditModal();
@@ -57,6 +57,33 @@ const Users = () => {
       console.error("Error updating user suspend status:", error);
     }
   };
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this user?");
+    if (!confirmDelete) return;
+  
+    try {
+      const response = await fetch(`http://localhost:5000/api/users/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (response.ok) {
+        setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+        alert("User deleted successfully.");
+      } else {
+        const errorData = await response.json();
+        console.error("Error deleting user:", errorData.message);
+        alert("Failed to delete user.");
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      alert("An error occurred while trying to delete the user.");
+    }
+  };
+  
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -111,12 +138,14 @@ const Users = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button
-                          onClick={() => openEditModal(user)} // Open modal on click
+                          onClick={() => openEditModal(user)} 
                           className="text-blue-500 hover:text-blue-700 mr-2"
                         >
                           Edit
                         </button>
-                        <button className="text-red-500 hover:text-red-700">
+                        <button 
+                        onClick={() => handleDelete(user.id)}
+                        className="text-red-500 hover:text-red-700">
                           Delete
                         </button>
                       </td>

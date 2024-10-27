@@ -25,8 +25,8 @@ router.post('/reset-password', resetPassword);
 
 // Admin routes for managing users
 router.get('/users', getAllUsers);
-router.post('/users/:id', editUser);
-router.post('/users/delete/:id', deleteUser);
+router.put('/users/:id', editUser);
+router.delete('/users/:id', deleteUser);
 
 router.get('/get-user', authMiddleware, (req, res) => {
     try {

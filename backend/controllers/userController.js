@@ -103,13 +103,18 @@ exports.editUser = async (req, res) => {
   }
 };
 
-// Delete a user
 exports.deleteUser = async (req, res) => {
-    try {
-        const { id } = req.params;
-        await User.findByIdAndDelete(id);
-        res.redirect('/users');
-    } catch (err) {
-        res.status(500).send('Server Error');
+  const { id } = req.params;
+  try {
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+    await user.destroy();
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ message: "An error occurred while deleting user" });
+  }
 };
+
