@@ -2,140 +2,108 @@ import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./SidebarCMS";
 import Header from "./HeaderCMS";
 
-const Genres = () => {
+const Availability = () => {
   const [open, setOpen] = useState(false);
   const sidebarRef = useRef(null);
-  const [genres, setGenres] = useState([]);
-  const [newGenre, setNewGenre] = useState("");
+  const [availabilities, setAvailabilities] = useState([]);
+  const [newAvailability, setNewAvailability] = useState("");
   const [error, setError] = useState("");
-  const [editingGenreId, setEditingGenreId] = useState(null);
-  const [editingGenreName, setEditingGenreName] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [editingName, setEditingName] = useState("");
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
-  const [genresPerPage] = useState(10); // Limit genres per page
-  const maxPageNumbers = 3; // Maximum number of page buttons to show at once
+  const [itemsPerPage] = useState(10);
+  const maxPageNumbers = 3;
 
   useEffect(() => {
-    const fetchGenres = async () => {
+    const fetchAvailabilities = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/genres");
-        if (!response.ok) {
-          throw new Error("Failed to fetch genres");
-        }
+        const response = await fetch("http://localhost:5000/api/avail");
+        if (!response.ok) throw new Error("Failed to fetch availabilities");
         const data = await response.json();
-        setGenres(data);
+        setAvailabilities(data);
       } catch (error) {
-        console.error("Error fetching genres:", error);
-        setError("Failed to fetch genres");
+        console.error("Error fetching availabilities:", error);
+        setError("Failed to fetch availabilities");
       }
     };
 
-    fetchGenres();
+    fetchAvailabilities();
   }, []);
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/addGenres", {
+      const response = await fetch("http://localhost:5000/api/addAvail", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: newGenre }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: newAvailability }),
       });
-
       const data = await response.json();
-
-      if (!response.ok) {
-        console.log("Error response:", data);
-        throw new Error(data.message || "Failed to add genre");
-      }
-
-      setGenres([...genres, data]);
-      setNewGenre("");
+      if (!response.ok) throw new Error(data.message || "Failed to add availability");
+      setAvailabilities([...availabilities, data]);
+      setNewAvailability("");
     } catch (error) {
-      console.error("Error adding genre:", error);
-      setError("Failed to add genre");
+      console.error("Error adding availability:", error);
+      setError("Failed to add availability");
     }
   };
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this genre?"
-    );
-    if (!confirmDelete) {
-      return;
-    }
-
+    if (!window.confirm("Are you sure you want to delete this availability?")) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/genres/${id}`, {
+      const response = await fetch(`http://localhost:5000/api/avail/${id}`, {
         method: "DELETE",
       });
-
       if (response.ok) {
-        setGenres((prevGenres) =>
-          prevGenres.filter((genre) => genre.id !== id)
-        );
-        alert("Genre deleted successfully.");
+        setAvailabilities(availabilities.filter((item) => item.id !== id));
+        alert("Availability deleted successfully.");
       } else {
-        alert("Failed to delete genre.");
+        alert("Failed to delete availability.");
       }
     } catch (error) {
-      console.error("Error deleting genre:", error);
-      alert("Error deleting genre.");
+      console.error("Error deleting availability:", error);
+      alert("Error deleting availability.");
     }
   };
 
   const startEditing = (id, name) => {
-    setEditingGenreId(id);
-    setEditingGenreName(name);
+    setEditingId(id);
+    setEditingName(name);
   };
 
   const handleEditSubmit = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/genres/${editingGenreId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name: editingGenreName }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to edit genre");
-      }
-
-      const updatedGenre = await response.json();
-
-      setGenres((prevGenres) =>
-        prevGenres.map((genre) =>
-          genre.id === editingGenreId ? updatedGenre : genre
+      const response = await fetch(`http://localhost:5000/api/avail/${editingId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: editingName }),
+      });
+      if (!response.ok) throw new Error("Failed to edit availability");
+      const updatedAvailability = await response.json();
+      setAvailabilities(
+        availabilities.map((item) =>
+          item.id === editingId ? updatedAvailability : item
         )
       );
-
-      setEditingGenreId(null);
-      setEditingGenreName("");
+      setEditingId(null);
+      setEditingName("");
     } catch (error) {
-      console.error("Error editing genre:", error);
-      setError("Failed to edit genre");
+      console.error("Error editing availability:", error);
+      setError("Failed to edit availability");
     }
   };
 
   const handleCancelEdit = () => {
-    setEditingGenreId(null);
-    setEditingGenreName("");
+    setEditingId(null);
+    setEditingName("");
   };
 
   // Pagination Logic
-  const indexOfLastGenre = currentPage * genresPerPage;
-  const indexOfFirstGenre = indexOfLastGenre - genresPerPage;
-  const currentGenres = genres.slice(indexOfFirstGenre, indexOfLastGenre);
-  const totalPages = Math.ceil(genres.length / genresPerPage);
-
-  // Dynamic Pagination Logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = availabilities.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(availabilities.length / itemsPerPage);
   const startPage = Math.max(1, currentPage - Math.floor(maxPageNumbers / 2));
   const endPage = Math.min(totalPages, startPage + maxPageNumbers - 1);
 
@@ -147,7 +115,7 @@ const Genres = () => {
       <div className="flex flex-grow">
         <Sidebar ref={sidebarRef} open={open} setOpen={setOpen} />
         <div className="flex-1 p-4">
-          <h1 className="text-3xl md:text-4xl font-bold mb-6">Genres</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-6">Availability</h1>
 
           {error && <p className="text-red-600 mb-4">{error}</p>}
 
@@ -156,9 +124,9 @@ const Genres = () => {
               <input
                 type="text"
                 className="form-control border rounded-md px-4 py-2"
-                placeholder="Genre"
-                value={newGenre}
-                onChange={(e) => setNewGenre(e.target.value)}
+                placeholder="Availability"
+                value={newAvailability}
+                onChange={(e) => setNewAvailability(e.target.value)}
               />
               <button
                 className="bg-green-600 text-white px-4 py-2 rounded-md"
@@ -176,10 +144,10 @@ const Genres = () => {
                     No
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Genre
+                    Name
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Movies
+                    Usage
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Action
@@ -187,28 +155,28 @@ const Genres = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {currentGenres.map((genre, index) => (
-                  <tr key={genre.id}>
+                {currentItems.map((item, index) => (
+                  <tr key={item.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {indexOfFirstGenre + index + 1}
+                      {indexOfFirstItem + index + 1}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {editingGenreId === genre.id ? (
+                      {editingId === item.id ? (
                         <input
                           type="text"
-                          value={editingGenreName}
-                          onChange={(e) => setEditingGenreName(e.target.value)}
+                          value={editingName}
+                          onChange={(e) => setEditingName(e.target.value)}
                           className="border rounded-md px-2 py-1"
                         />
                       ) : (
-                        genre.name
+                        item.name
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {genre.movieCount || 0} {/* Default to 0 if null */}
+                      {item.usageCount}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {editingGenreId === genre.id ? (
+                      {editingId === item.id ? (
                         <>
                           <button
                             onClick={handleEditSubmit}
@@ -226,13 +194,13 @@ const Genres = () => {
                       ) : (
                         <>
                           <button
-                            onClick={() => startEditing(genre.id, genre.name)}
+                            onClick={() => startEditing(item.id, item.name)}
                             className="bg-yellow-600 text-white px-3 py-1 rounded-md mr-2"
                           >
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDelete(genre.id)}
+                            onClick={() => handleDelete(item.id)}
                             className="bg-red-600 text-white px-3 py-1 rounded-md"
                           >
                             Delete
@@ -249,42 +217,33 @@ const Genres = () => {
           {/* Pagination */}
           <div className="flex justify-center my-4">
             <nav className="flex items-center space-x-2">
-              {/* Previous Button */}
               <button
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
                 className={`px-3 py-1 bg-gray-700 text-white rounded ${
-                  currentPage === 1
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-gray-600"
+                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
                 }`}
               >
                 &larr; Prev
               </button>
 
-              {/* Page Numbers */}
               {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
                 <button
                   key={startPage + i}
                   onClick={() => paginate(startPage + i)}
                   className={`px-3 py-1 bg-gray-700 text-white rounded ${
-                    currentPage === startPage + i
-                      ? "bg-blue-500"
-                      : "hover:bg-gray-600"
+                    currentPage === startPage + i ? "bg-blue-500" : "hover:bg-gray-600"
                   }`}
                 >
                   {startPage + i}
                 </button>
               ))}
 
-              {/* Next Button */}
               <button
                 onClick={() => paginate(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 className={`px-3 py-1 bg-gray-700 text-white rounded ${
-                  currentPage === totalPages
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-gray-600"
+                  currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
                 }`}
               >
                 Next &rarr;
@@ -296,5 +255,4 @@ const Genres = () => {
     </div>
   );
 };
-
-export default Genres;
+export default Availability;

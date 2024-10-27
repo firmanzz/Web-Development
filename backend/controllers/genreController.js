@@ -1,8 +1,18 @@
 const Genre = require('../models/Genre');
+const sequelize = require('../config/database');
 
 exports.getAllGenres = async (req, res) => {
   try {
-    const genres = await Genre.findAll({order: [['name', 'ASC']], logging: false,});
+    const genres = await Genre.findAll({attributes: {
+      include: [
+        [sequelize.literal(`(
+          SELECT COUNT(*)
+          FROM movie_genre AS mg
+          WHERE mg.genreid = "Genre".id
+        )`), 'movieCount']
+      ]
+    },
+    raw: true,order: [['name', 'ASC']], logging: false,});
     res.status(200).json(genres);
   } catch (error) {
     console.error(error);

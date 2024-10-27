@@ -18,6 +18,7 @@ const Sidebar = forwardRef(({ open, setOpen }, ref) => {
     },
     { title: "COUNTRIES", key: "countries", path: "/admin/Countries" },
     { title: "GENRES", key: "genres", path: "/admin/Genres" },
+    { title: "AVAILABILITY", key: "availabilities", path: "/admin/Availabilities"},
     { title: "ACTORS", key: "actors", path: "/admin/Actors" },
     { title: "DIRECTORS", key: "directors", path: "/admin/Directors" },
     { title: "AWARDS", key: "awards", path: "/admin/Awards" },

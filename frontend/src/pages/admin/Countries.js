@@ -135,7 +135,10 @@ const Countries = ({ movies }) => {
   // Pagination Logic
   const indexOfLastCountry = currentPage * countriesPerPage;
   const indexOfFirstCountry = indexOfLastCountry - countriesPerPage;
-  const currentCountries = countries.slice(indexOfFirstCountry, indexOfLastCountry);
+  const currentCountries = countries.slice(
+    indexOfFirstCountry,
+    indexOfLastCountry
+  );
   const totalPages = Math.ceil(countries.length / countriesPerPage);
 
   // Dynamic Pagination Logic
@@ -183,6 +186,9 @@ const Countries = ({ movies }) => {
                     Country
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    Movies
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Action
                   </th>
                 </tr>
@@ -198,12 +204,17 @@ const Countries = ({ movies }) => {
                         <input
                           type="text"
                           value={editingCountryName}
-                          onChange={(e) => setEditingCountryName(e.target.value)}
+                          onChange={(e) =>
+                            setEditingCountryName(e.target.value)
+                          }
                           className="border rounded-md px-2 py-1"
                         />
                       ) : (
                         country.name
                       )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {country.movieCount || 0} {/* Default to 0 if null */}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {editingCountryId === country.id ? (

@@ -1,8 +1,18 @@
 const Country = require('../models/Countries');
+const sequelize = require('../config/database');
 
 exports.getAllCountry = async (req, res) => {
   try {
-    const countries = await Country.findAll({order: [['name', 'ASC']], logging: false,});
+    const countries = await Country.findAll({attributes: {
+      include: [
+        [sequelize.literal(`(
+          SELECT COUNT(*)
+          FROM movies AS m
+          WHERE m.countryid = "Country".id
+        )`), 'movieCount']
+      ]
+    },
+    raw: true,order: [['name', 'ASC']], logging: false,});
     res.status(200).json(countries);
   } catch (error) {
     console.error(error);

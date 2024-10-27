@@ -4,6 +4,7 @@ import MovieForm from "../pages/admin/MovieForm";
 import Countries from "../pages/admin/Countries";
 import Awards from "../pages/admin/Awards";
 import Genres from "../pages/admin/Genres";
+import Availability from "../pages/admin/Availabilities";
 import Actors from "../pages/admin/Actors";
 import Directors from "../pages/admin/Directors";
 import Comments from "../pages/admin/Comments";
@@ -29,6 +30,7 @@ const AdminRoutes = () => {
           <Route path="/countries" element={<Countries />} />
           <Route path="/awards" element={<Awards />} />
           <Route path="/genres" element={<Genres />} />
+          <Route path="/availabilities" element={<Availability />} />
           <Route path="/actors" element={<Actors />} />
           <Route path="/directors" element={<Directors />} />
           <Route path="/comments" element={<Comments />} />
