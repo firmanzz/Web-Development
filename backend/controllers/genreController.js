@@ -28,7 +28,16 @@ exports.addGenre = async (req, res) => {
       return res.status(400).json({ error: 'Genre name is required' });
     }
 
-    console.log("Request body:", req.body); 
+    const existingGenre = await Genre.findOne({
+      where: sequelize.where(
+        sequelize.fn('LOWER', sequelize.col('name')),
+        sequelize.fn('LOWER', name)
+      ),
+    });
+
+    if (existingGenre) {
+      return res.status(400).json({ error: 'Genre name already exists' });
+    }
 
     const newGenre = await Genre.create({ name });
     res.status(201).json(newGenre); 

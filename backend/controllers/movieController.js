@@ -253,12 +253,13 @@ exports.updateMovie = async (req, res) => {
     selectedActors,
     selectedAwards,
     selectedAvailabilities,
-    selectedDirectors, // New parameter for directors
+    selectedDirectors,
     removedGenres,
     removedActors,
     removedAwards,
     removedAvailabilities,
-    removedDirectors, // New parameter for directors
+    removedDirectors,
+    approvalstatus // Tambahkan approvalstatus di sini
   } = req.body;
 
   const { id } = req.params;
@@ -284,7 +285,13 @@ exports.updateMovie = async (req, res) => {
       countryid,
     });
 
-    // Update genres (add/remove selectively)
+    // Jika approvalstatus disediakan, perbarui
+    if (typeof approvalstatus !== 'undefined') {
+      movie.approvalstatus = approvalstatus;
+      await movie.save(); // Pastikan perubahan disimpan
+    }
+
+    // Logika untuk mengupdate genres (add/remove selectively)
     if (selectedGenres && selectedGenres.length > 0) {
       const genresToAdd = await Genre.findAll({ where: { id: selectedGenres } });
       await movie.addGenres(genresToAdd);
@@ -294,7 +301,7 @@ exports.updateMovie = async (req, res) => {
       await movie.removeGenres(genresToRemove);
     }
 
-    // Update actors (add/remove selectively)
+    // Logika untuk mengupdate actors (add/remove selectively)
     if (selectedActors && selectedActors.length > 0) {
       const actorsToAdd = await Actor.findAll({ where: { id: selectedActors } });
       await movie.addActors(actorsToAdd);
@@ -304,7 +311,7 @@ exports.updateMovie = async (req, res) => {
       await movie.removeActors(actorsToRemove);
     }
 
-    // Update awards (add/remove selectively)
+    // Logika untuk mengupdate awards (add/remove selectively)
     if (selectedAwards && selectedAwards.length > 0) {
       const awardsToAdd = await Award.findAll({ where: { id: selectedAwards } });
       await movie.addAwards(awardsToAdd);
@@ -314,7 +321,7 @@ exports.updateMovie = async (req, res) => {
       await movie.removeAwards(awardsToRemove);
     }
 
-    // Update availabilities (add/remove selectively)
+    // Logika untuk mengupdate availabilities (add/remove selectively)
     if (selectedAvailabilities && selectedAvailabilities.length > 0) {
       const availabilitiesToAdd = await Availability.findAll({ where: { id: selectedAvailabilities } });
       await movie.addAvailabilities(availabilitiesToAdd);
@@ -324,7 +331,7 @@ exports.updateMovie = async (req, res) => {
       await movie.removeAvailabilities(availabilitiesToRemove);
     }
 
-    // Update directors (add/remove selectively)
+    // Logika untuk mengupdate directors (add/remove selectively)
     if (selectedDirectors && selectedDirectors.length > 0) {
       const directorsToAdd = await Director.findAll({ where: { id: selectedDirectors } });
       await movie.addDirectors(directorsToAdd); // Add new directors
@@ -340,6 +347,7 @@ exports.updateMovie = async (req, res) => {
     res.status(500).json({ message: 'Error updating movie', error });
   }
 };
+
 
 
 exports.deleteMovie = async (req, res) => {

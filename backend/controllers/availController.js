@@ -23,9 +23,24 @@ exports.addAvailability = async (req, res) => {
   const { name } = req.body;
 
   try {
+    if (!name) {
+      return res.status(400).json({ message: 'Availability name is required' });
+    }
+    const existingAvailability = await Avail.findOne({
+      where: sequelize.where(
+        sequelize.fn('LOWER', sequelize.col('name')),
+        sequelize.fn('LOWER', name)
+      ),
+    });
+
+    if (existingAvailability) {
+      return res.status(400).json({ message: 'Availability name already exists' });
+    }
+
     const newAvailability = await Avail.create({ name });
     res.status(201).json(newAvailability);
   } catch (error) {
+    console.error("Error adding availability:", error);
     res.status(500).json({ message: 'Failed to add availability', error });
   }
 };

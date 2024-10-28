@@ -39,13 +39,23 @@ const Availability = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: newAvailability }),
       });
+  
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to add availability");
+  
+      if (!response.ok) {
+        if (data.message === "Availability name already exists") {
+          setError("Availability name already exists");
+        } else {
+          setError(data.message || "Failed to add availability");
+        }
+        throw new Error(data.message || "Failed to add availability");
+      }
+  
       setAvailabilities([...availabilities, data]);
       setNewAvailability("");
+      setError(""); 
     } catch (error) {
       console.error("Error adding availability:", error);
-      setError("Failed to add availability");
     }
   };
 

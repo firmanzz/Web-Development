@@ -43,21 +43,29 @@ const Countries = ({ movies }) => {
         },
         body: JSON.stringify({ name: newCountry }),
       });
-
+  
       const data = await response.json();
-
+  
       if (!response.ok) {
         console.log("Error response:", data);
+  
+        if (data.error === "Country name already exists") {
+          setError("Country name already exists");
+        } else {
+          setError(data.message || "Failed to add country");
+        }
+        
         throw new Error(data.message || "Failed to add country");
       }
-
+  
       setCountries([...countries, data]);
       setNewCountry("");
+      setError("");
     } catch (error) {
       console.error("Error adding country:", error);
-      setError("Failed to add country");
     }
   };
+  
 
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm(

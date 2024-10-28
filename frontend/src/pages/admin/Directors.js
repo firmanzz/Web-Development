@@ -69,6 +69,12 @@ const Directors = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    const birthDateObj = new Date(formState.birthDate);
+    if (birthDateObj > new Date()) {
+      setError("Birthdate cannot be in the future.");
+      return;
+    }
+
     const formData = {
       name: formState.directorName || selectedDirector?.name,
       countryid: selectedCountry?.id || selectedDirector?.Country?.id || formState.country,
@@ -151,9 +157,12 @@ const Directors = () => {
 
   const handleEditDirector = (director) => {
     setSelectedDirector(director);
+
+    const formattedBirthDate = new Date(director.birthdate).toISOString().split('T')[0];
+
     setFormState({
       directorName: director.name,
-      birthDate: director.birthdate,
+      birthDate: formattedBirthDate,
       photo: director.urlphoto,
       country: director.countryid,
     });

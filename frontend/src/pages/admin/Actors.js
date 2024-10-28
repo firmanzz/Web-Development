@@ -67,30 +67,32 @@ const Actors = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
+    const birthDateObj = new Date(formState.birthDate);
+    if (birthDateObj > new Date()) {
+      setError("Birthdate cannot be in the future.");
+      return;
+    }
+  
     const formData = {
       name: formState.actorName || selectedActor?.name,
       countryid: selectedCountry?.id || selectedActor?.Country?.id || formState.country,
       birthdate: formState.birthDate || selectedActor?.birthdate,
       urlphoto: formState.photo || selectedActor?.urlphoto,
     };
-
+  
     try {
       let response;
       if (selectedActor) {
         response = await fetch(`http://localhost:5000/api/actors/${selectedActor.id}`, {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         });
       } else {
         response = await fetch("http://localhost:5000/api/addActor", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         });
       }
@@ -98,24 +100,24 @@ const Actors = () => {
       if (!response.ok) {
         throw new Error("Failed to save actor");
       }
-
-      const updatedActor = await response.json();
-
+  
+      const data = await response.json();
+  
       if (selectedActor) {
-        setActors(actors.map((actor) => (actor.id === updatedActor.id ? updatedActor : actor)));
+        setActors(actors.map((actor) => (actor.id === data.id ? data : actor)));
       } else {
-        setActors([...actors, updatedActor]);
+        setActors([...actors, data]);
       }
-
+  
       setFormState({ actorName: "", country: "", birthDate: "", photo: "" });
       setSelectedCountry(null);
       setSelectedActor(null);
+      setError(""); // Clear error message on success
     } catch (error) {
       console.error("Error saving actor:", error);
-      setError("Failed to save actor. Please try again.");
     }
   };
-
+  
   const handleDeleteActor = async (id) => {
     try {
       const response = await fetch(`http://localhost:5000/api/actors/${id}`, {
@@ -149,15 +151,20 @@ const Actors = () => {
   };
 
   const handleEditActor = (actor) => {
-    setSelectedActor(actor);
-    setFormState({
-      actorName: actor.name,
-      birthDate: actor.birthdate,
-      photo: actor.urlphoto,
-      country: actor.countryid,
-    });
-    setSelectedCountry(actor.Country);
-  };
+  setSelectedActor(actor);
+  
+  // Format birthdate to YYYY-MM-DD
+  const formattedBirthDate = new Date(actor.birthdate).toISOString().split('T')[0];
+  
+  setFormState({
+    actorName: actor.name,
+    birthDate: formattedBirthDate, // Set formatted birthdate here
+    photo: actor.urlphoto,
+    country: actor.countryid,
+  });
+  setSelectedCountry(actor.Country);
+};
+
 
   const handleCancelEdit = () => {
     setSelectedActor(null);

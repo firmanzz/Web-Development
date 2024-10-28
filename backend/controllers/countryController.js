@@ -28,13 +28,27 @@ exports.addCountry = async (req, res) => {
       return res.status(400).json({ error: 'Country name is required' });
     }
 
-    const newCountry= await Country.create({ name });
-    res.status(201).json(newCountry); 
+    // Validasi duplikasi nama negara (case-insensitive)
+    const existingCountry = await Country.findOne({
+      where: sequelize.where(
+        sequelize.fn('lower', sequelize.col('name')), 
+        sequelize.fn('lower', name)
+      ),
+    });
+
+    if (existingCountry) {
+      return res.status(400).json({ error: 'Country name already exists' });
+    }
+
+    // Jika tidak ada duplikasi, buat country baru
+    const newCountry = await Country.create({ name });
+    res.status(201).json(newCountry);
   } catch (error) {
     console.error("Error adding country:", error);
     res.status(500).json({ error: 'An error occurred while adding the country' });
   }
 };
+
 
 exports.deleteCountry = async (req, res) => {
   const { id } = req.params;

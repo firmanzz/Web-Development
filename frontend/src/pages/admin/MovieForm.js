@@ -10,7 +10,7 @@ const MovieForm = () => {
   const sidebarRef = useRef(null);
 
   const [isEditMode, setIsEditMode] = useState(false);
-  const [errors, setErrors] = useState({}); 
+  const [errors, setErrors] = useState({});
 
   const [filteredGenres, setFilteredGenres] = useState([]);
   const [filteredAwards, setFilteredAwards] = useState([]);
@@ -83,11 +83,18 @@ const MovieForm = () => {
           );
           const movieData = await movieResponse.json();
 
-          setMovieDetails(movieData);
+          const formattedReleaseDate = new Date(movieData.releasedate)
+            .toISOString()
+            .split("T")[0];
+
+          setMovieDetails({
+            ...movieData,
+            releasedate: formattedReleaseDate,
+          });
           setSelectedGenres(movieData.Genres || []);
           setSelectedAwards(movieData.Awards || []);
           setSelectedActors(movieData.Actors || []);
-          setSelectedDirectors(movieData.Directors || []); // Set existing directors
+          setSelectedDirectors(movieData.Directors || []);
           setSelectedAvailabilities(movieData.Availabilities || []);
           setIsEditMode(true);
         }
@@ -124,6 +131,12 @@ const MovieForm = () => {
     // Country validation
     if (!movieDetails.countryid) {
       errors.countryid = "Country selection is required";
+    }
+
+    if (!movieDetails.rating) {
+      errors.rating = "Rating is required";
+    } else if (parseFloat(movieDetails.rating) < 1 || parseFloat(movieDetails.rating) > 10) {
+      errors.rating = "Rating must be between 1 and 10";
     }
 
     // Duration validation
@@ -323,8 +336,11 @@ const MovieForm = () => {
             onSubmit={handleSubmit}
           >
             <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              <div>
+                <label
+                  htmlFor="title"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Title
                 </label>
                 <input
@@ -335,10 +351,15 @@ const MovieForm = () => {
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
                 />
-                {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
+                {errors.title && (
+                  <p className="text-red-500 text-sm">{errors.title}</p>
+                )}
               </div>
               <div>
-                <label htmlFor="alternativeTitle" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="alternativeTitle"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Alternative Title {"("}Optional{")"}
                 </label>
                 <input
@@ -355,7 +376,10 @@ const MovieForm = () => {
             {/* Additional Fields for Validation */}
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label htmlFor="releasedate" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="releasedate"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Release Date
                 </label>
                 <input
@@ -366,10 +390,15 @@ const MovieForm = () => {
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
                 />
-                {errors.releasedate && <p className="text-red-500 text-sm">{errors.releasedate}</p>}
+                {errors.releasedate && (
+                  <p className="text-red-500 text-sm">{errors.releasedate}</p>
+                )}
               </div>
               <div>
-                <label htmlFor="country" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="country"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Country
                 </label>
                 <select
@@ -386,10 +415,11 @@ const MovieForm = () => {
                     </option>
                   ))}
                 </select>
-                {errors.countryid && <p className="text-red-500 text-sm">{errors.countryid}</p>}
+                {errors.countryid && (
+                  <p className="text-red-500 text-sm">{errors.countryid}</p>
+                )}
               </div>
             </div>
-
 
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
@@ -462,6 +492,30 @@ const MovieForm = () => {
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
                 />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label
+                  htmlFor="rating"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Rating (1-5)
+                </label>
+                <input
+                  type="number"
+                  id="rating"
+                  name="rating"
+                  value={movieDetails.rating}
+                  onChange={handleChange}
+                  min="1"
+                  max="10"
+                  step="0.1"
+                  className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
+                />
+                {errors.rating && (
+                  <p className="text-red-500 text-sm">{errors.rating}</p>
+                )}
               </div>
             </div>
 
@@ -630,7 +684,9 @@ const MovieForm = () => {
                     className="inline-block bg-green-500 text-white p-1 m-1 rounded-md"
                   >
                     {director.name}{" "}
-                    <button onClick={() => handleDirectorRemove(director)}>x</button>
+                    <button onClick={() => handleDirectorRemove(director)}>
+                      x
+                    </button>
                   </span>
                 ))}
               </div>

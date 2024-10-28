@@ -43,21 +43,29 @@ const Genres = () => {
         },
         body: JSON.stringify({ name: newGenre }),
       });
-
+  
       const data = await response.json();
-
+  
       if (!response.ok) {
         console.log("Error response:", data);
+  
+        if (data.error === "Genre name already exists") {
+          setError("Genre name already exists");
+        } else {
+          setError(data.message || "Failed to add genre");
+        }
+        
         throw new Error(data.message || "Failed to add genre");
       }
-
+  
       setGenres([...genres, data]);
       setNewGenre("");
+      setError(""); 
     } catch (error) {
       console.error("Error adding genre:", error);
-      setError("Failed to add genre");
     }
   };
+  
 
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm(

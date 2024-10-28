@@ -65,13 +65,20 @@ const Awards = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
+    const currentYear = new Date().getFullYear();
+    
+    if (parseInt(newAward.year) > currentYear) {
+      setError("Year cannot be in the future.");
+      return;
+    }
+  
     const formData = {
       award: newAward.awardName || selectedAward?.award,
       countryid: selectedCountry?.id || selectedAward?.Country?.id || newAward.country,
       year: newAward.year || selectedAward?.year,
     };
-
+  
     try {
       let response;
       if (selectedAward) {
@@ -91,27 +98,29 @@ const Awards = () => {
           body: JSON.stringify(formData),
         });
       }
-
+  
       if (!response.ok) {
         throw new Error("Failed to save award");
       }
-
+  
       const updatedAward = await response.json();
-
+  
       if (selectedAward) {
         setAwards(awards.map((award) => (award.id === updatedAward.id ? updatedAward : award)));
       } else {
         setAwards([...awards, updatedAward]);
       }
-
+  
       setNewAward({ awardName: "", year: "", country: "" });
       setSelectedCountry(null);
       setSelectedAward(null);
+      setError(""); // Clear error on success
     } catch (error) {
       console.error("Error saving award:", error);
       setError("Failed to save award. Please try again.");
     }
   };
+  
 
   const handleDeleteAward = async (id) => {
     try {

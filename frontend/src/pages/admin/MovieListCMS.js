@@ -306,6 +306,13 @@ const MovieListCMS = () => {
                         />
                       </div>
                     </td>
+                    <td className="px-6 py-4 whitespace-normal break-words text-xs sm:text-sm md:text-base text-gray-500">
+                      {movie.approvalstatus ? (
+                        <span className="text-green-500">Approved</span>
+                      ) : (
+                        <span className="text-red-500">Unapproved</span>
+                      )}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm md:text-base text-gray-500">
                       <button
                         onClick={(e) => {
@@ -380,8 +387,8 @@ const MovieListCMS = () => {
 
           {selectedMovie && (
             <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-6 rounded-lg w-full max-w-2xl max-h-[85vh] overflow-y-auto mt-12 md:mt-16 mx-4">
-              <h2 className="text-2xl font-bold mb-4">
+              <div className="bg-white p-6 rounded-lg w-full max-w-2xl max-h-[85vh] overflow-y-auto mt-12 md:mt-16 mx-4">
+                <h2 className="text-2xl font-bold mb-4">
                   {selectedMovie.title}
                 </h2>
 
