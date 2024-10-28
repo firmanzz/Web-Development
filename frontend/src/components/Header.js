@@ -45,7 +45,9 @@ const Header = ({ open, setOpen }) => {
   }, []);
 
   const handleLogout = () => {
-    Cookies.remove("token"); // Hapus token dari cookies
+    Cookies.remove("token");
+    Cookies.remove("role");
+    Cookies.remove("userid");
     setIsAuthenticated(false);
     setUser(null); // Reset state user
     navigate("/Login"); // Redirect ke halaman login

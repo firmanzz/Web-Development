@@ -58,3 +58,28 @@ exports.updateCommentStatus = async (req, res) => {
       res.status(500).json({ message: "Server error" });
     }
   };
+
+exports.addComment = async (req, res) => {
+  const { comment, movieid, userid, rate } = req.body;
+
+  // Validasi data
+  if (!comment || !movieid || !userid) {
+    return res.status(400).json({ message: "Comment, movieid, and userid are required" });
+  }
+
+  try {
+    const newComment = await Comment.create({
+      comment,
+      movieid,
+      userid,
+      rate,
+      status: "Unapproved", // Status default
+      time: new Date(),
+    });
+
+    res.status(201).json({ message: "Comment added successfully", comment: newComment });
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    res.status(500).json({ message: "Server error", error });
+  }
+};

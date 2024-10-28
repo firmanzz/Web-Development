@@ -44,7 +44,9 @@ const HeaderCMS = ({ open, setOpen }) => {
   }, []);
 
   const handleLogout = () => {
-    Cookies.remove('token'); // Hapus token dari cookies
+    Cookies.remove('token');
+    Cookies.remove("role");
+    Cookies.remove("userid");
     setIsAuthenticated(false);
     setUser(null); // Reset state user
     window.location.href = '/Login'; // Redirect ke halaman login

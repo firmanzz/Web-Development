@@ -28,7 +28,7 @@ const Comment = sequelize.define(
       type: DataTypes.FLOAT,
       validate: {
         min: 1,
-        max: 5,
+        max: 10,
       },
     },
     status: {

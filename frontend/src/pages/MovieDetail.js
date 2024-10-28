@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Cookies from "js-cookie";
 
 const MovieDetail = () => {
   const [open, setOpen] = useState(false);
@@ -17,6 +18,9 @@ const MovieDetail = () => {
   const [submitting, setSubmitting] = useState(false);
   const sidebarRef = useRef(null);
   const [displayCount, setDisplayCount] = useState(5);
+  const navigate = useNavigate();
+
+  const userid = Cookies.get("userid");
 
   useEffect(() => {
     const fetchMovie = async () => {
@@ -41,32 +45,55 @@ const MovieDetail = () => {
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
+    const userid = Cookies.get("userid");
+
+    if (!userid) {
+      alert("Please login to submit a review.");
+      return;
+    }
+
     setSubmitting(true);
+
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/movies/${id}/reviews`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newReview),
-        }
-      );
+      const response = await fetch(`http://localhost:5000/api/comments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          comment: newReview.comment,
+          movieid: id, // Gunakan movie ID dari URL
+          userid, // Gunakan user ID dari cookie
+          rate: newReview.rating,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to submit review.");
       }
 
-      const updatedMovie = await response.json();
-      setMovie(updatedMovie);
-      setNewReview({ rating: 0, comment: "" });
-    } catch (error) {
-      setError("Failed to submit review. Please try again.");
-    } finally {
+      const result = await response.json();
       setSubmitting(false);
+      setNewReview({ rating: 0, comment: "" });
+      alert(result.message);
+
+      setMovie((prevMovie) => ({
+        ...prevMovie,
+        Comments: [...prevMovie.Comments, result.comment],
+      }));
+
+      window.location.reload();
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      setSubmitting(false);
+      alert("Failed to submit review. Please try again later.");
     }
   };
+
+  const handleLoginRedirect = () => {
+    navigate("/login"); // Redirect to login page
+  };
+
   if (loading) {
     return <p className="text-white text-center">Loading movie details...</p>;
   }
@@ -264,7 +291,8 @@ const MovieDetail = () => {
                       onClick={handleReadMore}
                       className="text-blue-500 cursor-pointer hover:underline text-xs"
                     >
-                      Read More{">"}{">"}
+                      Read More{">"}
+                      {">"}
                     </span>
                   )}
                   {displayCount > 5 && (
@@ -272,68 +300,86 @@ const MovieDetail = () => {
                       onClick={handleReadLess}
                       className="text-blue-500 cursor-pointer hover:underline text-xs"
                     >
-                      {"<"}{"<"}Read Less
+                      {"<"}
+                      {"<"}Read Less
                     </span>
                   )}
                 </div>
               </div>
-              <div className="p-6 rounded-lg shadow-lg mb-6 bg-white">
+              <div className="p-6 rounded-lg shadow-lg mb-6 bg-white text-center">
                 <h3 className="text-lg font-bold mb-3 text-gray-800">
                   Submit Your Review
                 </h3>
-                <form onSubmit={handleReviewSubmit} className="mb-6">
-                  <div className="mb-4">
-                    <label
-                      htmlFor="rating"
-                      className="block text-gray-700 text-sm font-bold mb-2"
-                    >
-                      Rating (1-5):
-                    </label>
-                    <input
-                      type="number"
-                      id="rating"
-                      name="rating"
-                      min="1"
-                      max="5"
-                      value={newReview.rating}
-                      onChange={(e) =>
-                        setNewReview({ ...newReview, rating: e.target.value })
-                      }
-                      required
-                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                    />
-                  </div>
+                {userid ? (
+                  // Render Review Form if User is Logged In
+                  <form onSubmit={handleReviewSubmit} className="mb-6">
+                    <div className="mb-4">
+                      <label
+                        htmlFor="rating"
+                        className="block text-gray-700 text-sm font-bold mb-2"
+                      >
+                        Rating (1-10):
+                      </label>
+                      <input
+                        type="number"
+                        id="rating"
+                        name="rating"
+                        min="1"
+                        max="10"
+                        step="0.1"
+                        value={newReview.rating}
+                        onChange={(e) =>
+                          setNewReview({ ...newReview, rating: e.target.value })
+                        }
+                        required
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                      />
+                    </div>
 
-                  <div className="mb-4">
-                    <label
-                      htmlFor="comment"
-                      className="block text-gray-700 text-sm font-bold mb-2"
-                    >
-                      Comment:
-                    </label>
-                    <textarea
-                      id="comment"
-                      name="comment"
-                      value={newReview.comment}
-                      onChange={(e) =>
-                        setNewReview({ ...newReview, comment: e.target.value })
-                      }
-                      required
-                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                      rows="4"
-                    ></textarea>
-                  </div>
+                    <div className="mb-4">
+                      <label
+                        htmlFor="comment"
+                        className="block text-gray-700 text-sm font-bold mb-2"
+                      >
+                        Comment:
+                      </label>
+                      <textarea
+                        id="comment"
+                        name="comment"
+                        value={newReview.comment}
+                        onChange={(e) =>
+                          setNewReview({
+                            ...newReview,
+                            comment: e.target.value,
+                          })
+                        }
+                        required
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                        rows="4"
+                      ></textarea>
+                    </div>
 
-                  <div>
+                    <div className="flex justify-center">
+                      <button
+                        type="submit"
+                        disabled={submitting}
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                      >
+                        {submitting ? "Submitting..." : "Submit Review"}
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  // Render Login Button if User is Not Logged In
+                  <div className="flex justify-center">
                     <button
-                      type="submit"
-                      disabled={submitting}
+                      onClick={handleLoginRedirect}
                       className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                     >
-                      {submitting ? "Submitting..." : "Submit Review"}
+                      Login untuk menambahkan review
                     </button>
                   </div>
-                </form>
+                )}
               </div>
             </div>
           </div>

@@ -18,7 +18,6 @@ const GoogleAuth = () => {
             Cookies.set('role', role);
             Cookies.set('name', name);
 
-            // Redirect berdasarkan role
             if (role === 'admin') {
                 navigate('/admin');
             } else {
