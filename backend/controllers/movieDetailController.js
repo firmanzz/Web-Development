@@ -47,13 +47,15 @@ exports.getMovieDetail = async (req, res) => {
         {
           model: Comment,
           where: { status: "Approved" },
+          required: false,
           include: [
             {
-              model: User, // Sertakan data user
-              attributes: ['name'], // Ambil nama user
+              model: User,
+              attributes: ['name'],
             },
           ],
-        },
+        }
+        ,
       ],
     });
 
