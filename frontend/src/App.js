@@ -14,7 +14,7 @@ import MovieForm from "./pages/admin/MovieForm";
 import Cookies from 'js-cookie';
 
 function App() {
-  const role = Cookies.get('role'); // Assume role is stored in cookies after login
+  const role = Cookies.get('role'); 
 
   return (
     <Router>

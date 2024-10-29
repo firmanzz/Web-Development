@@ -9,7 +9,7 @@ const Logout = () => {
     Cookies.remove('token');
     Cookies.remove('role');
     Cookies.remove('userid');
-    navigate('/login');
+    navigate('/Login');
   };
 
   return <button onClick={handleLogout}>Logout</button>;

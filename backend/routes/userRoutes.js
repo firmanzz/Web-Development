@@ -6,6 +6,7 @@ const {
     editUser, 
     deleteUser 
 } = require('../controllers/userController');
+const User =require('../models/User');
 const { 
     forgotPassword,
     resetPassword,
@@ -38,12 +39,25 @@ router.get('/get-user', authMiddleware, (req, res) => {
     }
   });
 
+  router.get('/get-role', authMiddleware, async (req, res) => {
+    try {
+      const user = await User.findByPk(req.user.id, { attributes: ['role'] });
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      res.json({ role: user.role });
+    } catch (error) {
+      console.error('Error fetching role:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
 // Route untuk memulai proses login dengan Google
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 // Route untuk menangani callback dari Google
 router.get('/auth/google/callback', 
-  passport.authenticate('google', { failureRedirect: '/login', session: false }), 
+  passport.authenticate('google', { failureRedirect: 'http://localhost:3000/Login', session: false }), 
   (req, res) => {
     const role = req.user.role || 'editor';  // Asumsi role default adalah 'editor'
     const name = req.user.name;  // Ambil nama pengguna dari req.user

@@ -22,6 +22,7 @@ const Login = () => {
         navigate('/admin');
       } else {
         navigate('/');
+        Cookies.remove("role");
       }
     }
   }, [navigate]);
@@ -42,13 +43,13 @@ const Login = () => {
       if (response.ok) {
         Cookies.set('token', data.token);
         Cookies.set('role', data.data.role);
-        Cookies.set('userid', data.data.id);
         alert('Login successful!');
 
         if (data.data.role === 'admin') {
           window.location.href = '/admin';
         } else if (data.data.role === 'editor') {
           window.location.href = '/';
+          Cookies.remove("role");
         } else {
           alert('Unknown role');
         }

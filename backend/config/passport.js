@@ -11,6 +11,10 @@ passport.use(new GoogleStrategy({
 async (accessToken, refreshToken, profile, done) => {
   try {
     let user = await User.findOne({ where: { googleId: profile.id } });
+
+    if (user && user.suspend) {
+      return done(null, false);
+    }
     if (!user) {
       user = await User.create({
         googleId: profile.id,

@@ -52,7 +52,7 @@ const Register = () => {
       if (response.ok) {
         setMessage('Verification successful! Redirecting to login...');
         setTimeout(() => {
-          navigate('//Login');
+          navigate('/Login');
         }, 2000);
       } else {
         setMessage(data.message);

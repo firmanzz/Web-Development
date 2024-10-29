@@ -20,7 +20,7 @@ const MovieDetail = () => {
   const [displayCount, setDisplayCount] = useState(5);
   const navigate = useNavigate();
 
-  const userid = Cookies.get("userid");
+  const token = Cookies.get("token");
 
   useEffect(() => {
     const fetchMovie = async () => {
@@ -45,43 +45,43 @@ const MovieDetail = () => {
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    const userid = Cookies.get("userid");
-
-    if (!userid) {
+    const token = Cookies.get("token");
+  
+    if (!token) {
       alert("Please login to submit a review.");
       return;
     }
-
+  
     setSubmitting(true);
-
+  
     try {
       const response = await fetch(`http://localhost:5000/api/comments`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}` // Tambahkan token di header
         },
         body: JSON.stringify({
           comment: newReview.comment,
           movieid: id, // Gunakan movie ID dari URL
-          userid, // Gunakan user ID dari cookie
-          rate: newReview.rating,
+          rate: newReview.rating
         }),
       });
-
+  
       if (!response.ok) {
         throw new Error("Failed to submit review.");
       }
-
+  
       const result = await response.json();
       setSubmitting(false);
       setNewReview({ rating: 0, comment: "" });
       alert(result.message);
-
+  
       setMovie((prevMovie) => ({
         ...prevMovie,
         Comments: [...prevMovie.Comments, result.comment],
       }));
-
+  
       window.location.reload();
     } catch (error) {
       console.error("Error submitting review:", error);
@@ -89,9 +89,10 @@ const MovieDetail = () => {
       alert("Failed to submit review. Please try again later.");
     }
   };
+  
 
   const handleLoginRedirect = () => {
-    navigate("/login"); // Redirect to login page
+    navigate("/Login"); // Redirect to login page
   };
 
   if (loading) {
@@ -310,7 +311,7 @@ const MovieDetail = () => {
                 <h3 className="text-lg font-bold mb-3 text-gray-800">
                   Submit Your Review
                 </h3>
-                {userid ? (
+                {token ? (
                   // Render Review Form if User is Logged In
                   <form onSubmit={handleReviewSubmit} className="mb-6">
                     <div className="mb-4">
