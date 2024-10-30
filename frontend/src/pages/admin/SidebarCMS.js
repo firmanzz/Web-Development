@@ -51,7 +51,7 @@ const Sidebar = forwardRef(({ open, setOpen }, ref) => {
         open ? 'translate-y-0' : '-translate-y-full'
       } transition-transform duration-300 ease-in-out z-50`}
     >
-      <div className="bg-gray-700 w-72 h-screen p-5 pt-8 relative">
+      <div className="bg-gray-700 w-72 h-screen p-5 pt-8 relative overflow-y-auto">
         <button
           className="absolute top-4 right-4 text-white text-2xl focus:outline-none"
           onClick={() => setOpen(false)}
