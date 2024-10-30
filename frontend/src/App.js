@@ -29,9 +29,9 @@ function App() {
         <Route path="/Directors" element={<Directors />} />
         <Route path="/details/:id" element={<MovieDetail />} />
         
-        {/* Route for Admin and Editor */}
+        {/* Route for Admin and Authenticated Users */}
         {role === 'admin' && <Route path="/admin/*" element={<AdminRoutes />} />}
-        {role === 'editor' && <Route path="/admin/addMovie" element={<MovieForm />} />}
+        {role !== 'admin' && <Route path="/admin/addMovie" element={<MovieForm />} />}
         
         <Route path="/google-auth" element={<GoogleAuth />} />
         

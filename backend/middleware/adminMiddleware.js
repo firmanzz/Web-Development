@@ -8,12 +8,12 @@ const adminMiddleware = (req, res, next) => {
     return next();
   }
 
-  // Allow editor to access only the addMovie route
-  if (req.user.role === 'editor' && req.path === '/addMovie') {
+  // Allow all authenticated users except admin to access /addMovie
+  if (req.path === '/addMovie') {
     return next();
   }
 
-  // If not admin or editor trying to access a forbidden route
+  // If not allowed
   return res.status(403).json({ message: 'Access denied' });
 };
 

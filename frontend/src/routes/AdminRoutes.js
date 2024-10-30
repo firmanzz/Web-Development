@@ -39,9 +39,7 @@ const AdminRoutes = () => {
       )}
 
       {/* Editor routes */}
-      {role === 'editor' && (
-        <Route path="/addMovie" element={<MovieForm />} />  // Editor hanya bisa akses menambah film
-      )}
+      {role !== 'admin' && <Route path="/admin/addMovie" element={<MovieForm />} />}
 
       {/* Default redirect */}
       <Route path="*" element={<Navigate to="/admin/addMovie" />} />

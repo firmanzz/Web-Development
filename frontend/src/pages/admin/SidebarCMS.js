@@ -24,7 +24,9 @@ const Sidebar = forwardRef(({ open, setOpen }, ref) => {
     { title: "AWARDS", key: "awards", path: "/admin/Awards" },
     { title: "COMMENTS", key: "comments", path: "/admin/Comments" },
     { title: "USERS", key: "users", path: "/admin/Users" },
+    { title: "BACK TO HOME", key: "back-to-home", path: "/" },
   ];
+  
 
   // Menu untuk editor
   const editorMenu = [
@@ -36,6 +38,7 @@ const Sidebar = forwardRef(({ open, setOpen }, ref) => {
         { title: "INPUT NEW MOVIE", key: "input-new-movie", path: "/admin/addMovie" },
       ],
     },
+    { title: "BACK TO HOME", key: "back-to-home", path: "/" },
   ];
 
   // Tampilkan menu berdasarkan role
