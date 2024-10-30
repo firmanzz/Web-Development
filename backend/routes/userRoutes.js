@@ -82,8 +82,7 @@ router.get('/auth/success', (req, res) => {
 
 module.exports = router;
 
-// rute tanpa login
+// Rute tanpa login
 router.post('/guest', (req, res) => {
-  const guestToken = jwt.sign({ role: 'guest' }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  res.json({ token: guestToken });
+  res.status(200).json({ message: "Guest access granted" });
 });
