@@ -10,7 +10,7 @@ const MovieList = () => {
   const [availability, setAvailability] = useState("");
   const [award, setAward] = useState("");
   const [sortOrder, setSortOrder] = useState("");
-  const [searchQuery, setSearchQuery] = useState(""); 
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [movies, setMovies] = useState([]);
   const [filteredMovies, setFilteredMovies] = useState([]);
@@ -18,7 +18,7 @@ const MovieList = () => {
   const [moviesPerPage] = useState(18);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const maxPageNumbers = 3; 
+  const maxPageNumbers = 3;
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -49,25 +49,34 @@ const MovieList = () => {
       const lowerCaseQuery = searchQuery.toLowerCase();
       filtered = filtered.filter((movie) => {
         return (
-          movie.title.toLowerCase().includes(lowerCaseQuery) || 
-          (movie.Genres && movie.Genres.some((g) => g.name.toLowerCase().includes(lowerCaseQuery))) || 
-          (movie.Availabilities && movie.Availabilities.some((avail) => avail.name.toLowerCase().includes(lowerCaseQuery))) || 
-          (movie.Awards && movie.Awards.some((a) => a.award.toLowerCase().includes(lowerCaseQuery)))
+          movie.title.toLowerCase().includes(lowerCaseQuery) ||
+          (movie.Genres &&
+            movie.Genres.some((g) =>
+              g.name.toLowerCase().includes(lowerCaseQuery)
+            )) ||
+          (movie.Availabilities &&
+            movie.Availabilities.some((avail) =>
+              avail.name.toLowerCase().includes(lowerCaseQuery)
+            )) ||
+          (movie.Awards &&
+            movie.Awards.some((a) =>
+              a.award.toLowerCase().includes(lowerCaseQuery)
+            ))
         );
       });
     }
 
     // Apply Genre Filter
     if (genre) {
-      filtered = filtered.filter((movie) => 
-        movie.Genres && movie.Genres.some((g) => g.name === genre)
+      filtered = filtered.filter(
+        (movie) => movie.Genres && movie.Genres.some((g) => g.name === genre)
       );
     }
 
     // Apply Award Filter
     if (award) {
-      filtered = filtered.filter((movie) =>
-        movie.Awards && movie.Awards.some((a) => a.award === award)
+      filtered = filtered.filter(
+        (movie) => movie.Awards && movie.Awards.some((a) => a.award === award)
       );
     }
 
@@ -80,8 +89,8 @@ const MovieList = () => {
 
     // Apply Year Filter
     if (year) {
-      filtered = filtered.filter((movie) =>
-        new Date(movie.releasedate).getFullYear().toString() === year
+      filtered = filtered.filter(
+        (movie) => new Date(movie.releasedate).getFullYear().toString() === year
       );
     }
 
@@ -90,7 +99,7 @@ const MovieList = () => {
       filtered = filtered.filter((movie) => movie.status === status);
     }
 
-    setFilteredMovies(filtered); 
+    setFilteredMovies(filtered);
   };
 
   const handleSort = (movies, sortOrder) => {
@@ -120,7 +129,11 @@ const MovieList = () => {
   return (
     <div className="container mx-auto">
       <div className="flex justify-center my-4">
-        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearchSubmit={handleSubmit} />
+        <SearchBar
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          handleSearchSubmit={handleSubmit}
+        />
       </div>
       {loading ? (
         <p className="text-white text-center">Loading movies...</p>
@@ -147,46 +160,99 @@ const MovieList = () => {
             {currentMovies.map((movie) => (
               <Link to={`/details/${movie.id}`} key={movie.id}>
                 <div className="text-center">
-                  <img src={movie.urlphoto} alt={movie.urlphoto} className="h-72 w-64 object-cover rounded-md mb-2" />
-                  <h3 className="text-white text-sm font-bold mb-1">{movie.title}</h3>
-                  <p className="text-white text-sm font-semibold">{movie.Genres.map((genre) => genre.name).join(", ")}</p>
-                  <p className="text-yellow-500 text-xs font-semibold">Rating: {movie.rating}</p>
+                  <img
+                    src={movie.urlphoto}
+                    alt={movie.urlphoto}
+                    className="h-72 w-64 object-cover rounded-md mb-2"
+                  />
+                  <h3 className="text-white text-sm font-bold mb-1">
+                    {movie.title}
+                  </h3>
+                  <p className="text-white text-sm font-semibold">
+                    {movie.Genres.map((genre) => genre.name).join(", ")}
+                  </p>
+                  <p className="text-yellow-500 text-xs font-semibold">
+                    Rating: {movie.rating}
+                  </p>
                 </div>
               </Link>
             ))}
           </div>
-          <div className="flex justify-center my-4 mb-10">
+          <div className="flex justify-center my-4 mb-14  ">
             <nav className="flex items-center space-x-2">
               {/* Previous Button */}
               <button
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
                 className={`px-3 py-1 bg-gray-700 text-white rounded ${
-                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
+                  currentPage === 1
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-gray-600"
                 }`}
               >
                 &larr; Prev
               </button>
 
               {/* Page Numbers */}
+              {startPage > 1 && (
+                <>
+                  <button
+                    onClick={() => paginate(1)}
+                    className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                      currentPage === 1 ? "bg-blue-500" : "hover:bg-gray-600"
+                    }`}
+                  >
+                    1
+                  </button>
+                  {startPage > 2 && (
+                    <span className="px-3 py-1 bg-gray-200 text-gray-500 rounded">
+                      ...
+                    </span>
+                  )}
+                </>
+              )}
+
               {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
                 <button
                   key={startPage + i}
                   onClick={() => paginate(startPage + i)}
                   className={`px-3 py-1 bg-gray-700 text-white rounded ${
-                    currentPage === startPage + i ? "bg-blue-500" : "hover:bg-gray-600"
+                    currentPage === startPage + i
+                      ? "bg-blue-500"
+                      : "hover:bg-gray-600"
                   }`}
                 >
                   {startPage + i}
                 </button>
               ))}
 
+              {endPage < totalPages - 1 && (
+                <span className="px-3 py-1 bg-gray-200 text-gray-500 rounded">
+                  ...
+                </span>
+              )}
+
+              {endPage < totalPages && (
+                <button
+                  onClick={() => paginate(totalPages)}
+                  className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                    currentPage === totalPages
+                      ? "bg-blue-500"
+                      : "hover:bg-gray-600"
+                  }`}
+                >
+                  {totalPages}
+                </button>
+              )}
+
               {/* Next Button */}
               <button
                 onClick={() => paginate(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 className={`px-3 py-1 bg-gray-700 text-white rounded ${
-                  currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
+                  currentPage === totalPages
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-gray-600"
                 }`}
               >
                 Next &rarr;

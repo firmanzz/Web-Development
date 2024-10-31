@@ -142,7 +142,7 @@ const MovieDetail = () => {
                   <img
                     src={movie.urlphoto}
                     alt={movie.title}
-                    className="w-auto h-auto max-w-full max-h-full rounded-lg shadow-lg"
+                    className="w-[300px] h-[450px] rounded-lg shadow-lg object-cover"
                     style={{ maxHeight: "450px", objectFit: "cover" }}
                   />
                 </div>

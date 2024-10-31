@@ -446,7 +446,6 @@ const Directors = () => {
             )}
           </div>
 
-          {/* Pagination */}
           <div className="flex justify-center my-4">
             <nav className="flex items-center space-x-2">
               {/* Previous Button */}
@@ -454,31 +453,74 @@ const Directors = () => {
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
                 className={`px-3 py-1 bg-gray-700 text-white rounded ${
-                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
+                  currentPage === 1
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-gray-600"
                 }`}
               >
                 &larr; Prev
               </button>
 
               {/* Page Numbers */}
+              {startPage > 1 && (
+                <>
+                  <button
+                    onClick={() => paginate(1)}
+                    className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                      currentPage === 1 ? "bg-blue-500" : "hover:bg-gray-600"
+                    }`}
+                  >
+                    1
+                  </button>
+                  {startPage > 2 && (
+                    <span className="px-3 py-1 bg-gray-200 text-gray-500 rounded">
+                      ...
+                    </span>
+                  )}
+                </>
+              )}
+
               {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
                 <button
                   key={startPage + i}
                   onClick={() => paginate(startPage + i)}
                   className={`px-3 py-1 bg-gray-700 text-white rounded ${
-                    currentPage === startPage + i ? "bg-blue-500" : "hover:bg-gray-600"
+                    currentPage === startPage + i
+                      ? "bg-blue-500"
+                      : "hover:bg-gray-600"
                   }`}
                 >
                   {startPage + i}
                 </button>
               ))}
 
+              {endPage < totalPages - 1 && (
+                <span className="px-3 py-1 bg-gray-200 text-gray-500 rounded">
+                  ...
+                </span>
+              )}
+
+              {endPage < totalPages && (
+                <button
+                  onClick={() => paginate(totalPages)}
+                  className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                    currentPage === totalPages
+                      ? "bg-blue-500"
+                      : "hover:bg-gray-600"
+                  }`}
+                >
+                  {totalPages}
+                </button>
+              )}
+
               {/* Next Button */}
               <button
                 onClick={() => paginate(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 className={`px-3 py-1 bg-gray-700 text-white rounded ${
-                  currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
+                  currentPage === totalPages
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-gray-600"
                 }`}
               >
                 Next &rarr;

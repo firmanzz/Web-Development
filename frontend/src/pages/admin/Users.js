@@ -8,6 +8,9 @@ const Users = () => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null); // State untuk user yang dipilih
   const sidebarRef = useRef(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const maxPageNumbers = 3;
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -35,10 +38,10 @@ const Users = () => {
 
   const handleSuspendToggle = async () => {
     if (!selectedUser) return;
-  
+
     try {
       const updatedStatus = !selectedUser.suspend;
-  
+
       await fetch(`http://localhost:5000/api/users/${selectedUser.id}`, {
         method: "PUT",
         headers: {
@@ -46,10 +49,12 @@ const Users = () => {
         },
         body: JSON.stringify({ suspend: updatedStatus }),
       });
-  
+
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.id === selectedUser.id ? { ...user, suspend: updatedStatus } : user
+          user.id === selectedUser.id
+            ? { ...user, suspend: updatedStatus }
+            : user
         )
       );
       closeEditModal();
@@ -59,9 +64,11 @@ const Users = () => {
   };
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this user?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
     if (!confirmDelete) return;
-  
+
     try {
       const response = await fetch(`http://localhost:5000/api/users/${id}`, {
         method: "DELETE",
@@ -69,7 +76,7 @@ const Users = () => {
           "Content-Type": "application/json",
         },
       });
-  
+
       if (response.ok) {
         setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
         alert("User deleted successfully.");
@@ -83,7 +90,15 @@ const Users = () => {
       alert("An error occurred while trying to delete the user.");
     }
   };
-  
+
+  const totalPages = Math.ceil(users.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentUsers = users.slice(startIndex, startIndex + itemsPerPage);
+
+  const startPage = Math.max(1, currentPage - Math.floor(maxPageNumbers / 2));
+  const endPage = Math.min(totalPages, startPage + maxPageNumbers - 1);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -118,48 +133,117 @@ const Users = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {users.length > 0 ? (
-                  users.map((user, index) => (
-                    <tr key={user.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {index + 1}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {user.name}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {user.email}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {user.role}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {user.suspend ? "Suspended" : "Active"}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <button
-                          onClick={() => openEditModal(user)} 
-                          className="text-blue-500 hover:text-blue-700 mr-2"
-                        >
-                          Edit
-                        </button>
-                        <button 
+                {currentUsers.map((user, index) => (
+                  <tr key={user.id}>
+                    <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{user.name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {user.email}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">{user.role}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {user.suspend ? "Suspended" : "Active"}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button
+                        onClick={() => openEditModal(user)}
+                        className="text-blue-500 hover:text-blue-700 mr-2"
+                      >
+                        Edit
+                      </button>
+                      <button
                         onClick={() => handleDelete(user.id)}
-                        className="text-red-500 hover:text-red-700">
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="6" className="text-center py-4">
-                      No users found.
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
-                )}
+                ))}
               </tbody>
             </table>
+          </div>
+
+          <div className="flex justify-center my-4">
+            <nav className="flex items-center space-x-2">
+              {/* Previous Button */}
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                  currentPage === 1
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-gray-600"
+                }`}
+              >
+                &larr; Prev
+              </button>
+
+              {/* Page Numbers */}
+              {startPage > 1 && (
+                <>
+                  <button
+                    onClick={() => paginate(1)}
+                    className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                      currentPage === 1 ? "bg-blue-500" : "hover:bg-gray-600"
+                    }`}
+                  >
+                    1
+                  </button>
+                  {startPage > 2 && (
+                    <span className="px-3 py-1 bg-gray-200 text-gray-500 rounded">
+                      ...
+                    </span>
+                  )}
+                </>
+              )}
+
+              {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
+                <button
+                  key={startPage + i}
+                  onClick={() => paginate(startPage + i)}
+                  className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                    currentPage === startPage + i
+                      ? "bg-blue-500"
+                      : "hover:bg-gray-600"
+                  }`}
+                >
+                  {startPage + i}
+                </button>
+              ))}
+
+              {endPage < totalPages - 1 && (
+                <span className="px-3 py-1 bg-gray-200 text-gray-500 rounded">
+                  ...
+                </span>
+              )}
+
+              {endPage < totalPages && (
+                <button
+                  onClick={() => paginate(totalPages)}
+                  className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                    currentPage === totalPages
+                      ? "bg-blue-500"
+                      : "hover:bg-gray-600"
+                  }`}
+                >
+                  {totalPages}
+                </button>
+              )}
+
+              {/* Next Button */}
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                  currentPage === totalPages
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-gray-600"
+                }`}
+              >
+                Next &rarr;
+              </button>
+            </nav>
           </div>
 
           {/* Modal */}
@@ -170,10 +254,12 @@ const Users = () => {
                   Edit User Suspend Status
                 </h2>
                 <p className="mb-4">
-                  Name: <span className="font-semibold">{selectedUser.name}</span>
+                  Name:{" "}
+                  <span className="font-semibold">{selectedUser.name}</span>
                 </p>
                 <p className="mb-4">
-                  Email: <span className="font-semibold">{selectedUser.email}</span>
+                  Email:{" "}
+                  <span className="font-semibold">{selectedUser.email}</span>
                 </p>
                 <p className="mb-4">
                   Status:{" "}

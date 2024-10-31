@@ -24,7 +24,7 @@ const Actors = () => {
   const [filterCountry, setFilterCountry] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const maxPageNumbers = 3
+  const maxPageNumbers = 3;
 
   useEffect(() => {
     const fetchActors = async () => {
@@ -67,28 +67,32 @@ const Actors = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     const birthDateObj = new Date(formState.birthDate);
     if (birthDateObj > new Date()) {
       setError("Birthdate cannot be in the future.");
       return;
     }
-  
+
     const formData = {
       name: formState.actorName || selectedActor?.name,
-      countryid: selectedCountry?.id || selectedActor?.Country?.id || formState.country,
+      countryid:
+        selectedCountry?.id || selectedActor?.Country?.id || formState.country,
       birthdate: formState.birthDate || selectedActor?.birthdate,
       urlphoto: formState.photo || selectedActor?.urlphoto,
     };
-  
+
     try {
       let response;
       if (selectedActor) {
-        response = await fetch(`http://localhost:5000/api/actors/${selectedActor.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
+        response = await fetch(
+          `http://localhost:5000/api/actors/${selectedActor.id}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+          }
+        );
       } else {
         response = await fetch("http://localhost:5000/api/addActor", {
           method: "POST",
@@ -100,15 +104,15 @@ const Actors = () => {
       if (!response.ok) {
         throw new Error("Failed to save actor");
       }
-  
+
       const data = await response.json();
-  
+
       if (selectedActor) {
         setActors(actors.map((actor) => (actor.id === data.id ? data : actor)));
       } else {
         setActors([...actors, data]);
       }
-  
+
       setFormState({ actorName: "", country: "", birthDate: "", photo: "" });
       setSelectedCountry(null);
       setSelectedActor(null);
@@ -117,7 +121,7 @@ const Actors = () => {
       console.error("Error saving actor:", error);
     }
   };
-  
+
   const handleDeleteActor = async (id) => {
     try {
       const response = await fetch(`http://localhost:5000/api/actors/${id}`, {
@@ -151,20 +155,21 @@ const Actors = () => {
   };
 
   const handleEditActor = (actor) => {
-  setSelectedActor(actor);
-  
-  // Format birthdate to YYYY-MM-DD
-  const formattedBirthDate = new Date(actor.birthdate).toISOString().split('T')[0];
-  
-  setFormState({
-    actorName: actor.name,
-    birthDate: formattedBirthDate, // Set formatted birthdate here
-    photo: actor.urlphoto,
-    country: actor.countryid,
-  });
-  setSelectedCountry(actor.Country);
-};
+    setSelectedActor(actor);
 
+    // Format birthdate to YYYY-MM-DD
+    const formattedBirthDate = new Date(actor.birthdate)
+      .toISOString()
+      .split("T")[0];
+
+    setFormState({
+      actorName: actor.name,
+      birthDate: formattedBirthDate, // Set formatted birthdate here
+      photo: actor.urlphoto,
+      country: actor.countryid,
+    });
+    setSelectedCountry(actor.Country);
+  };
 
   const handleCancelEdit = () => {
     setSelectedActor(null);
@@ -174,15 +179,21 @@ const Actors = () => {
 
   // Filtering and searching actors
   const filteredActors = actors.filter((actor) => {
-    const matchesCountry = filterCountry === "All" || actor.Country?.name === filterCountry;
-    const matchesSearch = actor.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCountry =
+      filterCountry === "All" || actor.Country?.name === filterCountry;
+    const matchesSearch = actor.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
     return matchesCountry && matchesSearch;
   });
 
   // Pagination logic
   const indexOfLastActor = currentPage * itemsPerPage;
   const indexOfFirstActor = indexOfLastActor - itemsPerPage;
-  const currentActors = filteredActors.slice(indexOfFirstActor, indexOfLastActor);
+  const currentActors = filteredActors.slice(
+    indexOfFirstActor,
+    indexOfLastActor
+  );
 
   const totalPages = Math.ceil(filteredActors.length / itemsPerPage);
 
@@ -198,7 +209,7 @@ const Actors = () => {
       <div className="flex flex-grow">
         <Sidebar ref={sidebarRef} open={open} setOpen={setOpen} />
         <main className="flex-col flex-grow overflow-y-auto bg-white px-4 md:px-6 mt-4">
-        <h1 className="text-3xl md:text-4xl font-bold mb-4">Actors</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Actors</h1>
 
           <div className="mb-6">
             <form
@@ -323,13 +334,16 @@ const Actors = () => {
           {/* Filter and Search Section */}
           <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label htmlFor="filterCountry" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="filterCountry"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Filter by Country:
               </label>
               <select
                 id="filterCountry"
                 value={filterCountry}
-                onChange={(e) => setFilterCountry(e.target.value)}  
+                onChange={(e) => setFilterCountry(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded"
               >
                 <option value="All">All</option>
@@ -341,7 +355,10 @@ const Actors = () => {
               </select>
             </div>
             <div>
-              <label htmlFor="itemsPerPage" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="itemsPerPage"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Show
               </label>
               <select
@@ -356,7 +373,10 @@ const Actors = () => {
               </select>
             </div>
             <div>
-              <label htmlFor="search" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="search"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Search by Actor Name
               </label>
               <input
@@ -443,7 +463,6 @@ const Actors = () => {
             )}
           </div>
 
-          {/* Pagination */}
           <div className="flex justify-center my-4">
             <nav className="flex items-center space-x-2">
               {/* Previous Button */}
@@ -451,31 +470,74 @@ const Actors = () => {
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
                 className={`px-3 py-1 bg-gray-700 text-white rounded ${
-                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
+                  currentPage === 1
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-gray-600"
                 }`}
               >
                 &larr; Prev
               </button>
 
               {/* Page Numbers */}
+              {startPage > 1 && (
+                <>
+                  <button
+                    onClick={() => paginate(1)}
+                    className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                      currentPage === 1 ? "bg-blue-500" : "hover:bg-gray-600"
+                    }`}
+                  >
+                    1
+                  </button>
+                  {startPage > 2 && (
+                    <span className="px-3 py-1 bg-gray-200 text-gray-500 rounded">
+                      ...
+                    </span>
+                  )}
+                </>
+              )}
+
               {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
                 <button
                   key={startPage + i}
                   onClick={() => paginate(startPage + i)}
                   className={`px-3 py-1 bg-gray-700 text-white rounded ${
-                    currentPage === startPage + i ? "bg-blue-500" : "hover:bg-gray-600"
+                    currentPage === startPage + i
+                      ? "bg-blue-500"
+                      : "hover:bg-gray-600"
                   }`}
                 >
                   {startPage + i}
                 </button>
               ))}
 
+              {endPage < totalPages - 1 && (
+                <span className="px-3 py-1 bg-gray-200 text-gray-500 rounded">
+                  ...
+                </span>
+              )}
+
+              {endPage < totalPages && (
+                <button
+                  onClick={() => paginate(totalPages)}
+                  className={`px-3 py-1 bg-gray-700 text-white rounded ${
+                    currentPage === totalPages
+                      ? "bg-blue-500"
+                      : "hover:bg-gray-600"
+                  }`}
+                >
+                  {totalPages}
+                </button>
+              )}
+
               {/* Next Button */}
               <button
                 onClick={() => paginate(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 className={`px-3 py-1 bg-gray-700 text-white rounded ${
-                  currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
+                  currentPage === totalPages
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-gray-600"
                 }`}
               >
                 Next &rarr;
