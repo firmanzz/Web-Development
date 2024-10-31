@@ -74,15 +74,15 @@ const Login = () => {
           'Content-Type': 'application/json',
         },
       });
-
-      const { token } = await response.json();
-      Cookies.set('token', token);
+  
+      const data = await response.json();
+      console.log(data.message);
       navigate('/');
     } catch (error) {
       console.error('Error during guest login:', error);
       alert('Guest login failed');
     }
-  };
+  };  
       
   return (
     <div className="flex items-center justify-center min-h-screen px-4 bg-gray-800">

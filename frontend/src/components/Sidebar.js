@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 const Sidebar = forwardRef(({ open, setOpen }, ref) => {
-  const navigate = useNavigate();
   const role = Cookies.get('role'); // Dapatkan role dari cookies
   
   const Menus = [
