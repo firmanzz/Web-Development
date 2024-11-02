@@ -4,7 +4,8 @@ import Cookies from 'js-cookie';
 
 const Sidebar = forwardRef(({ open, setOpen }, ref) => {
   const role = Cookies.get('role'); // Dapatkan role dari cookies
-  
+  const token = Cookies.get('token'); // Dapatkan token dari cookies
+
   const Menus = [
     { title: "HOME", key: "home", path: "/" },
     { title: "NEWEST", key: "newest", path: "/Newest" },
@@ -13,11 +14,13 @@ const Sidebar = forwardRef(({ open, setOpen }, ref) => {
     { title: "DIRECTORS", key: "directors", path: "/Directors" },
   ];
 
-  // Tambahkan opsi CMS atau ADD MOVIE berdasarkan role
-  if (role === 'admin') {
-    Menus.push({ title: "CMS", key: "cms", path: "/admin/" });
-  } else {
-    Menus.push({ title: "ADD MOVIE", key: "add-movie", path: "/admin/addMovie" });
+  // Tambahkan opsi CMS atau ADD MOVIE berdasarkan role jika token ada
+  if (token) {
+    if (role === 'admin') {
+      Menus.push({ title: "CMS", key: "cms", path: "/admin/" });
+    } else {
+      Menus.push({ title: "ADD MOVIE", key: "add-movie", path: "/admin/addMovie" });
+    }
   }
 
   return (
