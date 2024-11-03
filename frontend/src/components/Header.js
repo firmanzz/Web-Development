@@ -1,37 +1,43 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { FaUserCircle, FaDoorOpen } from "react-icons/fa"; // Import avatar dan logout icon
+import { FaUserCircle, FaDoorOpen } from "react-icons/fa";
 import Cookies from 'js-cookie';
+
+const DUMMY_TOKEN = "122333444455555666666777777788888888999999999";
 
 const Header = ({ open, setOpen }) => {
   const location = useLocation();
-  const navigate = useNavigate(); // Untuk redirect
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Status login
-  const [user, setUser] = useState(null); // Simpan data user
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
 
-  // Cek apakah user sudah login dan ambil data user
   const getUserData = async () => {
+    const token = Cookies.get("token");
+
+    // Check if token is the dummy token
+    if (token === DUMMY_TOKEN) {
+      setUser({ name: "Guest" });
+      setIsAuthenticated(true);
+      return;
+    }
+
     try {
-      const token = Cookies.get("token"); // Ambil token dari cookies
       if (!token) throw new Error("No token found");
 
       const response = await fetch('http://localhost:5000/api/get-user', {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${token}`, // Kirim token di header Authorization
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
 
       if (!response.ok) {
-        const errorMessage = await response.json();
-        console.error('DATA USER:', errorMessage); // Debug respons server
         throw new Error('Failed to fetch user data');
       }
 
       const userData = await response.json();
-
-      setUser(userData); // Simpan data user ke states
+      setUser(userData);
       setIsAuthenticated(true);
     } catch (error) {
       console.error(error);
@@ -41,7 +47,7 @@ const Header = ({ open, setOpen }) => {
   };
 
   useEffect(() => {
-    getUserData(); // Ambil data user saat komponen pertama kali dimuat
+    getUserData();
   }, []);
 
   const handleLogout = () => {
@@ -49,13 +55,13 @@ const Header = ({ open, setOpen }) => {
     Cookies.remove("role");
     Cookies.remove("userid");
     setIsAuthenticated(false);
-    setUser(null); // Reset state user
-    navigate("/Login"); // Redirect ke halaman login
+    setUser(null);
+    navigate("/Login"); // Redirect to login page
   };
 
   const handleAvatarClick = () => {
-    if (!isAuthenticated) {
-      navigate("/Login"); // Redirect ke halaman login jika belum login
+    if (!isAuthenticated || user?.name === "Guest") {
+      handleLogout();
     }
   };
 
@@ -85,7 +91,7 @@ const Header = ({ open, setOpen }) => {
         <span className="text-lg font-medium text-white" style={{ fontFamily: 'Arial, sans-serif' }}>
           {user ? user.name : "Guest"}
         </span>
-        {isAuthenticated && (
+        {isAuthenticated && user?.name !== "Guest" && (
           <FaDoorOpen
             onClick={handleLogout}
             className="text-white text-2xl cursor-pointer hover:text-red-400"

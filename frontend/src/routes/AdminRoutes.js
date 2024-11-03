@@ -11,12 +11,15 @@ import Comments from "../pages/admin/Comments";
 import Users from "../pages/admin/Users";
 import Cookies from 'js-cookie';
 
+const DUMMY_TOKEN = "122333444455555666666777777788888888999999999";
+
 const AdminRoutes = () => {
-  const token = Cookies.get('token'); 
+  const token = Cookies.get('token');
   const role = Cookies.get('role');
 
-  if (!token) {
-    return <Navigate to="/Login" />;
+  // Redirect guests to home if they try to access admin pages
+  if (!token || token === DUMMY_TOKEN) {
+    return <Navigate to="/" />;
   }
 
   return (

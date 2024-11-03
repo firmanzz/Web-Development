@@ -2,9 +2,11 @@ import React, { forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
+const DUMMY_TOKEN = "122333444455555666666777777788888888999999999"; // Dummy token for guest access
+
 const Sidebar = forwardRef(({ open, setOpen }, ref) => {
-  const role = Cookies.get('role'); // Dapatkan role dari cookies
-  const token = Cookies.get('token'); // Dapatkan token dari cookies
+  const role = Cookies.get('role');
+  const token = Cookies.get('token');
 
   const Menus = [
     { title: "HOME", key: "home", path: "/" },
@@ -14,8 +16,9 @@ const Sidebar = forwardRef(({ open, setOpen }, ref) => {
     { title: "DIRECTORS", key: "directors", path: "/Directors" },
   ];
 
-  // Tambahkan opsi CMS atau ADD MOVIE berdasarkan role jika token ada
-  if (token) {
+  const isGuest = token === DUMMY_TOKEN;
+
+  if (!isGuest && token) {
     if (role === 'admin') {
       Menus.push({ title: "CMS", key: "cms", path: "/admin/" });
     } else {
@@ -24,17 +27,9 @@ const Sidebar = forwardRef(({ open, setOpen }, ref) => {
   }
 
   return (
-    <div
-      ref={ref}
-      className={`fixed top-0 left-0 w-72 h-full bg-gray-700 bg-opacity-75 transform ${
-        open ? 'translate-y-0' : '-translate-y-full'
-      } transition-transform duration-300 ease-in-out z-50`}
-    >
+    <div ref={ref} className={`fixed top-0 left-0 w-72 h-full bg-gray-700 bg-opacity-75 transform ${open ? 'translate-y-0' : '-translate-y-full'} transition-transform duration-300 ease-in-out z-50`}>
       <div className="bg-gray-700 w-72 h-screen p-5 pt-8 relative">
-        <button
-          className="absolute top-4 right-4 text-white text-2xl focus:outline-none"
-          onClick={() => setOpen(false)}
-        >
+        <button className="absolute top-4 right-4 text-white text-2xl focus:outline-none" onClick={() => setOpen(false)}>
           &times;
         </button>
         <ul className="pt-2">
@@ -60,10 +55,7 @@ const MenuItem = ({ menu, open }) => {
   };
 
   return (
-    <li
-      className="text-white text-md flex items-center gap-x-4 cursor-pointer p-2 hover:bg-light-white rounded-md mt-2"
-      onClick={() => handleNavigation(menu.path)}
-    >
+    <li className="text-white text-md flex items-center gap-x-4 cursor-pointer p-2 hover:bg-light-white rounded-md mt-2" onClick={() => handleNavigation(menu.path)}>
       <span className={`text-base font-medium flex-1 ${!open && 'hidden'}`}>{menu.title}</span>
     </li>
   );

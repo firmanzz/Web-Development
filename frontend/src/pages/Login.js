@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
+const DUMMY_TOKEN = "122333444455555666666777777788888888999999999"; // Dummy token for guest access
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -11,13 +13,13 @@ const Login = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
     const role = urlParams.get('role');
-  
+
     if (token) {
       Cookies.set('token', token);
       if (role) {
         Cookies.set('role', role);
       }
-  
+
       if (role === 'admin') {
         navigate('/admin');
       } else {
@@ -37,7 +39,7 @@ const Login = () => {
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       const data = await response.json();
       
       if (response.ok) {
@@ -66,24 +68,11 @@ const Login = () => {
     window.location.href = 'http://localhost:5000/api/auth/google';
   };
 
-  const handleGuestLogin = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/guest', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      const data = await response.json();
-      console.log(data.message);
-      navigate('/');
-    } catch (error) {
-      console.error('Error during guest login:', error);
-      alert('Guest login failed');
-    }
-  };  
-      
+  const handleGuestLogin = () => {
+    Cookies.set('token', DUMMY_TOKEN); // Set dummy token for guest
+    navigate('/');
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen px-4 bg-gray-800">
       <div className="w-full max-w-xs p-6 bg-white rounded shadow-md">
