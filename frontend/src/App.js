@@ -13,8 +13,11 @@ import GoogleAuth from "./pages/GoogleAuth";
 import MovieForm from "./pages/admin/MovieForm";
 import Cookies from 'js-cookie';
 
+const DUMMY_TOKEN = "122333444455555666666777777788888888999999999";
+
 function App() {
-  const role = Cookies.get('role'); 
+  const role = Cookies.get('role');
+  const token = Cookies.get('token');
 
   return (
     <Router>
@@ -31,7 +34,7 @@ function App() {
         
         {/* Route for Admin and Authenticated Users */}
         {role === 'admin' && <Route path="/admin/*" element={<AdminRoutes />} />}
-        {role !== 'admin' && <Route path="/admin/addMovie" element={<MovieForm />} />}
+        {role !== 'admin' && token !== DUMMY_TOKEN && <Route path="/admin/addMovie" element={<MovieForm />} />}
         
         <Route path="/google-auth" element={<GoogleAuth />} />
         
