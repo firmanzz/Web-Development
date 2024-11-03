@@ -7,7 +7,7 @@ const authMiddleware = async (req, res, next) => {
 
   // Allow guest access with dummy token
   if (token === process.env.DUMMY_TOKEN) {
-    req.user = { role: 'guest' }; // Set guest role if using dummy token
+    req.user = { role: 'guest' }; 
     return next();
   }
 

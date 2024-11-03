@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { FaUserCircle, FaDoorOpen } from "react-icons/fa";
 import Cookies from 'js-cookie';
 
-const DUMMY_TOKEN = "122333444455555666666777777788888888999999999";
+const DUMMY_TOKEN = process.env.REACT_APP_DUMMY_TOKEN;
 
 const Header = ({ open, setOpen }) => {
   const location = useLocation();
@@ -13,6 +13,9 @@ const Header = ({ open, setOpen }) => {
 
   const getUserData = async () => {
     const token = Cookies.get("token");
+
+    console.log("Token dari Cookies:", token);
+    console.log("DUMMY_TOKEN dari .env:", DUMMY_TOKEN);
 
     // Check if token is the dummy token
     if (token === DUMMY_TOKEN) {

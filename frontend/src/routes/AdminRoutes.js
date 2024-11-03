@@ -11,7 +11,7 @@ import Comments from "../pages/admin/Comments";
 import Users from "../pages/admin/Users";
 import Cookies from 'js-cookie';
 
-const DUMMY_TOKEN = "122333444455555666666777777788888888999999999";
+const DUMMY_TOKEN = process.env.REACT_APP_DUMMY_TOKEN;
 
 const AdminRoutes = () => {
   const token = Cookies.get('token');

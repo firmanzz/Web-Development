@@ -29,14 +29,18 @@ const MovieList = () => {
             Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
           },
         });
-        
+
         if (!response.ok) {
           throw new Error(`Failed to fetch movies: ${response.statusText}`);
         }
-        
+
         const data = await response.json();
-        setMovies(data);
-        setFilteredMovies(data);
+        const approvedMovies = data.filter(
+          (movie) => movie.approvalstatus === true
+        );
+
+        setMovies(approvedMovies);
+        setFilteredMovies(approvedMovies);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching movies:", error);

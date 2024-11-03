@@ -13,7 +13,7 @@ import GoogleAuth from "./pages/GoogleAuth";
 import MovieForm from "./pages/admin/MovieForm";
 import Cookies from 'js-cookie';
 
-const DUMMY_TOKEN = "122333444455555666666777777788888888999999999";
+const DUMMY_TOKEN = process.env.REACT_APP_DUMMY_TOKEN;
 
 function App() {
   const role = Cookies.get('role');

@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
-const DUMMY_TOKEN = "122333444455555666666777777788888888999999999"; // Dummy token for guest access
+const DUMMY_TOKEN = process.env.REACT_APP_DUMMY_TOKEN;
 
 const Sidebar = forwardRef(({ open, setOpen }, ref) => {
   const role = Cookies.get('role');
