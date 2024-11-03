@@ -20,7 +20,14 @@ const cors = require('cors');
 const authMiddleware = require('./middleware/authMiddleware');
 const adminMiddleware = require('./middleware/adminMiddleware');
 
-app.use(cors());
+const corsOptions = {
+  origin: 'http://localhost:3000', // Ganti ini dengan URL frontend Anda
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true, // Jika Anda menggunakan cookies atau credentials lain
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(passport.initialize());
 
