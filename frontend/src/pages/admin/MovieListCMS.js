@@ -50,17 +50,21 @@ const MovieListCMS = () => {
     }
 
     try {
+      const token = Cookies.get("token"); // Ambil token dari cookies
       const response = await fetch(`http://localhost:5000/api/movies/${id}`, {
-        method: "DELETE",
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+      },
       });
 
       if (response.ok) {
-        setMovies((prevMovies) =>
-          prevMovies.filter((movie) => movie.id !== id)
-        );
-        alert("Movie deleted successfully.");
+      setMovies((prevMovies) =>
+        prevMovies.filter((movie) => movie.id !== id)
+      );
+      alert("Movie deleted successfully.");
       } else {
-        alert("Failed to delete movie.");
+      alert("Failed to delete movie.");
       }
     } catch (error) {
       console.error("Error deleting movie:", error);
@@ -146,15 +150,17 @@ const MovieListCMS = () => {
     const updatedStatus = !selectedMovie.approvalstatus;
 
     try {
+      const token = Cookies.get("token"); // Ambil token dari cookies
       const response = await fetch(
-        `http://localhost:5000/api/movies/${selectedMovie.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ approvalstatus: updatedStatus }),
-        }
+      `http://localhost:5000/api/movies/${selectedMovie.id}`,
+      {
+        method: "PUT",
+        headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+        },
+        body: JSON.stringify({ approvalstatus: updatedStatus }),
+      }
       );
 
       if (response.ok) {

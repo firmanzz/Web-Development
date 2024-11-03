@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Cookies from "js-cookie";
 
 const Filter = ({
   genre,
@@ -27,7 +28,12 @@ const Filter = ({
   useEffect(() => {
     const fetchFilterData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/filters");
+        const token = Cookies.get("token"); // Ambil token dari cookies
+        const response = await fetch("http://localhost:5000/api/filters", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+          },
+        });
         const data = await response.json();
         setFilterData(data);
       } catch (error) {

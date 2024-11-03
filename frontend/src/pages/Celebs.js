@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Cookies from "js-cookie";
 
 const Celebs = () => {
   const [open, setOpen] = useState(false);
@@ -13,7 +14,12 @@ const Celebs = () => {
   useEffect(() => {
     const fetchActors = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/actors");
+        const token = Cookies.get("token"); // Ambil token dari cookies
+        const response = await fetch("http://localhost:5000/api/actors", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+          },
+        });
         if (!response.ok) {
           throw new Error(`Failed to fetch actors: ${response.statusText}`);
         }
