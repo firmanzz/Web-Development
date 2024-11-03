@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./SidebarCMS";
 import Header from "./HeaderCMS";
+import Cookies from "js-cookie"; // Import js-cookie untuk mengambil token
 
 const MovieListCMS = () => {
   const [open, setOpen] = useState(false);
@@ -19,7 +20,17 @@ const MovieListCMS = () => {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/movies");
+        const token = Cookies.get("token"); // Ambil token dari cookies
+        const response = await fetch("http://localhost:5000/api/movies", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+          },
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch movies: ${response.statusText}`);
+        }
+
         const data = await response.json();
         setMovies(data);
       } catch (error) {

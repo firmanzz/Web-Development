@@ -16,7 +16,12 @@ const Home = () => {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/movies/new");
+        const token = document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1];
+        const response = await fetch("http://localhost:5000/api/movies/new", {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         if (!response.ok) {
           throw new Error(`Failed to fetch movies: ${response.statusText}`);
         }
@@ -36,7 +41,6 @@ const Home = () => {
   const toggleMovieDetail = () => {
     setShowMovieDetail((prev) => !prev);
   };
-  
 
   return (
     <div className="flex flex-col min-h-screen">

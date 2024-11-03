@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
 import Filter from "../components/Filter";
+import Cookies from "js-cookie"; // Import js-cookie untuk mengambil token
 
 const MovieList = () => {
   const [genre, setGenre] = useState("");
@@ -11,7 +12,6 @@ const MovieList = () => {
   const [award, setAward] = useState("");
   const [sortOrder, setSortOrder] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-
   const [movies, setMovies] = useState([]);
   const [filteredMovies, setFilteredMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,10 +23,17 @@ const MovieList = () => {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/movies");
+        const token = Cookies.get("token"); // Ambil token dari cookies
+        const response = await fetch("http://localhost:5000/api/movies", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+          },
+        });
+        
         if (!response.ok) {
           throw new Error(`Failed to fetch movies: ${response.statusText}`);
         }
+        
         const data = await response.json();
         setMovies(data);
         setFilteredMovies(data);
