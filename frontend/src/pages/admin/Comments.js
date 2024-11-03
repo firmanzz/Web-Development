@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./SidebarCMS";
 import Header from "./HeaderCMS";
+import Cookies from "js-cookie";
 
 const Comments = () => {
   const [open, setOpen] = useState(false);
@@ -18,7 +19,12 @@ const Comments = () => {
   const fetchComments = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/comments");
+      const token = Cookies.get("token"); // Ambil token dari cookies
+      const response = await fetch("http://localhost:5000/api/comments", {
+        headers: {
+          Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+        },
+      });
       const data = await response.json();
       setComments(data);
       setFilteredComments(data);
@@ -70,6 +76,7 @@ const Comments = () => {
 
   const handleStatusToggle = async () => {
     try {
+      const token = Cookies.get("token"); // Ambil token dari cookies
       await Promise.all(
         selectedComments.map(async (id) => {
           const comment = comments.find((c) => c.id === id);
@@ -79,7 +86,10 @@ const Comments = () => {
             `http://localhost:5000/api/comments/${id}`,
             {
               method: "PUT",
-              headers: { "Content-Type": "application/json" },
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+              },
               body: JSON.stringify({ status: newStatus }),
             }
           );
@@ -102,12 +112,16 @@ const Comments = () => {
     if (!confirmDelete) return;
 
     try {
+      const token = Cookies.get("token"); // Ambil token dari cookies
       await Promise.all(
         selectedComments.map(async (id) => {
           const response = await fetch(
             `http://localhost:5000/api/comments/${id}`,
             {
               method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+              },
             }
           );
           if (response.ok) {

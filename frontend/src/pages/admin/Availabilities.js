@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./SidebarCMS";
 import Header from "./HeaderCMS";
+import Cookies from "js-cookie"; // Import js-cookie untuk mengambil token
 
 const Availability = () => {
   const [open, setOpen] = useState(false);
@@ -19,7 +20,12 @@ const Availability = () => {
   useEffect(() => {
     const fetchAvailabilities = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/avail");
+        const token = Cookies.get("token"); // Ambil token dari cookies
+        const response = await fetch("http://localhost:5000/api/avail", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+          },
+        });
         if (!response.ok) throw new Error("Failed to fetch availabilities");
         const data = await response.json();
         setAvailabilities(data);
@@ -34,14 +40,18 @@ const Availability = () => {
 
   const handleSubmit = async () => {
     try {
+      const token = Cookies.get("token"); // Ambil token dari cookies
       const response = await fetch("http://localhost:5000/api/addAvail", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+        },
         body: JSON.stringify({ name: newAvailability }),
       });
-  
+
       const data = await response.json();
-  
+
       if (!response.ok) {
         if (data.message === "Availability name already exists") {
           setError("Availability name already exists");
@@ -50,10 +60,10 @@ const Availability = () => {
         }
         throw new Error(data.message || "Failed to add availability");
       }
-  
+
       setAvailabilities([...availabilities, data]);
       setNewAvailability("");
-      setError(""); 
+      setError("");
     } catch (error) {
       console.error("Error adding availability:", error);
     }
@@ -62,8 +72,12 @@ const Availability = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this availability?")) return;
     try {
+      const token = Cookies.get("token"); // Ambil token dari cookies
       const response = await fetch(`http://localhost:5000/api/avail/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+        },
       });
       if (response.ok) {
         setAvailabilities(availabilities.filter((item) => item.id !== id));
@@ -84,9 +98,13 @@ const Availability = () => {
 
   const handleEditSubmit = async () => {
     try {
+      const token = Cookies.get("token"); // Ambil token dari cookies
       const response = await fetch(`http://localhost:5000/api/avail/${editingId}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+        },
         body: JSON.stringify({ name: editingName }),
       });
       if (!response.ok) throw new Error("Failed to edit availability");

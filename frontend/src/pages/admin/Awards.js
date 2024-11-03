@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./SidebarCMS";
 import Header from "./HeaderCMS";
+import Cookies from "js-cookie";
 
 const Awards = () => {
   const [open, setOpen] = useState(false);
@@ -25,11 +26,15 @@ const Awards = () => {
   // Search & Filter State
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCountry, setFilterCountry] = useState("All");
-
   useEffect(() => {
     const fetchAwards = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/awards");
+        const token = Cookies.get("token"); // Get token from cookies
+        const response = await fetch("http://localhost:5000/api/awards", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Add token to Authorization header
+          },
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch awards");
         }
@@ -43,7 +48,12 @@ const Awards = () => {
 
     const fetchCountries = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/countries");
+        const token = Cookies.get("token"); // Get token from cookies
+        const response = await fetch("http://localhost:5000/api/countries", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Add token to Authorization header
+          },
+        });
         const countryData = await response.json();
         setCountries(countryData);
       } catch (error) {
@@ -81,6 +91,7 @@ const Awards = () => {
     };
 
     try {
+      const token = Cookies.get("token"); // Get token from cookies
       let response;
       if (selectedAward) {
         response = await fetch(
@@ -89,6 +100,7 @@ const Awards = () => {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`, // Add token to Authorization header
             },
             body: JSON.stringify(formData),
           }
@@ -98,6 +110,7 @@ const Awards = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Add token to Authorization header
           },
           body: JSON.stringify(formData),
         });
@@ -131,8 +144,12 @@ const Awards = () => {
 
   const handleDeleteAward = async (id) => {
     try {
+      const token = Cookies.get("token"); // Get token from cookies
       const response = await fetch(`http://localhost:5000/api/awards/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`, // Add token to Authorization header
+        },
       });
       if (!response.ok) {
         throw new Error("Failed to delete award");

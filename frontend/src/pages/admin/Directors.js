@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./SidebarCMS";
 import Header from "./HeaderCMS";
+import Cookies from "js-cookie";
 
 const Directors = () => {
   const [open, setOpen] = useState(false);
@@ -30,7 +31,12 @@ const Directors = () => {
   useEffect(() => {
     const fetchDirectors = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/directors");
+        const token = Cookies.get("token"); // Ambil token dari cookies
+        const response = await fetch("http://localhost:5000/api/directors", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+          },
+        });
         if (!response.ok) {
           throw new Error(`Failed to fetch directors: ${response.statusText}`);
         }
@@ -46,7 +52,12 @@ const Directors = () => {
 
     const fetchCountries = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/countries");
+        const token = Cookies.get("token"); // Ambil token dari cookies
+        const response = await fetch("http://localhost:5000/api/countries", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+          },
+        });
         const countryData = await response.json();
         setCountries(countryData);
       } catch (error) {
@@ -83,23 +94,26 @@ const Directors = () => {
     };
 
     try {
+      const token = Cookies.get("token"); // Ambil token dari cookies
       let response;
       if (selectedDirector) {
-        response = await fetch(`http://localhost:5000/api/directors/${selectedDirector.id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        });
+      response = await fetch(`http://localhost:5000/api/directors/${selectedDirector.id}`, {
+        method: "PUT",
+        headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+        },
+        body: JSON.stringify(formData),
+      });
       } else {
-        response = await fetch("http://localhost:5000/api/addDirector", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        });
+      response = await fetch("http://localhost:5000/api/addDirector", {
+        method: "POST",
+        headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+        },
+        body: JSON.stringify(formData),
+      });
       }
 
       if (!response.ok) {
@@ -125,8 +139,12 @@ const Directors = () => {
 
   const handleDeleteDirector = async (id) => {
     try {
+      const token = Cookies.get("token"); // Ambil token dari cookies
       const response = await fetch(`http://localhost:5000/api/directors/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+        },
       });
       if (!response.ok) {
         throw new Error("Failed to delete director");

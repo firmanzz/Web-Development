@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./SidebarCMS";
 import Header from "./HeaderCMS";
+import Cookies from "js-cookie";
 
 const Users = () => {
   const [open, setOpen] = useState(false);
@@ -15,7 +16,12 @@ const Users = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/users");
+        const token = Cookies.get("token"); // Ambil token dari cookies
+        const response = await fetch("http://localhost:5000/api/users", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+          },
+        });
         const data = await response.json();
         setUsers(data);
       } catch (error) {
@@ -41,13 +47,15 @@ const Users = () => {
 
     try {
       const updatedStatus = !selectedUser.suspend;
+      const token = Cookies.get("token"); // Ambil token dari cookies
 
       await fetch(`http://localhost:5000/api/users/${selectedUser.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ suspend: updatedStatus }),
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+      },
+      body: JSON.stringify({ suspend: updatedStatus }),
       });
 
       setUsers((prevUsers) =>
@@ -70,11 +78,13 @@ const Users = () => {
     if (!confirmDelete) return;
 
     try {
+      const token = Cookies.get("token"); // Ambil token dari cookies
       const response = await fetch(`http://localhost:5000/api/users/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+      },
       });
 
       if (response.ok) {

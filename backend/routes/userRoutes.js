@@ -1,12 +1,11 @@
 const passport = require('passport');
 const express = require('express');
-
 const {  
     getAllUsers, 
     editUser, 
     deleteUser 
 } = require('../controllers/userController');
-const User =require('../models/User');
+const User = require('../models/User');
 const { 
     forgotPassword,
     resetPassword,
@@ -15,20 +14,21 @@ const {
     verifyEmail
 } = require('../controllers/authController');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const authMiddleware = require('../middleware/authMiddleware');
+const authMiddleware = require('../middleware/authMiddleware'); // Import authMiddleware
 
+// Routes untuk login dan pendaftaran (tidak memerlukan otorisasi)
 router.post('/login', loginUser);
 router.post('/register', registerUser);
 router.post('/verify-email', verifyEmail);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
 
-// Admin routes for managing users
-router.get('/users', getAllUsers);
-router.put('/users/:id', editUser);
-router.delete('/users/:id', deleteUser);
+// Routes admin untuk mengelola pengguna (dilindungi oleh authMiddleware)
+router.get('/users', authMiddleware, getAllUsers);
+router.put('/users/:id', authMiddleware, editUser);
+router.delete('/users/:id', authMiddleware, deleteUser);
 
+// Route untuk mendapatkan informasi pengguna berdasarkan token (dilindungi oleh authMiddleware)
 router.get('/get-user', authMiddleware, (req, res) => {
     try {
       const { id, name, role } = req.user; // Ambil data user dari token
@@ -39,7 +39,8 @@ router.get('/get-user', authMiddleware, (req, res) => {
     }
   });
 
-  router.get('/get-role', authMiddleware, async (req, res) => {
+// Route untuk mendapatkan peran pengguna berdasarkan token (dilindungi oleh authMiddleware)
+router.get('/get-role', authMiddleware, async (req, res) => {
     try {
       const user = await User.findByPk(req.user.id, { attributes: ['role'] });
       if (!user) {
@@ -80,9 +81,9 @@ router.get('/auth/success', (req, res) => {
   return res.redirect(`http://localhost:3000/google-auth?token=${token}&role=${role}&name=${name}`);
 });
 
-module.exports = router;
-
-// Rute tanpa login
+// Rute untuk akses tamu tanpa login (tidak memerlukan otorisasi)
 router.post('/guest', (req, res) => {
   res.status(200).json({ message: "Guest access granted" });
 });
+
+module.exports = router;

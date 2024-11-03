@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./SidebarCMS";
 import Header from "./HeaderCMS";
+import Cookies from "js-cookie";
 
 const Actors = () => {
   const [open, setOpen] = useState(false);
@@ -25,11 +26,15 @@ const Actors = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const maxPageNumbers = 3;
-
   useEffect(() => {
     const fetchActors = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/actors");
+        const token = Cookies.get("token"); // Ambil token dari cookies
+        const response = await fetch("http://localhost:5000/api/actors", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+          },
+        });
         if (!response.ok) {
           throw new Error(`Failed to fetch actors: ${response.statusText}`);
         }
@@ -45,7 +50,12 @@ const Actors = () => {
 
     const fetchCountries = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/countries");
+        const token = Cookies.get("token"); // Ambil token dari cookies
+        const response = await fetch("http://localhost:5000/api/countries", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+          },
+        });
         const countryData = await response.json();
         setCountries(countryData);
       } catch (error) {
@@ -83,26 +93,33 @@ const Actors = () => {
     };
 
     try {
+      const token = Cookies.get("token"); // Ambil token dari cookies
       let response;
       if (selectedActor) {
-        response = await fetch(
-          `http://localhost:5000/api/actors/${selectedActor.id}`,
-          {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formData),
-          }
-        );
+      response = await fetch(
+        `http://localhost:5000/api/actors/${selectedActor.id}`,
+        {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+        },
+        body: JSON.stringify(formData),
+        }
+      );
       } else {
-        response = await fetch("http://localhost:5000/api/addActor", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
+      response = await fetch("http://localhost:5000/api/addActor", {
+        method: "POST",
+        headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+        },
+        body: JSON.stringify(formData),
+      });
       }
 
       if (!response.ok) {
-        throw new Error("Failed to save actor");
+      throw new Error("Failed to save actor");
       }
 
       const data = await response.json();
@@ -124,8 +141,12 @@ const Actors = () => {
 
   const handleDeleteActor = async (id) => {
     try {
+      const token = Cookies.get("token"); // Ambil token dari cookies
       const response = await fetch(`http://localhost:5000/api/actors/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+        },
       });
       if (!response.ok) {
         throw new Error("Failed to delete actor");

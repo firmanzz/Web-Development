@@ -13,7 +13,6 @@ const HeaderCMS = ({ open, setOpen }) => {
     try {
       const token = Cookies.get('token'); // Ambil token dari cookies
       if (!token) throw new Error('No token found');
-
       const response = await fetch('http://localhost:5000/api/get-user', {
         method: 'GET',
         headers: {

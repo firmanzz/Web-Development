@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./SidebarCMS";
 import Header from "./HeaderCMS";
+import Cookies from "js-cookie"; // Import js-cookie untuk mengambil token
 
 const Countries = ({ movies }) => {
   const [open, setOpen] = useState(false);
@@ -19,7 +20,12 @@ const Countries = ({ movies }) => {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/countries");
+        const token = Cookies.get("token"); // Ambil token dari cookies
+        const response = await fetch("http://localhost:5000/api/countries", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+          },
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch countries");
         }
@@ -36,10 +42,12 @@ const Countries = ({ movies }) => {
 
   const handleSubmit = async () => {
     try {
+      const token = Cookies.get("token"); // Ambil token dari cookies
       const response = await fetch("http://localhost:5000/api/addCountries", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
         },
         body: JSON.stringify({ name: newCountry }),
       });
@@ -75,10 +83,14 @@ const Countries = ({ movies }) => {
     }
 
     try {
+      const token = Cookies.get("token"); // Ambil token dari cookies
       const response = await fetch(
         `http://localhost:5000/api/countries/${id}`,
         {
           method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
+          },
         }
       );
 
@@ -103,12 +115,14 @@ const Countries = ({ movies }) => {
 
   const handleEditSubmit = async () => {
     try {
+      const token = Cookies.get("token"); // Ambil token dari cookies
       const response = await fetch(
         `http://localhost:5000/api/countries/${editingCountryId}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
           },
           body: JSON.stringify({ name: editingCountryName }),
         }
