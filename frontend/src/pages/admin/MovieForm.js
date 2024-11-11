@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import Sidebar from "./SidebarCMS";
 import Header from "./HeaderCMS";
 import Cookies from "js-cookie";
@@ -228,11 +227,27 @@ const MovieForm = () => {
     };
 
     try {
-      if (isEditMode) {
-        await axios.put(`http://localhost:5000/api/movies/${id}`, data);
-      } else {
-        await axios.post("http://localhost:5000/api/addMovie", data);
+      const token = Cookies.get("token"); // Get token from cookies
+    
+      const options = {
+        method: isEditMode ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Add the bearer token
+        },
+        body: JSON.stringify(data), // Convert data to JSON string
+      };
+    
+      const url = isEditMode
+        ? `http://localhost:5000/api/movies/${id}`
+        : "http://localhost:5000/api/addMovie";
+    
+      const response = await fetch(url, options);
+    
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
       }
+    
       navigate("/admin/");
     } catch (error) {
       console.error("Error submitting movie:", error);

@@ -19,13 +19,14 @@ function App() {
   const role = Cookies.get('role');
   const token = Cookies.get('token');
 
-  return (
+  return (  
     <Router>
       <Routes>
+        <Route path="*" element={<Navigate to="/Login" />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/Register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/" element={<Home />} />
+        <Route path="/Home" element={<Home />} />
         <Route path="/Newest" element={<Newest />} />
         <Route path="/TopRated" element={<TopRated />} />
         <Route path="/Celebs" element={<Celebs />} />
