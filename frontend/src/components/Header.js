@@ -81,7 +81,7 @@ const Header = ({ open, setOpen }) => {
 
       <div className="flex-1 flex justify-center items-center">
         <Link
-          to="/"
+          to="/Home"
           className="text-3xl font-bold text-white"
           style={{ fontFamily: "Playfair Display, serif" }}
         >

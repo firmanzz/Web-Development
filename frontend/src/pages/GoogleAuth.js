@@ -19,7 +19,7 @@ const GoogleAuth = () => {
             if (role === 'admin') {
                 navigate('/admin');
             } else {
-                navigate('/');
+                navigate('/Home');
                 Cookies.remove("role");
             }
         } 

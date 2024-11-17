@@ -17,11 +17,12 @@ exports.registerUser = async (req, res) => {
   try {
     let user = await User.findOne({ where: { email } });
     if (user) {
+      console.log("User already registered");
       return res.status(400).json({ message: 'Email already registered' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const verificationCode = generateVerificationCode(); // Buat kode verifikasi
+    const verificationCode = generateVerificationCode();
 
     // Simpan user dengan isVerified = false
     user = await User.create({
@@ -32,7 +33,8 @@ exports.registerUser = async (req, res) => {
       isVerified: false,
     });
 
-    // Kirim email verifikasi
+    console.log("User created, sending email...");
+
     const mailOptions = {
       from: process.env.GMAIL_USER,
       to: email,
@@ -44,10 +46,11 @@ exports.registerUser = async (req, res) => {
 
     res.status(201).json({ message: 'User registered. Please check your email for the verification code.' });
   } catch (error) {
-    console.error('Register Error:', error);
+    console.error('Register Error:', error); // Logs detailed error info
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 // Verifikasi kode dari email
 // Verifikasi email dan kode verifikasi

@@ -165,7 +165,10 @@ const MovieForm = () => {
 
     if (!movieDetails.rating) {
       errors.rating = "Rating is required";
-    } else if (parseFloat(movieDetails.rating) < 1 || parseFloat(movieDetails.rating) > 10) {
+    } else if (
+      parseFloat(movieDetails.rating) < 1 ||
+      parseFloat(movieDetails.rating) > 10
+    ) {
       errors.rating = "Rating must be between 1 and 10";
     }
 
@@ -190,7 +193,6 @@ const MovieForm = () => {
       errors.linktrailer = "Trailer link must be a valid embeddable URL";
     }
 
-    // Genres, Actors, and Directors minimum selection
     if (selectedGenres.length < 1) {
       errors.genres = "At least one genre must be selected";
     }
@@ -199,6 +201,10 @@ const MovieForm = () => {
     }
     if (selectedDirectors.length < 1) {
       errors.directors = "At least one director must be selected";
+    }
+
+    if (selectedAvailabilities.length < 1) {
+      errors.availabilities = "At least one availability must be selected";
     }
 
     setErrors(errors);
@@ -228,7 +234,7 @@ const MovieForm = () => {
 
     try {
       const token = Cookies.get("token"); // Get token from cookies
-    
+
       const options = {
         method: isEditMode ? "PUT" : "POST",
         headers: {
@@ -237,17 +243,17 @@ const MovieForm = () => {
         },
         body: JSON.stringify(data), // Convert data to JSON string
       };
-    
+
       const url = isEditMode
         ? `http://localhost:5000/api/movies/${id}`
         : "http://localhost:5000/api/addMovie";
-    
+
       const response = await fetch(url, options);
-    
+
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
-    
+
       navigate("/admin/");
     } catch (error) {
       console.error("Error submitting movie:", error);
@@ -522,7 +528,21 @@ const MovieForm = () => {
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
                 />
+                {errors.urlphoto && (
+                  <p className="text-red-500 text-sm">{errors.urlphoto}</p>
+                )}
+                {/* Poster Preview */}
+                {movieDetails.urlphoto && (
+                  <div className="mt-2 flex justify-center">
+                    <img
+                      src={movieDetails.urlphoto}
+                      alt="Poster Preview"
+                      className="w-36 h-auto rounded-md shadow-lg"
+                    />
+                  </div>
+                )}
               </div>
+
               <div>
                 <label
                   htmlFor="linktrailer"
@@ -538,15 +558,33 @@ const MovieForm = () => {
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md bg-gray-200 shadow-sm"
                 />
+                {errors.linktrailer && (
+                  <p className="text-red-500 text-sm">{errors.linktrailer}</p>
+                )}
+                {/* Trailer Preview */}
+                {movieDetails.linktrailer && (
+                  <div className="mt-2 flex justify-center">
+                    <iframe
+                      src={movieDetails.linktrailer.replace(
+                        "watch?v=",
+                        "embed/"
+                      )}
+                      title="Trailer Preview"
+                      className="w-96 h-56 rounded-md shadow-lg"
+                      allowFullScreen
+                    />
+                  </div>
+                )}
               </div>
             </div>
+
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
                 <label
                   htmlFor="rating"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Rating (1-5)
+                  Rating (1-10)
                 </label>
                 <input
                   type="number"
@@ -619,6 +657,9 @@ const MovieForm = () => {
                   </span>
                 ))}
               </div>
+              {errors.availabilities && (
+                <p className="text-red-500 text-sm">{errors.availabilities}</p>
+              )}
             </div>
 
             <div className="mb-4">
@@ -658,6 +699,9 @@ const MovieForm = () => {
                   </span>
                 ))}
               </div>
+              {errors.genres && (
+                <p className="text-red-500 text-sm">{errors.genres}</p>
+              )}
             </div>
 
             <div className="mb-4">
@@ -696,6 +740,9 @@ const MovieForm = () => {
                   </span>
                 ))}
               </div>
+              {errors.actors && (
+                <p className="text-red-500 text-sm">{errors.actors}</p>
+              )}
             </div>
 
             <div className="mb-4">
@@ -736,6 +783,9 @@ const MovieForm = () => {
                   </span>
                 ))}
               </div>
+              {errors.directors && (
+                <p className="text-red-500 text-sm">{errors.directors}</p>
+              )}
             </div>
 
             <div className="mb-4">

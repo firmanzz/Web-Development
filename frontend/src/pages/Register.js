@@ -73,7 +73,6 @@ const Register = () => {
         <h2 className="mb-4 text-xl font-bold text-center">MasterFilm</h2>
 
         {isRegistered ? (
-          // Form Verifikasi Kode
           <form onSubmit={handleVerify}>
             <p className="mb-3 text-center text-sm text-gray-600">
               {message}

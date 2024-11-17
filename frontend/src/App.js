@@ -40,7 +40,7 @@ function App() {
         <Route path="/google-auth" element={<GoogleAuth />} />
         
         {/* Redirect if user is not admin or editor */}
-        {role !== 'admin' && role !== 'editor' && <Route path="/admin/*" element={<Navigate to="/" />} />}
+        {role !== 'admin' && role !== 'editor' && <Route path="/admin/*" element={<Navigate to="/Home" />} />}
       </Routes>
     </Router>
   );

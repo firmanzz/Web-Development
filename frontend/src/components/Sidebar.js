@@ -9,7 +9,7 @@ const Sidebar = forwardRef(({ open, setOpen }, ref) => {
   const token = Cookies.get('token');
 
   const Menus = [
-    { title: "HOME", key: "home", path: "/" },
+    { title: "HOME", key: "home", path: "/Home" },
     { title: "NEWEST", key: "newest", path: "/Newest" },
     { title: "TOP RATED", key: "top-rated", path: "/TopRated" },
     { title: "CELEBS", key: "celebs", path: "/Celebs" },

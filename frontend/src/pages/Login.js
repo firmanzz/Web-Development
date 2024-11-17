@@ -23,7 +23,7 @@ const Login = () => {
       if (role === 'admin') {
         navigate('/admin');
       } else {
-        navigate('/');
+        navigate('/Home');
         Cookies.remove("role");
       }
     }
@@ -50,7 +50,7 @@ const Login = () => {
         if (data.data.role === 'admin') {
           window.location.href = '/admin';
         } else if (data.data.role === 'editor') {
-          window.location.href = '/';
+          window.location.href = '/Home';
           Cookies.remove("role");
         } else {
           alert('Unknown role');
@@ -70,7 +70,7 @@ const Login = () => {
 
   const handleGuestLogin = () => {
     Cookies.set('token', DUMMY_TOKEN); // Set dummy token for guest
-    navigate('/');
+    navigate('/Home');
   };
 
   return (
