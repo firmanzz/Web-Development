@@ -15,6 +15,7 @@ const commentRoutes = require('./routes/commentRoutes');
 const filterRoutes = require('./routes/filterRoutes');
 const passport = require('./config/passport'); 
 const cors = require('cors');
+require('dotenv').config({ path: require('path').resolve(__dirname, './.env') });
 
 // Import middleware
 const authMiddleware = require('./middleware/authMiddleware');

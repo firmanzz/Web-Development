@@ -13,6 +13,9 @@ const generateVerificationCode = () => {
 // Registrasi user dengan verifikasi email
 exports.registerUser = async (req, res) => {
   const { name, email, password } = req.body;
+  if (!name || !email || !password) {
+    return res.status(400).json({ message: 'Please provide all required fields' });
+}
 
   try {
     let user = await User.findOne({ where: { email } });
@@ -33,7 +36,11 @@ exports.registerUser = async (req, res) => {
       isVerified: false,
     });
 
+    console.log('GMAIL_USER:', process.env.GMAIL_USER);
+    console.log('GMAIL_PASS:', process.env.GMAIL_PASS);
     console.log("User created, sending email...");
+    console.log('GMAIL_USER:', process.env.GMAIL_USER);
+    console.log('GMAIL_PASS:', process.env.GMAIL_PASS);
 
     const mailOptions = {
       from: process.env.GMAIL_USER,

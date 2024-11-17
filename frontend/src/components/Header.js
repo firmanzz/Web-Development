@@ -14,9 +14,6 @@ const Header = ({ open, setOpen }) => {
   const getUserData = async () => {
     const token = Cookies.get("token");
 
-    console.log("Token dari Cookies:", token);
-    console.log("DUMMY_TOKEN dari .env:", DUMMY_TOKEN);
-
     // Check if token is the dummy token
     if (token === DUMMY_TOKEN) {
       setUser({ name: "Guest" });
