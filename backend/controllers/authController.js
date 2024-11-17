@@ -35,13 +35,7 @@ exports.registerUser = async (req, res) => {
       verificationCode,
       isVerified: false,
     });
-
-    console.log('GMAIL_USER:', process.env.GMAIL_USER);
-    console.log('GMAIL_PASS:', process.env.GMAIL_PASS);
     console.log("User created, sending email...");
-    console.log('GMAIL_USER:', process.env.GMAIL_USER);
-    console.log('GMAIL_PASS:', process.env.GMAIL_PASS);
-
     const mailOptions = {
       from: process.env.GMAIL_USER,
       to: email,
