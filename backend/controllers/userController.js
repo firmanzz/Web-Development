@@ -55,3 +55,26 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
+exports.deleteUnverifiedUser = async (req, res) => {
+  const { email } = req.body; // Ambil email dari request body
+  try {
+      // Cari pengguna dengan email dan pastikan tidak memiliki googleId
+      const user = await User.findOne({ where: { email, isVerified: false } });
+
+      if (!user) {
+          return res.status(404).json({ message: 'User not found or already verified' });
+      }
+
+      // Jika pengguna memiliki googleId, tidak perlu verifikasi
+      if (user.googleId) {
+          return res.status(400).json({ message: 'Google user does not require verification' });
+      }
+
+      // Hapus pengguna
+      await user.destroy();
+      return res.status(200).json({ message: 'Unverified account deleted successfully' });
+  } catch (error) {
+      console.error('Error deleting unverified user:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+  }
+};

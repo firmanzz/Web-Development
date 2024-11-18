@@ -3,7 +3,8 @@ const express = require('express');
 const {  
     getAllUsers, 
     editUser, 
-    deleteUser 
+    deleteUser,
+    deleteUnverifiedUser,
 } = require('../controllers/userController');
 const User = require('../models/User');
 const { 
@@ -85,5 +86,7 @@ router.get('/auth/success', (req, res) => {
 router.post('/guest', (req, res) => {
   res.status(200).json({ message: "Guest access granted" });
 });
+
+router.post('/delete-unverified', deleteUnverifiedUser);
 
 module.exports = router;
