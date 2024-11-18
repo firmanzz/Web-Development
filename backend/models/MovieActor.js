@@ -3,8 +3,8 @@ const sequelize = require('../config/database');
 
 const MovieActor = sequelize.define('MovieActor', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  movieid: { type: DataTypes.INTEGER, references: { model: 'Movies', key: 'id' } },
-  actorid: { type: DataTypes.INTEGER, references: { model: 'Actors', key: 'id' } }
+  movieid: { type: DataTypes.INTEGER, references: { model: 'movies', key: 'id' } },
+  actorid: { type: DataTypes.INTEGER, references: { model: 'actors', key: 'id' } }
 }, {
     tableName: 'movie_actor',
     timestamps: false });

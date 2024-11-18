@@ -45,10 +45,4 @@ const Comment = sequelize.define(
     timestamps: false, }
 );
 
-Comment.belongsTo(Movie, { foreignKey: "movieid" });
-Movie.hasMany(Comment, { foreignKey: "movieid" });
-
-Comment.belongsTo(User, { foreignKey: "userid" });
-User.hasMany(Comment, { foreignKey: "userid" });
-
 module.exports = Comment;
