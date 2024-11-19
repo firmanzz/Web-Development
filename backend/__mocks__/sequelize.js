@@ -14,6 +14,11 @@ const MovieMock = dbMock.define("Movie", {
   countryid: 1,
 });
 
+const CountryMock = dbMock.define("Country", {
+  id: 1,
+  name: "USA",
+});
+
 // Mock Genre model
 const GenreMock = dbMock.define("Genre", {
   id: 1,
@@ -78,6 +83,10 @@ const MovieActorMock = dbMock.define("MovieActor", {
 });
 
 // Setup Relations
+
+ActorMock.belongsTo(CountryMock, { foreignKey: "countryid" });
+CountryMock.hasMany(ActorMock, { foreignKey: "countryid" });
+
 MovieMock.belongsToMany(GenreMock, { through: MovieGenreMock });
 GenreMock.belongsToMany(MovieMock, { through: MovieGenreMock });
 MovieMock.belongsToMany(ActorMock, { through: MovieActorMock });
@@ -96,5 +105,6 @@ module.exports = {
   Award: AwardMock,
   Availability: AvailabilityMock,
   Director: DirectorMock,
+  Country: CountryMock,
   dbMock,
 };

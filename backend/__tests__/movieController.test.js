@@ -1,5 +1,5 @@
 const { Movie, Genre, Actor, Award, Availability, Director } = require("../__mocks__/sequelize");
-const { genres, actors, movie } = require("../utils/sampleData");
+const { movie } = require("../utils/sampleData");
 
 describe("Movie Controller Tests with Mocks", () => {
     beforeAll(() => {
