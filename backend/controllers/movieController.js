@@ -1,4 +1,4 @@
-const Movie = require('../models/Movie');
+const {Movie} = require('../models');
 const Country = require('../models/Countries');
 const Genre = require('../models/Genre');
 const Award = require('../models/Award');

@@ -10,6 +10,11 @@ const Actor = require('./Actor');
 const Director = require('./Director');
 const Availability = require('./Availability');
 const Award = require('./Award');
+const MovieGenre = require('./MovieGenre');
+const MovieAward = require('./MovieAward');
+const MovieActor = require('./MovieActor');
+const MovieDirector = require('./MovieDirector');
+const MovieAvailability = require('./MovieAvail');
 
 // Atur asosiasi di sini
 Comment.belongsTo(Movie, { foreignKey: "movieid" });
