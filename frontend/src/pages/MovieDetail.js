@@ -168,7 +168,7 @@ const MovieDetail = () => {
               </div>
 
               <div className="p-6 rounded-lg shadow-lg mb-6 bg-white">
-                <h2 className="text-3xl font-bold mb-3 text-gray-800">
+                <h2 data-testid="movie-title" className="text-3xl font-bold mb-3 text-gray-800">
                   {movie.title}
                 </h2>
                 <p className="mb-2 text-sm text-gray-800">
