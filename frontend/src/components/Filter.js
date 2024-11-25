@@ -83,7 +83,7 @@ const Filter = ({
                   onChange={(e) => setGenre(e.target.value)}
                 >
                   <option value="">All Genre</option>
-                  {filterData.genres.map((g) => (
+                  {filterData?.genres?.map((g) => (
                     <option key={g.id} value={g.name}>
                       {g.name} ({g.movieCount || 0})
                     </option>
@@ -98,7 +98,7 @@ const Filter = ({
                   onChange={(e) => setYear(e.target.value)}
                 >
                   <option value="">All Year</option>
-                  {filterData.years.map((y) => (
+                  {filterData?.years?.map((y) => (
                     <option key={y.year} value={y.year}>
                       {y.year} ({y.movieCount || 0})
                     </option>
@@ -114,7 +114,7 @@ const Filter = ({
                   onChange={(e) => setStatus(e.target.value)}
                 >
                   <option value="">All Status</option>
-                  {filterData.statuses.map((s) => (
+                  {filterData?.statuses?.map((s) => (
                     <option key={s.status} value={s.status}>
                       {s.status} ({s.movieCount || 0})
                     </option>
@@ -130,7 +130,7 @@ const Filter = ({
                   onChange={(e) => setAvailability(e.target.value)}
                 >
                   <option value="">All Availability</option>
-                  {filterData.availabilities.map((a) => (
+                  {filterData?.availabilities?.map((a) => (
                     <option key={a.id} value={a.name}>
                       {a.name} ({a.movieCount || 0})
                     </option>
@@ -146,7 +146,7 @@ const Filter = ({
                   onChange={(e) => setAward(e.target.value)}
                 >
                   <option value="">All Award</option>
-                  {filterData.awards.map((award) => (
+                  {filterData?.awards?.map((award) => (
                     <option key={award.id} value={award.award}>
                       {award.award} ({award.movieCount || 0})
                     </option>

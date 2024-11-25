@@ -4,8 +4,6 @@
   "private": true,
   "dependencies": {
     "@react-oauth/google": "^0.12.1",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
     "frontend": "file:",
@@ -42,7 +40,14 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.0.1",
     "daisyui": "^4.12.10",
-    "tailwindcss": "^3.4.10"
+    "jest": "^27.5.1",
+    "jest-fetch-mock": "^3.0.3",
+    "msw": "^2.6.6",
+    "tailwindcss": "^3.4.10",
+    "text-encoding-polyfill": "^0.6.7"
   }
 }
