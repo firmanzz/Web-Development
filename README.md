@@ -148,3 +148,9 @@
     npm start
     ```
 4. **Open the application in your browser:** `http://localhost:3000`
+### Database
+1. **Import database**
+    ```bash
+    psql -U <username> -h <host> -p <port> -d <database_name> -f database_web.sql
+    ```
+
