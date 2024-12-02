@@ -58,17 +58,6 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: SequelizeMeta; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public."SequelizeMeta" (
-    name character varying(255) NOT NULL
-);
-
-
-ALTER TABLE public."SequelizeMeta" OWNER TO postgres;
-
---
 -- Name: Users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -770,15 +759,6 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- Data for Name: SequelizeMeta; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public."SequelizeMeta" (name) FROM stdin;
-20241018131620-add-google-id-to-users.js
-\.
-
-
---
 -- Data for Name: Users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -953,7 +933,7 @@ COPY public.directors (id, name, birthdate, urlphoto, countryid) FROM stdin;
 4	Greta Gerwig	1983-08-04 00:00:00+07	https://m.media-amazon.com/images/M/MV5BNDE5MTIxMTMzMV5BMl5BanBnXkFtZTcwMjMxMDYxOQ@@._V1_.jpg	1
 5	Nick Cassavetes	1959-05-21 00:00:00+07	https://m.media-amazon.com/images/M/MV5BMTcxNjA2MjI3Nl5BMl5BanBnXkFtZTYwMjkyNjMz._V1_.jpg	1
 6	Damien Chazelle	1985-01-19 00:00:00+07	https://m.media-amazon.com/images/M/MV5BMjE2MzcyODA3MV5BMl5BanBnXkFtZTgwNTA3NTU2MjE@._V1_.jpg	1
-7	Joachim Rønning	1972-05-30 00:00:00+07	https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9w1s09AgRQ5Ws9Yl-e7GpwtIZ-flX2kFh9Q&s	1
+7	Joachim R├╕nning	1972-05-30 00:00:00+07	https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9w1s09AgRQ5Ws9Yl-e7GpwtIZ-flX2kFh9Q&s	1
 8	Pierre Coffin	1967-11-01 00:00:00+07	https://m.media-amazon.com/images/M/MV5BMTUzOTQ3OTA3OF5BMl5BanBnXkFtZTcwNzEzNTMyOA@@._V1_.jpg	5
 9	John Lasseter	1957-01-12 00:00:00+07	https://m.media-amazon.com/images/M/MV5BMTQ5NTczNjE5MV5BMl5BanBnXkFtZTcwMTA1MTQ3Mg@@._V1_FMjpg_UX1000_.jpg	1
 10	Lee Unkrich	1967-08-08 00:00:00+07	https://m.media-amazon.com/images/M/MV5BMjA1ODE2NTEzN15BMl5BanBnXkFtZTYwNzUzODY2._V1_.jpg	1
@@ -972,7 +952,7 @@ COPY public.directors (id, name, birthdate, urlphoto, countryid) FROM stdin;
 23	Lana Wachowski	1965-06-21 00:00:00+07	https://m.media-amazon.com/images/M/MV5BMjEzMTc2MDQ5OV5BMl5BanBnXkFtZTcwNjkzNDY0OA@@._V1_.jpg	1
 24	Lilly Wachowski	1967-12-29 00:00:00+07	https://m.media-amazon.com/images/M/MV5BMTU1Mjc1MjkzNV5BMl5BanBnXkFtZTgwOTc1NDQ1ODE@._V1_.jpg	1
 25	Ridley Scott	1937-11-30 00:00:00+07	https://m.media-amazon.com/images/M/MV5BNDM1OWUyZDktZGJmYS00MjQxLWI1OTItY2M4MWViM2NmOWM0XkEyXkFqcGc@._V1_.jpg	2
-26	Alejandro González Iñárritu	1963-08-15 00:00:00+07	https://m.media-amazon.com/images/M/MV5BMTcwNDMyOTMzMl5BMl5BanBnXkFtZTcwODQ0OTE0Ng@@._V1_FMjpg_UX1000_.jpg	1
+26	Alejandro Gonz├ílez I├▒├írritu	1963-08-15 00:00:00+07	https://m.media-amazon.com/images/M/MV5BMTcwNDMyOTMzMl5BMl5BanBnXkFtZTcwODQ0OTE0Ng@@._V1_FMjpg_UX1000_.jpg	1
 27	Ron Howard	1954-03-01 00:00:00+07	https://m.media-amazon.com/images/M/MV5BMTkzMDczMjUxNF5BMl5BanBnXkFtZTcwODY1Njk5Mg@@._V1_.jpg	1
 28	Adam McKay	1968-04-17 00:00:00+07	https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIeYSqZ7FQwSQglVYSRzwRwWOOjh2e-XQz9A&s	1
 29	Tom Hooper	1972-10-05 00:00:00+07	https://m.media-amazon.com/images/M/MV5BMTMyOTQ5MTE5OV5BMl5BanBnXkFtZTcwNjMxNjA0NA@@._V1_.jpg	2
@@ -1507,7 +1487,7 @@ COPY public.movies (id, title, alternativetitle, synopsis, urlphoto, releasedate
 21	The Shawshank Redemption	\N	Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.	https://m.media-amazon.com/images/M/MV5BMDAyY2FhYjctNDc5OS00MDNlLThiMGUtY2UxYWVkNGY2ZjljXkEyXkFqcGc@._V1_.jpg	1994-09-23 00:00:00+07	https://www.youtube.com/watch?v=NmzuHjWmXOc	9.3	142	Released	t	1
 22	The Godfather	\N	The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.	https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_FMjpg_UX1000_.jpg	1972-03-24 00:00:00+07	https://www.youtube.com/watch?v=sY1S34973zA	9.2	175	Released	t	1
 23	The Dark Knight	\N	When the menace known as the Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham.	https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_FMjpg_UX1000_.jpg	2008-07-18 00:00:00+07	https://www.youtube.com/watch?v=EXeTwQWrcwY	9	152	Released	t	1
-24	Schindler’s List	\N	In German-occupied Poland during World War II, industrialist Oskar Schindler gradually becomes concerned for his Jewish workforce after witnessing their persecution by the Nazis.	https://m.media-amazon.com/images/M/MV5BNjM1ZDQxYWUtMzQyZS00MTE1LWJmZGYtNGUyNTdlYjM3ZmVmXkEyXkFqcGc@._V1_.jpg	1993-12-15 00:00:00+07	https://www.youtube.com/watch?v=gG22XNhtnoY	9	195	Released	t	2
+24	SchindlerΓÇÖs List	\N	In German-occupied Poland during World War II, industrialist Oskar Schindler gradually becomes concerned for his Jewish workforce after witnessing their persecution by the Nazis.	https://m.media-amazon.com/images/M/MV5BNjM1ZDQxYWUtMzQyZS00MTE1LWJmZGYtNGUyNTdlYjM3ZmVmXkEyXkFqcGc@._V1_.jpg	1993-12-15 00:00:00+07	https://www.youtube.com/watch?v=gG22XNhtnoY	9	195	Released	t	2
 26	The Lord of the Rings: The Return of the King	\N	Gandalf and Aragorn lead the World of Men against Sauron's army to draw his gaze from Frodo and Sam as they approach Mount Doom with the One Ring.	https://m.media-amazon.com/images/M/MV5BMTZkMjBjNWMtZGI5OC00MGU0LTk4ZTItODg2NWM3NTVmNWQ4XkEyXkFqcGc@._V1_.jpg	2003-12-17 00:00:00+07	https://www.youtube.com/watch?v=r5X-hFf6Bwo	8.9	201	Released	t	2
 27	Pulp Fiction	\N	The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.	https://m.media-amazon.com/images/M/MV5BYTViYTE3ZGQtNDBlMC00ZTAyLTkyODMtZGRiZDg0MjA2YThkXkEyXkFqcGc@._V1_QL75_UY281_CR2,0,190,281_.jpg	1994-10-14 00:00:00+07	https://www.youtube.com/watch?v=s7EdQ4FqbhY	8.9	154	Released	t	1
 28	Inception	\N	A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.	https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_FMjpg_UX1000_.jpg	2010-07-16 00:00:00+07	https://www.youtube.com/watch?v=YoHD9XEInc0	8.8	148	Released	t	1
@@ -1523,7 +1503,7 @@ COPY public.movies (id, title, alternativetitle, synopsis, urlphoto, releasedate
 38	The Revenant	\N	A frontiersman fights for survival after being mauled by a bear and left for dead by his companions in the 1820s American wilderness.	https://m.media-amazon.com/images/M/MV5BYTgwNmQzZDctMjNmOS00OTExLTkwM2UtNzJmOTJhODFjOTdlXkEyXkFqcGc@._V1_QL75_UX190_CR0,0,190,281_.jpg	2015-12-25 00:00:00+07	https://www.youtube.com/watch?v=LoebZZ8K5N0	8	156	Released	t	1
 39	Catch Me If You Can	\N	The story of Frank Abagnale Jr., who, before his 19th birthday, successfully performed cons worth millions of dollars by posing as a Pan Am pilot, doctor, and legal prosecutor.	https://m.media-amazon.com/images/M/MV5BMTY5MzYzNjc5NV5BMl5BanBnXkFtZTYwNTUyNTc2._V1_FMjpg_UX1000_.jpg	2002-12-25 00:00:00+07	https://www.youtube.com/watch?v=71rDQ7z4eFg	8.1	141	Released	t	1
 40	The Wolf of Wall Street	\N	Based on the true story of Jordan Belfort, from his rise to a wealthy stock-broker living the high life to his fall involving crime, corruption, and the federal government.	https://m.media-amazon.com/images/M/MV5BMjIxMjgxNTk0MF5BMl5BanBnXkFtZTgwNjIyOTg2MDE@._V1_FMjpg_UX1000_.jpg	2013-12-25 00:00:00+07	https://www.youtube.com/watch?v=iszwuX1AK6A	8.2	180	Released	t	1
-41	Les Misérables	\N	In 19th-century France, Jean Valjean, who for decades has been hunted by the ruthless policeman Javert after breaking parole, agrees to care for a factory worker's daughter. The decision changes their lives forever.	https://m.media-amazon.com/images/M/MV5BY2Q1YjIxZTAtZTU0YS00ZmE5LWEwODEtY2IyYWM2ZTJlOWE1XkEyXkFqcGc@._V1_.jpg	2012-12-25 00:00:00+07	https://www.youtube.com/watch?v=IuEFm84s4oI	7.6	158	Released	t	2
+41	Les Mis├⌐rables	\N	In 19th-century France, Jean Valjean, who for decades has been hunted by the ruthless policeman Javert after breaking parole, agrees to care for a factory worker's daughter. The decision changes their lives forever.	https://m.media-amazon.com/images/M/MV5BY2Q1YjIxZTAtZTU0YS00ZmE5LWEwODEtY2IyYWM2ZTJlOWE1XkEyXkFqcGc@._V1_.jpg	2012-12-25 00:00:00+07	https://www.youtube.com/watch?v=IuEFm84s4oI	7.6	158	Released	t	2
 43	Braveheart	\N	Scottish warrior William Wallace leads his countrymen in a rebellion to free his homeland from the tyranny of King Edward I of England.	https://m.media-amazon.com/images/M/MV5BNGMxZDBhNGQtYTZlNi00N2UzLWI4NDEtNmUzNWM2NTdmZDA0XkEyXkFqcGc@._V1_.jpg	1995-05-24 00:00:00+07	https://www.youtube.com/watch?v=nMft5QDOHek	8.3	178	Released	t	1
 44	A Beautiful Mind	\N	After John Nash, a brilliant but asocial mathematician, accepts secret work in cryptography, his life takes a turn for the nightmarish.	https://m.media-amazon.com/images/M/MV5BNzljZTk5ZDgtZTQ1Zi00NTM4LThlOGUtZDk2MGM4NDQ4NWQyXkEyXkFqcGc@._V1_.jpg	2001-12-21 00:00:00+07	https://www.youtube.com/watch?v=aS_d0Ayjw4o	8.2	135	Released	t	1
 45	The Big Short	\N	In 2006-2007, a group of investors bet against the U.S. mortgage market. In their research, they discover how flawed and corrupt the market is.	https://m.media-amazon.com/images/M/MV5BZDZkNDQ3YjktYjBlZC00YTY1LTgxOGYtY2RhMWFhZmNkZGY3XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg	2015-12-11 00:00:00+07	https://www.youtube.com/watch?v=vgqG3ITMv1Q	7.8	130	Released	t	1
@@ -1663,14 +1643,6 @@ SELECT pg_catalog.setval('public.movies_id_seq', 65, true);
 --
 
 SELECT pg_catalog.setval('public.users_id_seq', 70, true);
-
-
---
--- Name: SequelizeMeta SequelizeMeta_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."SequelizeMeta"
-    ADD CONSTRAINT "SequelizeMeta_pkey" PRIMARY KEY (name);
 
 
 --
