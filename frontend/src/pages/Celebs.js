@@ -15,7 +15,7 @@ const Celebs = () => {
     const fetchActors = async () => {
       try {
         const token = Cookies.get("token"); // Ambil token dari cookies
-        const response = await fetch("http://localhost:5000/api/actors", {
+        const response = await fetch("https://master-movie-cms.vercel.app/api/actors", {
           headers: {
             Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
           },
@@ -46,7 +46,7 @@ const Celebs = () => {
           <div
             className="fixed top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat z-0"
             style={{
-              backgroundImage: 'url(http://localhost:5000/uploads/home_background.jpg)',
+              backgroundImage: 'url(https://master-movie-cms.vercel.app/uploads/home_background.jpg)',
             }}
           >
             <div className="absolute inset-0 backdrop-blur-lg"></div>

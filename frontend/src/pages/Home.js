@@ -43,7 +43,7 @@ const Home = () => {
           <div
             className="fixed top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat z-0"
             style={{
-              backgroundImage: 'url(http://localhost:5000/uploads/home_background.jpg)',
+              backgroundImage: 'url(https://master-movie-cms.vercel.app/uploads/home_background.jpg)',
             }}
           >
             <div className="absolute inset-0 backdrop-blur-lg"></div>

@@ -27,7 +27,7 @@ const MovieDetail = () => {
       try {
         const token = Cookies.get("token"); // Ambil token dari cookies
         const response = await fetch(
-          `http://localhost:5000/api/movies/${id}/detail`,
+          `https://master-movie-cms.vercel.app/api/movies/${id}/detail`,
           {
             headers: {
               Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
@@ -61,7 +61,7 @@ const MovieDetail = () => {
     setSubmitting(true);
   
     try {
-      const response = await fetch(`http://localhost:5000/api/comments`, {
+      const response = await fetch(`https://master-movie-cms.vercel.app/api/comments`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

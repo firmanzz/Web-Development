@@ -21,7 +21,7 @@ const Availability = () => {
     const fetchAvailabilities = async () => {
       try {
         const token = Cookies.get("token"); // Ambil token dari cookies
-        const response = await fetch("http://localhost:5000/api/avail", {
+        const response = await fetch("https://master-movie-cms.vercel.app/api/avail", {
           headers: {
             Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
           },
@@ -41,7 +41,7 @@ const Availability = () => {
   const handleSubmit = async () => {
     try {
       const token = Cookies.get("token"); // Ambil token dari cookies
-      const response = await fetch("http://localhost:5000/api/addAvail", {
+      const response = await fetch("https://master-movie-cms.vercel.app/api/addAvail", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -73,7 +73,7 @@ const Availability = () => {
     if (!window.confirm("Are you sure you want to delete this availability?")) return;
     try {
       const token = Cookies.get("token"); // Ambil token dari cookies
-      const response = await fetch(`http://localhost:5000/api/avail/${id}`, {
+      const response = await fetch(`https://master-movie-cms.vercel.app/api/avail/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
@@ -99,7 +99,7 @@ const Availability = () => {
   const handleEditSubmit = async () => {
     try {
       const token = Cookies.get("token"); // Ambil token dari cookies
-      const response = await fetch(`http://localhost:5000/api/avail/${editingId}`, {
+      const response = await fetch(`https://master-movie-cms.vercel.app/api/avail/${editingId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
