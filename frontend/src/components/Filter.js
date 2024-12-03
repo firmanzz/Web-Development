@@ -29,7 +29,7 @@ const Filter = ({
     const fetchFilterData = async () => {
       try {
         const token = Cookies.get("token"); // Ambil token dari cookies
-        const response = await fetch("http://http://localhost:5000/api/filters", {
+        const response = await fetch("http://localhost:5000/api/filters", {
           headers: {
             Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
           },

@@ -21,7 +21,7 @@ const MovieListCMS = () => {
     const fetchMovies = async () => {
       try {
         const token = Cookies.get("token"); // Ambil token dari cookies
-        const response = await fetch("http://http://localhost:5000/api/movies", {
+        const response = await fetch("http://localhost:5000/api/movies", {
           headers: {
             Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
           },
@@ -51,7 +51,7 @@ const MovieListCMS = () => {
 
     try {
       const token = Cookies.get("token"); // Ambil token dari cookies
-      const response = await fetch(`http://http://localhost:5000/api/movies/${id}`, {
+      const response = await fetch(`http://localhost:5000/api/movies/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
@@ -152,7 +152,7 @@ const MovieListCMS = () => {
     try {
       const token = Cookies.get("token"); // Ambil token dari cookies
       const response = await fetch(
-      `http://http://localhost:5000/api/movies/${selectedMovie.id}`,
+      `http://localhost:5000/api/movies/${selectedMovie.id}`,
       {
         method: "PUT",
         headers: {

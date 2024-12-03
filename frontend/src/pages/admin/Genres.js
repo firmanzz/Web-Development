@@ -21,7 +21,7 @@ const Genres = () => {
     const fetchGenres = async () => {
       try {
         const token = Cookies.get("token"); // Ambil token dari cookies
-        const response = await fetch("http://http://localhost:5000/api/genres", {
+        const response = await fetch("http://localhost:5000/api/genres", {
           headers: {
             Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
           },
@@ -43,7 +43,7 @@ const Genres = () => {
   const handleSubmit = async () => {
     try {
       const token = Cookies.get("token"); // Ambil token dari cookies
-      const response = await fetch("http://http://localhost:5000/api/addGenres", {
+      const response = await fetch("http://localhost:5000/api/addGenres", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -84,7 +84,7 @@ const Genres = () => {
 
     try {
       const token = Cookies.get("token"); // Ambil token dari cookies
-      const response = await fetch(`http://http://localhost:5000/api/genres/${id}`, {
+      const response = await fetch(`http://localhost:5000/api/genres/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
@@ -114,7 +114,7 @@ const Genres = () => {
     try {
       const token = Cookies.get("token"); // Ambil token dari cookies
       const response = await fetch(
-      `http://http://localhost:5000/api/genres/${editingGenreId}`,
+      `http://localhost:5000/api/genres/${editingGenreId}`,
       {
         method: "PUT",
         headers: {

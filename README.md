@@ -147,7 +147,7 @@
     ```bash
     npm start
     ```
-4. **Open the application in your browser:** `http://http://localhost:3000`
+4. **Open the application in your browser:** `http://localhost:3000`
 ### Database
 1. **Import database**
     ```bash

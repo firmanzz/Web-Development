@@ -20,7 +20,7 @@ const Comments = () => {
     setLoading(true);
     try {
       const token = Cookies.get("token"); // Ambil token dari cookies
-      const response = await fetch("http://http://localhost:5000/api/comments", {
+      const response = await fetch("http://localhost:5000/api/comments", {
         headers: {
           Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
         },
@@ -83,7 +83,7 @@ const Comments = () => {
           const newStatus =
             comment.status === "Approved" ? "Unapproved" : "Approved";
           const response = await fetch(
-            `http://http://localhost:5000/api/comments/${id}`,
+            `http://localhost:5000/api/comments/${id}`,
             {
               method: "PUT",
               headers: {
@@ -116,7 +116,7 @@ const Comments = () => {
       await Promise.all(
         selectedComments.map(async (id) => {
           const response = await fetch(
-            `http://http://localhost:5000/api/comments/${id}`,
+            `http://localhost:5000/api/comments/${id}`,
             {
               method: "DELETE",
               headers: {

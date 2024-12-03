@@ -17,7 +17,7 @@ const Home = () => {
     const fetchMovies = async () => {
       try {
         const token = document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1];
-        const response = await fetch("http://http://localhost:5000/api/movies/new", {
+        const response = await fetch("http://localhost:5000/api/movies/new", {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -51,7 +51,7 @@ const Home = () => {
           <div
             className="fixed top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat z-0"
             style={{
-              backgroundImage: 'url(http://http://localhost:5000/uploads/home_background.jpg)',
+              backgroundImage: 'url(http://localhost:5000/uploads/home_background.jpg)',
             }}
           >
             <div className="absolute inset-0 backdrop-blur-lg"></div>

@@ -63,32 +63,32 @@ const MovieForm = () => {
           directorResponse, // New fetch for directors
           availabilityResponse,
         ] = await Promise.all([
-          fetch("http://http://localhost:5000/api/genres", {
+          fetch("http://localhost:5000/api/genres", {
             headers: {
               Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
             },
           }),
-          fetch("http://http://localhost:5000/api/awards", {
+          fetch("http://localhost:5000/api/awards", {
             headers: {
               Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
             },
           }),
-          fetch("http://http://localhost:5000/api/countries", {
+          fetch("http://localhost:5000/api/countries", {
             headers: {
               Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
             },
           }),
-          fetch("http://http://localhost:5000/api/actors", {
+          fetch("http://localhost:5000/api/actors", {
             headers: {
               Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
             },
           }),
-          fetch("http://http://localhost:5000/api/directors", {
+          fetch("http://localhost:5000/api/directors", {
             headers: {
               Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
             },
           }), // New endpoint for directors
-          fetch("http://http://localhost:5000/api/avail", {
+          fetch("http://localhost:5000/api/avail", {
             headers: {
               Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
             },
@@ -104,7 +104,7 @@ const MovieForm = () => {
 
         if (id) {
           const movieResponse = await fetch(
-            `http://http://localhost:5000/api/movies/${id}`,
+            `http://localhost:5000/api/movies/${id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
@@ -245,8 +245,8 @@ const MovieForm = () => {
       };
 
       const url = isEditMode
-        ? `http://http://localhost:5000/api/movies/${id}`
-        : "http://http://localhost:5000/api/addMovie";
+        ? `http://localhost:5000/api/movies/${id}`
+        : "http://localhost:5000/api/addMovie";
 
       const response = await fetch(url, options);
 
