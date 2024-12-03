@@ -24,7 +24,7 @@ const Header = ({ open, setOpen }) => {
     try {
       if (!token) throw new Error("No token found");
 
-      const response = await fetch('http://localhost:5000/api/get-user', {
+      const response = await fetch('http://master-movie-cms.vercel.app/api/get-user', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,

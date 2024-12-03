@@ -21,7 +21,7 @@ const Countries = ({ movies }) => {
     const fetchCountries = async () => {
       try {
         const token = Cookies.get("token"); // Ambil token dari cookies
-        const response = await fetch("http://localhost:5000/api/countries", {
+        const response = await fetch("http://master-movie-cms.vercel.app/api/countries", {
           headers: {
             Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
           },
@@ -43,7 +43,7 @@ const Countries = ({ movies }) => {
   const handleSubmit = async () => {
     try {
       const token = Cookies.get("token"); // Ambil token dari cookies
-      const response = await fetch("http://localhost:5000/api/addCountries", {
+      const response = await fetch("http://master-movie-cms.vercel.app/api/addCountries", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -85,7 +85,7 @@ const Countries = ({ movies }) => {
     try {
       const token = Cookies.get("token"); // Ambil token dari cookies
       const response = await fetch(
-        `http://localhost:5000/api/countries/${id}`,
+        `http://master-movie-cms.vercel.app/api/countries/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -117,7 +117,7 @@ const Countries = ({ movies }) => {
     try {
       const token = Cookies.get("token"); // Ambil token dari cookies
       const response = await fetch(
-        `http://localhost:5000/api/countries/${editingCountryId}`,
+        `http://master-movie-cms.vercel.app/api/countries/${editingCountryId}`,
         {
           method: "PUT",
           headers: {

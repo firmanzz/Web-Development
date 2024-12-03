@@ -9,7 +9,7 @@ const ForgotPassword = () => {
   const [step, setStep] = useState(1);
   const handleForgotPassword = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/forgot-password', {
+      const response = await fetch('http://master-movie-cms.vercel.app/api/forgot-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ const ForgotPassword = () => {
 
   const handleResetPassword = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/reset-password', {
+      const response = await fetch('http://master-movie-cms.vercel.app/api/reset-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

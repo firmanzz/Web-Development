@@ -17,7 +17,7 @@ const Users = () => {
     const fetchUsers = async () => {
       try {
         const token = Cookies.get("token"); // Ambil token dari cookies
-        const response = await fetch("http://localhost:5000/api/users", {
+        const response = await fetch("http://master-movie-cms.vercel.app/api/users", {
           headers: {
             Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
           },
@@ -49,7 +49,7 @@ const Users = () => {
       const updatedStatus = !selectedUser.suspend;
       const token = Cookies.get("token"); // Ambil token dari cookies
 
-      await fetch(`http://localhost:5000/api/users/${selectedUser.id}`, {
+      await fetch(`http://master-movie-cms.vercel.app/api/users/${selectedUser.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -79,7 +79,7 @@ const Users = () => {
 
     try {
       const token = Cookies.get("token"); // Ambil token dari cookies
-      const response = await fetch(`http://localhost:5000/api/users/${id}`, {
+      const response = await fetch(`http://master-movie-cms.vercel.app/api/users/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

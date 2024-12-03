@@ -32,7 +32,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
+      const response = await fetch('http://master-movie-cms.vercel.app/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ const Login = () => {
   };
 
   const googleSignIn = () => {
-    window.location.href = 'http://localhost:5000/api/auth/google';
+    window.location.href = 'http://master-movie-cms.vercel.app/api/auth/google';
   };
 
   const handleGuestLogin = () => {
