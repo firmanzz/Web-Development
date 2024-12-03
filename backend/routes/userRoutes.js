@@ -59,7 +59,7 @@ router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 
 
 // Route untuk menangani callback dari Google
 router.get('/auth/google/callback', 
-  passport.authenticate('google', { failureRedirect: 'http://localhost:3000/Login', session: false }), 
+  passport.authenticate('google', { failureRedirect: 'http://web-development-beta-opal.vercel.app/Login', session: false }), 
   (req, res) => {
     const role = req.user.role || 'editor';  // Asumsi role default adalah 'editor'
     const name = req.user.name;  // Ambil nama pengguna dari req.user
@@ -79,7 +79,7 @@ router.get('/auth/success', (req, res) => {
   }
 
   // Redirect ke frontend dengan token dan role
-  return res.redirect(`http://localhost:3000/google-auth?token=${token}&role=${role}&name=${name}`);
+  return res.redirect(`http://web-development-beta-opal.vercel.app/google-auth?token=${token}&role=${role}&name=${name}`);
 });
 
 // Rute untuk akses tamu tanpa login (tidak memerlukan otorisasi)

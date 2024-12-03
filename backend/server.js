@@ -22,7 +22,7 @@ const authMiddleware = require('./middleware/authMiddleware');
 const adminMiddleware = require('./middleware/adminMiddleware');
 
 const corsOptions = {
-  origin: 'http://localhost:3000', // Ganti ini dengan URL frontend Anda
+  origin: 'http://web-development-beta-opal.vercel.app', // Ganti ini dengan URL frontend Anda
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true, // Jika Anda menggunakan cookies atau credentials lain
