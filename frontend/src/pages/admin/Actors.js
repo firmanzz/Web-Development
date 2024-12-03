@@ -30,7 +30,7 @@ const Actors = () => {
     const fetchActors = async () => {
       try {
         const token = Cookies.get("token"); // Ambil token dari cookies
-        const response = await fetch("http://master-movie-cms.vercel.app/api/actors", {
+        const response = await fetch("http://http://localhost:5000/api/actors", {
           headers: {
             Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
           },
@@ -51,7 +51,7 @@ const Actors = () => {
     const fetchCountries = async () => {
       try {
         const token = Cookies.get("token"); // Ambil token dari cookies
-        const response = await fetch("http://master-movie-cms.vercel.app/api/countries", {
+        const response = await fetch("http://http://localhost:5000/api/countries", {
           headers: {
             Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
           },
@@ -97,7 +97,7 @@ const Actors = () => {
       let response;
       if (selectedActor) {
       response = await fetch(
-        `http://master-movie-cms.vercel.app/api/actors/${selectedActor.id}`,
+        `http://http://localhost:5000/api/actors/${selectedActor.id}`,
         {
         method: "PUT",
         headers: {
@@ -108,7 +108,7 @@ const Actors = () => {
         }
       );
       } else {
-      response = await fetch("http://master-movie-cms.vercel.app/api/addActor", {
+      response = await fetch("http://http://localhost:5000/api/addActor", {
         method: "POST",
         headers: {
         "Content-Type": "application/json",
@@ -142,7 +142,7 @@ const Actors = () => {
   const handleDeleteActor = async (id) => {
     try {
       const token = Cookies.get("token"); // Ambil token dari cookies
-      const response = await fetch(`http://master-movie-cms.vercel.app/api/actors/${id}`, {
+      const response = await fetch(`http://http://localhost:5000/api/actors/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization

@@ -30,7 +30,7 @@ const Awards = () => {
     const fetchAwards = async () => {
       try {
         const token = Cookies.get("token"); // Get token from cookies
-        const response = await fetch("http://master-movie-cms.vercel.app/api/awards", {
+        const response = await fetch("http://http://localhost:5000/api/awards", {
           headers: {
             Authorization: `Bearer ${token}`, // Add token to Authorization header
           },
@@ -49,7 +49,7 @@ const Awards = () => {
     const fetchCountries = async () => {
       try {
         const token = Cookies.get("token"); // Get token from cookies
-        const response = await fetch("http://master-movie-cms.vercel.app/api/countries", {
+        const response = await fetch("http://http://localhost:5000/api/countries", {
           headers: {
             Authorization: `Bearer ${token}`, // Add token to Authorization header
           },
@@ -95,7 +95,7 @@ const Awards = () => {
       let response;
       if (selectedAward) {
         response = await fetch(
-          `http://master-movie-cms.vercel.app/api/awards/${selectedAward.id}`,
+          `http://http://localhost:5000/api/awards/${selectedAward.id}`,
           {
             method: "PUT",
             headers: {
@@ -106,7 +106,7 @@ const Awards = () => {
           }
         );
       } else {
-        response = await fetch("http://master-movie-cms.vercel.app/api/addAward", {
+        response = await fetch("http://http://localhost:5000/api/addAward", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -145,7 +145,7 @@ const Awards = () => {
   const handleDeleteAward = async (id) => {
     try {
       const token = Cookies.get("token"); // Get token from cookies
-      const response = await fetch(`http://master-movie-cms.vercel.app/api/awards/${id}`, {
+      const response = await fetch(`http://http://localhost:5000/api/awards/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`, // Add token to Authorization header

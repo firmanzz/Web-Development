@@ -63,32 +63,32 @@ const MovieForm = () => {
           directorResponse, // New fetch for directors
           availabilityResponse,
         ] = await Promise.all([
-          fetch("http://master-movie-cms.vercel.app/api/genres", {
+          fetch("http://http://localhost:5000/api/genres", {
             headers: {
               Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
             },
           }),
-          fetch("http://master-movie-cms.vercel.app/api/awards", {
+          fetch("http://http://localhost:5000/api/awards", {
             headers: {
               Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
             },
           }),
-          fetch("http://master-movie-cms.vercel.app/api/countries", {
+          fetch("http://http://localhost:5000/api/countries", {
             headers: {
               Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
             },
           }),
-          fetch("http://master-movie-cms.vercel.app/api/actors", {
+          fetch("http://http://localhost:5000/api/actors", {
             headers: {
               Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
             },
           }),
-          fetch("http://master-movie-cms.vercel.app/api/directors", {
+          fetch("http://http://localhost:5000/api/directors", {
             headers: {
               Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
             },
           }), // New endpoint for directors
-          fetch("http://master-movie-cms.vercel.app/api/avail", {
+          fetch("http://http://localhost:5000/api/avail", {
             headers: {
               Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
             },
@@ -104,7 +104,7 @@ const MovieForm = () => {
 
         if (id) {
           const movieResponse = await fetch(
-            `http://master-movie-cms.vercel.app/api/movies/${id}`,
+            `http://http://localhost:5000/api/movies/${id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
@@ -245,8 +245,8 @@ const MovieForm = () => {
       };
 
       const url = isEditMode
-        ? `http://master-movie-cms.vercel.app/api/movies/${id}`
-        : "http://master-movie-cms.vercel.app/api/addMovie";
+        ? `http://http://localhost:5000/api/movies/${id}`
+        : "http://http://localhost:5000/api/addMovie";
 
       const response = await fetch(url, options);
 
