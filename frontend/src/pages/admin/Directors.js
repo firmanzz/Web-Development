@@ -32,7 +32,7 @@ const Directors = () => {
     const fetchDirectors = async () => {
       try {
         const token = Cookies.get("token"); // Ambil token dari cookies
-        const response = await fetch("https://master-movie-cms.vercel.app/api/directors", {
+        const response = await fetch("http://localhost:5000/api/directors", {
           headers: {
             Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
           },
@@ -53,7 +53,7 @@ const Directors = () => {
     const fetchCountries = async () => {
       try {
         const token = Cookies.get("token"); // Ambil token dari cookies
-        const response = await fetch("https://master-movie-cms.vercel.app/api/countries", {
+        const response = await fetch("http://localhost:5000/api/countries", {
           headers: {
             Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
           },
@@ -97,7 +97,7 @@ const Directors = () => {
       const token = Cookies.get("token"); // Ambil token dari cookies
       let response;
       if (selectedDirector) {
-      response = await fetch(`https://master-movie-cms.vercel.app/api/directors/${selectedDirector.id}`, {
+      response = await fetch(`http://localhost:5000/api/directors/${selectedDirector.id}`, {
         method: "PUT",
         headers: {
         "Content-Type": "application/json",
@@ -106,7 +106,7 @@ const Directors = () => {
         body: JSON.stringify(formData),
       });
       } else {
-      response = await fetch("https://master-movie-cms.vercel.app/api/addDirector", {
+      response = await fetch("http://localhost:5000/api/addDirector", {
         method: "POST",
         headers: {
         "Content-Type": "application/json",
@@ -140,7 +140,7 @@ const Directors = () => {
   const handleDeleteDirector = async (id) => {
     try {
       const token = Cookies.get("token"); // Ambil token dari cookies
-      const response = await fetch(`https://master-movie-cms.vercel.app/api/directors/${id}`, {
+      const response = await fetch(`http://localhost:5000/api/directors/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization

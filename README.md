@@ -147,7 +147,7 @@
     ```bash
     npm start
     ```
-4. **Open the application in your browser:** `https://web-development-beta-opal.vercel.app`
+4. **Open the application in your browser:** `http://localhost:3000`
 ### Database
 1. **Import database**
     ```bash

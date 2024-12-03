@@ -24,7 +24,7 @@ const MovieList = () => {
     const fetchMovies = async () => {
       try {
         const token = Cookies.get("token"); // Ambil token dari cookies
-        const response = await fetch("https://master-movie-cms.vercel.app/api/movies", {
+        const response = await fetch("http://localhost:5000/api/movies", {
           headers: {
             Authorization: `Bearer ${token}`, // Tambahkan token ke header Authorization
           },

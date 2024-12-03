@@ -15,7 +15,7 @@ const Register = () => {
   const handleDeleteUnverified = useCallback(async () => {
     if (isRegistered && email) {
       try {
-        const response = await fetch('https://master-movie-cms.vercel.app/api/delete-unverified', {
+        const response = await fetch('http://localhost:5000/api/delete-unverified', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('https://master-movie-cms.vercel.app/api/register', {
+      const response = await fetch('http://localhost:5000/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('https://master-movie-cms.vercel.app/api/verify-email', {
+      const response = await fetch('http://localhost:5000/api/verify-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ const Register = () => {
   };
 
   const googleSignIn = () => {
-    window.location.href = 'https://master-movie-cms.vercel.app/api/auth/google';
+    window.location.href = 'http://localhost:5000/api/auth/google';
   };
 
   return (
