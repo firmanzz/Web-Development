@@ -27,10 +27,25 @@
         </table>
 </div>
 
+## 🌐 Demo Site
+Explore the live application here: [Master Movie CMS](http://mastermovie.duckdns.org:3000/)
+### User these account for admin role
+    Email: firmanfirdaus3006@gmail.com
+    Password: firman
+#### or
+    Email: matharrizqi@gmail.com
+    Password: mathar
+    
 ## 📸 Preview
+### Home Page
+![Home Page](https://github.com/firmanzz/Web-Development/blob/main/backend/static/uploads/landing.png)
+
 ### Admin Dashboard
+![Admin Dashboard](https://raw.githubusercontent.com/firmanzz/Web-Development/main/backend/static/uploads/dashboardadmin.png)
 
 ### Movie Details
+![Movie Details](https://raw.githubusercontent.com/firmanzz/Web-Development/main/backend/static/uploads/detail1.png)
+![Movie Details](https://raw.githubusercontent.com/firmanzz/Web-Development/main/backend/static/uploads/detail2.png)
 
 ## 🛠️ Technologies Used
 
