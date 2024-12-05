@@ -162,10 +162,37 @@ Explore the live application here: [Master Movie CMS](http://mastermovie.duckdns
     ```bash
     npm start
     ```
-4. **Open the application in your browser:** `http://localhost:3000`
+
 ### Database
 1. **Import database**
     ```bash
     psql -U <username> -h <host> -p <port> -d <database_name> -f database_web.sql
     ```
+
+### Local Dockerizing
+1. **Build container**
+    ```bash
+    docker compose build
+    ```
+2. **Run container**
+    ```bash
+    docker compose up -d
+    ```
+3. **Insert database file to docker**
+    ```bash
+    docker cp master_movie.sql web-development-database-1:/master_movie.sql
+    ```
+4. **Enter to container**
+    ```bash
+    docker exec -it web-development-database-1 bash
+    ```
+5. **Import the database**
+    ```bash
+    1. psql -U postgres
+    2. \c postgres;
+    3. \i /master_movie.sql;
+    ```
+
+### Open the application in your browser: `http://localhost:3000`
+
 

@@ -48,14 +48,6 @@ const Home = () => {
       <div className="flex flex-grow">
         <Sidebar ref={sidebarRef} open={open} setOpen={setOpen} />
         <div className="flex-col flex-grow overflow-y-auto bg-gray-800 relative">
-          <div
-            className="fixed top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat z-0"
-            style={{
-              backgroundImage: 'url(http://localhost:5000/uploads/home_background.jpg)',
-            }}
-          >
-            <div className="absolute inset-0 backdrop-blur-lg"></div>
-          </div>
           <div className="relative z-20 flex flex-col flex-grow items-center justify-start pt-2">
             {!showMovieDetail ? (
               <div className="container mx-auto">
